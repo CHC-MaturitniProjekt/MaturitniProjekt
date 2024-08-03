@@ -44,4 +44,10 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
         if (context.started)
             InteractEvent?.Invoke();
     }
+
+    public event Action JumpEvent;
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        JumpEvent?.Invoke();
+    }
 }

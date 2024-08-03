@@ -53,6 +53,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""bee01d83-2f1b-4083-a8eb-9e4035ddfbc0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -165,6 +174,28 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""action"": ""interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d34455ad-a546-4c91-a286-65e5489f0711"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4584aac3-053f-4ef1-b122-45558568cf78"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -176,6 +207,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Main_move = m_Main.FindAction("move", throwIfNotFound: true);
         m_Main_pause = m_Main.FindAction("pause", throwIfNotFound: true);
         m_Main_interact = m_Main.FindAction("interact", throwIfNotFound: true);
+        m_Main_jump = m_Main.FindAction("jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -240,6 +272,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_move;
     private readonly InputAction m_Main_pause;
     private readonly InputAction m_Main_interact;
+    private readonly InputAction m_Main_jump;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
@@ -247,6 +280,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @move => m_Wrapper.m_Main_move;
         public InputAction @pause => m_Wrapper.m_Main_pause;
         public InputAction @interact => m_Wrapper.m_Main_interact;
+        public InputAction @jump => m_Wrapper.m_Main_jump;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -265,6 +299,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @interact.started += instance.OnInteract;
             @interact.performed += instance.OnInteract;
             @interact.canceled += instance.OnInteract;
+            @jump.started += instance.OnJump;
+            @jump.performed += instance.OnJump;
+            @jump.canceled += instance.OnJump;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -278,6 +315,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @interact.started -= instance.OnInteract;
             @interact.performed -= instance.OnInteract;
             @interact.canceled -= instance.OnInteract;
+            @jump.started -= instance.OnJump;
+            @jump.performed -= instance.OnJump;
+            @jump.canceled -= instance.OnJump;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -300,5 +340,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }
