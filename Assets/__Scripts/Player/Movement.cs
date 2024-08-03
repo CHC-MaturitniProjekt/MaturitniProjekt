@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -10,15 +8,16 @@ public class Movement : MonoBehaviour
 
     [SerializeField] private float speed;
 
-
     private Vector2 movementInput;
     private Rigidbody rb;
 
     void Start()
     {
         input.MoveEvent += Input_MoveEvent;
+
         rb = GetComponent<Rigidbody>();
-        
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     private void Input_MoveEvent(Vector2 obj)
@@ -26,9 +25,11 @@ public class Movement : MonoBehaviour
         movementInput = obj;
     }
 
-    void Update()
+
+    void FixedUpdate()
     {
-        Vector3 movementOutput = new Vector3(movementInput.x, 0, movementInput.y);
-        rb.AddForce(movementOutput * Time.deltaTime * speed);
+        Vector3 movementOutput = new Vector3(movementInput.y, 0, movementInput.x);
+
+        rb.AddForce(movementOutput * speed, ForceMode.Acceleration);
     }
 }
