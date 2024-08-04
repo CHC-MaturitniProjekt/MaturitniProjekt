@@ -62,6 +62,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""look"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""b62289e1-6df6-40c7-ac1b-19d92b5761ca"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -196,6 +205,17 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""action"": ""jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1fdddc89-a270-4038-b3da-a514a5fb1ec4"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +228,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Main_pause = m_Main.FindAction("pause", throwIfNotFound: true);
         m_Main_interact = m_Main.FindAction("interact", throwIfNotFound: true);
         m_Main_jump = m_Main.FindAction("jump", throwIfNotFound: true);
+        m_Main_look = m_Main.FindAction("look", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -273,6 +294,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_pause;
     private readonly InputAction m_Main_interact;
     private readonly InputAction m_Main_jump;
+    private readonly InputAction m_Main_look;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
@@ -281,6 +303,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @pause => m_Wrapper.m_Main_pause;
         public InputAction @interact => m_Wrapper.m_Main_interact;
         public InputAction @jump => m_Wrapper.m_Main_jump;
+        public InputAction @look => m_Wrapper.m_Main_look;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -302,6 +325,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @jump.started += instance.OnJump;
             @jump.performed += instance.OnJump;
             @jump.canceled += instance.OnJump;
+            @look.started += instance.OnLook;
+            @look.performed += instance.OnLook;
+            @look.canceled += instance.OnLook;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -318,6 +344,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @jump.started -= instance.OnJump;
             @jump.performed -= instance.OnJump;
             @jump.canceled -= instance.OnJump;
+            @look.started -= instance.OnLook;
+            @look.performed -= instance.OnLook;
+            @look.canceled -= instance.OnLook;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -341,5 +370,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
     }
 }

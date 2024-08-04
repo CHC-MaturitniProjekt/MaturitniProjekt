@@ -7,12 +7,18 @@ public class Movement : MonoBehaviour
     [SerializeField] private InputReader input;
 
     [SerializeField] private float speed;
-
     [SerializeField] private float jumpForce;
     private bool isGrounded;
+    public LayerMask groundLayer;
+    private float rayLength = 0.1f;
 
     private Vector2 movementInput;
     private Rigidbody rb;
+
+    public void Dl<T>(T var)
+    {
+        Debug.Log(var);
+    }
 
     void Start()
     {
@@ -31,19 +37,29 @@ public class Movement : MonoBehaviour
 
     private void Input_MoveEvent(Vector2 obj)
     {
-        movementInput = obj;  
+        movementInput = obj;
     }
-
 
     void FixedUpdate()
     {
-        Vector3 movementOutput = new Vector3(movementInput.y, 0, movementInput.x);
-
-        rb.AddForce(movementOutput * speed, ForceMode.Acceleration);
+        Move();
     }
 
-    void Jump()
+    private void Move()
     {
-        rb.AddForce(transform.up * jumpForce, ForceMode.Acceleration);
+        Vector3 forwardMovement = transform.forward * -movementInput.x;
+        Vector3 rightMovement = transform.right * movementInput.y;
+        Vector3 movement = (forwardMovement + rightMovement).normalized * speed * Time.fixedDeltaTime;
+
+        rb.MovePosition(rb.position + movement);
+    }
+
+    private void Jump()
+    {
+        isGrounded = Physics.Raycast(rb.position, Vector3.down, rayLength, groundLayer);
+        if (isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
     }
 }

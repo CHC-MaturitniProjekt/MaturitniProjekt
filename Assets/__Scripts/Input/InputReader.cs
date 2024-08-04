@@ -50,4 +50,10 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
     {
         JumpEvent?.Invoke();
     }
+
+    public event Action<Vector2> LookEvent;
+    public void OnLook(InputAction.CallbackContext context)
+    {
+        LookEvent?.Invoke(context.ReadValue<Vector2>());
+    }
 }
