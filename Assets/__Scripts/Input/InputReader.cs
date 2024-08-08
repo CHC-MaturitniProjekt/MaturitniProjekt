@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 [CreateAssetMenu(menuName = "InputReader")]
 public class InputReader : ScriptableObject, Inputs.IMainActions
@@ -55,5 +56,22 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
     public void OnLook(InputAction.CallbackContext context)
     {
         LookEvent?.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public event Action SprintEvent;
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            SprintEvent?.Invoke();
+        }
+        else if (context.canceled)
+        {
+            SprintEvent?.Invoke();
+        }
+    }
+    public bool IsSprintHeld(InputAction.CallbackContext context)
+    {
+        return context.ReadValueAsButton();
     }
 }

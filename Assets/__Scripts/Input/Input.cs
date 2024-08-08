@@ -71,6 +71,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""sprint"",
+                    ""type"": ""Value"",
+                    ""id"": ""3518eb20-8e71-4f7c-bfd7-6d4f12eaaf59"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -216,6 +225,28 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""action"": ""look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d440c001-10f8-4bb4-8eb9-ef0faf2bed0d"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""21babdc9-e1df-4a1c-82f2-0c64b86b99fa"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -229,6 +260,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Main_interact = m_Main.FindAction("interact", throwIfNotFound: true);
         m_Main_jump = m_Main.FindAction("jump", throwIfNotFound: true);
         m_Main_look = m_Main.FindAction("look", throwIfNotFound: true);
+        m_Main_sprint = m_Main.FindAction("sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -295,6 +327,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_interact;
     private readonly InputAction m_Main_jump;
     private readonly InputAction m_Main_look;
+    private readonly InputAction m_Main_sprint;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
@@ -304,6 +337,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @interact => m_Wrapper.m_Main_interact;
         public InputAction @jump => m_Wrapper.m_Main_jump;
         public InputAction @look => m_Wrapper.m_Main_look;
+        public InputAction @sprint => m_Wrapper.m_Main_sprint;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -328,6 +362,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @look.started += instance.OnLook;
             @look.performed += instance.OnLook;
             @look.canceled += instance.OnLook;
+            @sprint.started += instance.OnSprint;
+            @sprint.performed += instance.OnSprint;
+            @sprint.canceled += instance.OnSprint;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -347,6 +384,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @look.started -= instance.OnLook;
             @look.performed -= instance.OnLook;
             @look.canceled -= instance.OnLook;
+            @sprint.started -= instance.OnSprint;
+            @sprint.performed -= instance.OnSprint;
+            @sprint.canceled -= instance.OnSprint;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -371,5 +411,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

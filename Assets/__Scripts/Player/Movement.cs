@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [Header("InputReader")]
+    [Header("Player Movement")]
     [SerializeField] private InputReader input;
 
     [SerializeField] private float speed;
+    [SerializeField] private float sprintSpeed;
+    private bool isSprinting = false;
     [SerializeField] private float jumpForce;
     private bool isGrounded;
     public LayerMask groundLayer;
@@ -24,6 +26,7 @@ public class Movement : MonoBehaviour
     {
         input.MoveEvent += Input_MoveEvent;
         input.JumpEvent += Input_JumpEvent;
+        input.SprintEvent += Input_SprintEvent;
 
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
@@ -39,19 +42,33 @@ public class Movement : MonoBehaviour
     {
         movementInput = obj;
     }
+    private void Input_SprintEvent()
+    {
+        isSprinting = !isSprinting;
+    }
 
     void FixedUpdate()
     {
         Move();
 
         Debug.DrawRay(rb.position, Vector3.down, Color.yellow, rayLength);
+        Dl("Sprint: " + isSprinting);
     }
 
     private void Move()
     {
         Vector3 forwardMovement = transform.forward * -movementInput.x;
         Vector3 rightMovement = transform.right * movementInput.y;
-        Vector3 movement = (forwardMovement + rightMovement).normalized * speed * Time.fixedDeltaTime;
+        Vector3 movement;
+
+        if(!isSprinting)
+        {
+            movement = (forwardMovement + rightMovement).normalized * speed * Time.fixedDeltaTime;
+        }
+        else
+        {
+            movement = (forwardMovement + rightMovement).normalized * sprintSpeed * Time.fixedDeltaTime;
+        }
 
         rb.MovePosition(rb.position + movement);
     }

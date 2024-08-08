@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    [Header("Camera Settings")]
     [SerializeField] private Transform playerCam;
     [SerializeField] private Transform playerBody;
     [SerializeField] private InputReader input;
