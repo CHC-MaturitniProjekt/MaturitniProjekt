@@ -8,7 +8,10 @@ public class Movement : MonoBehaviour
 
     [SerializeField] private float speed;
     [SerializeField] private float sprintSpeed;
-    private bool isSprinting = false;
+    [SerializeField] private float sprintTime;
+    private float currentSprintTime;
+
+    public bool isSprinting = false;
     [SerializeField] private float jumpForce;
     private bool isGrounded;
     public LayerMask groundLayer;
@@ -17,6 +20,11 @@ public class Movement : MonoBehaviour
     private Vector2 movementInput;
     private Rigidbody rb;
 
+    //-------------------
+    //       TODO
+    // -sprint recovery
+    //
+    //-------------------
     public void Dl<T>(T var)
     {
         Debug.Log(var);
@@ -24,61 +32,92 @@ public class Movement : MonoBehaviour
 
     void Start()
     {
-        input.MoveEvent += Input_MoveEvent;
-        input.JumpEvent += Input_JumpEvent;
-        input.SprintEvent += Input_SprintEvent;
+        input.MoveEvent += OnMoveInput;
+        input.JumpEvent += OnJumpInput;
+        input.SprintEvent += OnSprintInput;
 
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
-    }
 
-    private void Input_JumpEvent()
-    {
-        Jump();
-    }
-
-    private void Input_MoveEvent(Vector2 obj)
-    {
-        movementInput = obj;
-    }
-    private void Input_SprintEvent()
-    {
-        isSprinting = !isSprinting;
+        currentSprintTime = sprintTime;
     }
 
     void FixedUpdate()
     {
         Move();
+        GroundCheck();
+    }
 
-        Debug.DrawRay(rb.position, Vector3.down, Color.yellow, rayLength);
-        Dl("Sprint: " + isSprinting);
+    private void OnMoveInput(Vector2 input)
+    {
+        movementInput = input;
+    }
+
+    private void OnJumpInput()
+    {
+        if (isGrounded)
+        {
+            Jump();
+        }
+    }
+
+    private void OnSprintInput()
+    {
+        isSprinting = !isSprinting;
     }
 
     private void Move()
     {
+        float moveSpeed = isSprinting ? sprintSpeed : speed;
+        Vector3 movement = GetMovementInfo(moveSpeed);
+
+        rb.MovePosition(rb.position + movement);
+
+        if (isSprinting)
+        {
+            SprintTimer();
+        } 
+        else if (currentSprintTime < sprintTime && !isSprinting) 
+        {
+            SprintRecovery();
+        }
+    }
+
+    private Vector3 GetMovementInfo(float moveSpeed)
+    {
         Vector3 forwardMovement = transform.forward * -movementInput.x;
         Vector3 rightMovement = transform.right * movementInput.y;
-        Vector3 movement;
+        return (forwardMovement + rightMovement).normalized * moveSpeed * Time.fixedDeltaTime;
+    }
 
-        if(!isSprinting)
+    private void SprintTimer()
+    {
+        if (currentSprintTime > 0)
         {
-            movement = (forwardMovement + rightMovement).normalized * speed * Time.fixedDeltaTime;
+            currentSprintTime -= Time.deltaTime;
+            Dl("Sprint time: " + currentSprintTime);
         }
         else
         {
-            movement = (forwardMovement + rightMovement).normalized * sprintSpeed * Time.fixedDeltaTime;
+            isSprinting = false;
+            currentSprintTime = sprintTime;
         }
+    }
 
-        rb.MovePosition(rb.position + movement);
+    private void SprintRecovery()
+    {
+        currentSprintTime += Time.deltaTime;
     }
 
     private void Jump()
     {
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+
+    private void GroundCheck()
+    {
         isGrounded = Physics.Raycast(rb.position, Vector3.down, rayLength, groundLayer);
-        if (isGrounded)
-        {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
+        Debug.DrawRay(rb.position, Vector3.down * rayLength, Color.yellow);
     }
 }
