@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
         mouseMove = obj;
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         Look();
     }

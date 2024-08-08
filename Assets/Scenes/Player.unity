@@ -285,7 +285,7 @@ Transform:
   m_GameObject: {fileID: 530506281}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710665, z: -0, w: 0.70710695}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.031, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -314,7 +314,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -374,9 +374,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
-  field of view: 60
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -880,7 +880,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 0}
+  sharedProfile: {fileID: 11400000, guid: 30455813a37c3904ea75740aa01a4060, type: 2}
 --- !u!1 &1387851195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1275,7 +1275,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2028090226}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 88
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -1291,7 +1291,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 64
   m_CollisionDetection: 0
 --- !u!114 &2028090232
@@ -1307,11 +1307,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
-  speed: 15
-  jumpForce: 100
+  speed: 10
+  jumpForce: 170
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  rayLength: 4
 --- !u!114 &2028090233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1327,7 +1328,7 @@ MonoBehaviour:
   playerCam: {fileID: 530506282}
   playerBody: {fileID: 2028090227}
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
-  mouseSensitivity: 50
+  mouseSensitivity: 15
 --- !u!1 &2111500578
 GameObject:
   m_ObjectHideFlags: 0

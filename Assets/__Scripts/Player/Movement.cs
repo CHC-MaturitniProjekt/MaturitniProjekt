@@ -10,7 +10,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float jumpForce;
     private bool isGrounded;
     public LayerMask groundLayer;
-    private float rayLength = 0.1f;
+    [SerializeField] private float rayLength = 4f;
 
     private Vector2 movementInput;
     private Rigidbody rb;
@@ -43,6 +43,8 @@ public class Movement : MonoBehaviour
     void FixedUpdate()
     {
         Move();
+
+        Debug.DrawRay(rb.position, Vector3.down, Color.yellow, rayLength);
     }
 
     private void Move()
