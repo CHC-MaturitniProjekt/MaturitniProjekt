@@ -13,9 +13,9 @@ public class Movement : MonoBehaviour
 
     public bool isSprinting = false;
     [SerializeField] private float jumpForce;
+    private bool isJumping = false;
     private bool isGrounded;
     public LayerMask groundLayer;
-    [SerializeField] private float rayLength = 4f;
 
     private Vector2 movementInput;
     private Rigidbody rb;
@@ -23,8 +23,11 @@ public class Movement : MonoBehaviour
     //-------------------
     //       TODO
     // -sprint recovery
+    // -fix sprint probiha i kdyz hrac nebezi
+    // -po dokonceni sprintu se zpusti znova
     //
     //-------------------
+
     public void Dl<T>(T var)
     {
         Debug.Log(var);
@@ -47,6 +50,10 @@ public class Movement : MonoBehaviour
     {
         Move();
         GroundCheck();
+        Dl("Sprint time: " + currentSprintTime);
+
+        SetMovementStates();
+        //Dl(PlayerManager.Instance.CurrentState);
     }
 
     private void OnMoveInput(Vector2 input)
@@ -64,7 +71,14 @@ public class Movement : MonoBehaviour
 
     private void OnSprintInput()
     {
-        isSprinting = !isSprinting;
+        if (movementInput != Vector2.zero && currentSprintTime > 0)
+        {
+            isSprinting = true;
+        }
+        else
+        {
+            isSprinting = false;
+        }
     }
 
     private void Move()
@@ -77,8 +91,8 @@ public class Movement : MonoBehaviour
         if (isSprinting)
         {
             SprintTimer();
-        } 
-        else if (currentSprintTime < sprintTime && !isSprinting) 
+        }
+        else if (currentSprintTime < sprintTime && !isSprinting)
         {
             SprintRecovery();
         }
@@ -96,28 +110,62 @@ public class Movement : MonoBehaviour
         if (currentSprintTime > 0)
         {
             currentSprintTime -= Time.deltaTime;
-            Dl("Sprint time: " + currentSprintTime);
         }
         else
         {
             isSprinting = false;
-            currentSprintTime = sprintTime;
+            currentSprintTime = 0;
         }
     }
 
     private void SprintRecovery()
     {
-        currentSprintTime += Time.deltaTime;
+        float recoveryRate = 1f;
+
+        if (currentSprintTime < sprintTime)
+        {
+            currentSprintTime += recoveryRate * Time.deltaTime;
+        }
+
     }
 
     private void Jump()
     {
+        isJumping = true;
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
     private void GroundCheck()
     {
-        isGrounded = Physics.Raycast(rb.position, Vector3.down, rayLength, groundLayer);
-        Debug.DrawRay(rb.position, Vector3.down * rayLength, Color.yellow);
+        bool wasGrounded = isGrounded;
+        isGrounded = Physics.Raycast(rb.position, Vector3.down, 1.05f, groundLayer);
+
+        if (isGrounded && !wasGrounded)
+        {
+            isJumping = false;
+        }
+    }
+
+    private void SetMovementStates()
+    {
+        if (isJumping)
+        {
+            PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Jumping);
+        }
+        else if (isGrounded)
+        {
+            if (movementInput == Vector2.zero)
+            {
+                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Idle);
+            }
+            else if (isSprinting)
+            {
+                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Running);
+            }
+            else
+            {
+                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Walking);
+            }
+        }
     }
 }

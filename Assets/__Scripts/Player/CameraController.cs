@@ -27,6 +27,7 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //Debug.Log(PlayerManager.Instance.CurrentState);
         Look();
     }
 
@@ -44,12 +45,17 @@ public class CameraController : MonoBehaviour
 
     public void FovChange(bool isSprinting)
     {
-        if (isSprinting)
+        switch (isSprinting)
         {
-            cam.fieldOfView = fov + fovIncrease;
-        } else
-        {
-            cam.fieldOfView = fov;
+            case true:
+                cam.fieldOfView = fov + fovIncrease;
+                break;
+            case false:
+                cam.fieldOfView = fov;
+                break;
+            default:
+                break;
         }
+            
     }
 }
