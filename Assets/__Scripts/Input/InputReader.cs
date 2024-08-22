@@ -58,20 +58,17 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
         LookEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
-    public event Action SprintEvent;
+    public event Action SprintStart;
+    public event Action SprintEnd;
     public void OnSprint(InputAction.CallbackContext context)
     {
         if (context.started)
         {
-            SprintEvent?.Invoke();
+            SprintStart?.Invoke();
         }
-        else if (context.canceled)
+        if (context.canceled)
         {
-            SprintEvent?.Invoke();
+            SprintEnd?.Invoke();
         }
-    }
-    public bool IsSprintHeld(InputAction.CallbackContext context)
-    {
-        return context.ReadValueAsButton();
     }
 }
