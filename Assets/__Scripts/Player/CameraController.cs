@@ -60,18 +60,21 @@ public class CameraController : MonoBehaviour
 
     public void FovChange()
     {
+        float targetFov;
+
         switch (PlayerManager.Instance.CurrentState)
         {
             case PlayerManager.MovementState.Running:
-                cam.fieldOfView = fov + runFovIncrease;
+                targetFov = fov + runFovIncrease;
                 break;
             case PlayerManager.MovementState.Jumping:
-                cam.fieldOfView = fov + jumpFovIncrease;
+                targetFov = fov + jumpFovIncrease;
                 break;
             default:
-                cam.fieldOfView = fov;
+                targetFov = fov;
                 break;
         }
+        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFov, Time.deltaTime * 3);
     }
 
     public void HeadBob()
@@ -99,5 +102,13 @@ public class CameraController : MonoBehaviour
         float waveslice = Mathf.Sin(timer);
         cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * bobbingAmount, 0);
         
+    }
+
+    public void Exhaust()
+    {
+        if(PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Running)
+        {
+            //
+        }
     }
 }

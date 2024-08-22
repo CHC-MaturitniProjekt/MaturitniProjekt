@@ -44,8 +44,6 @@ public class Movement : MonoBehaviour
     {
         Move();
         GroundCheck();
-        //Dl("Sprint time: " + currentSprintTime);
-
         SetMovementStates();
     }
 
@@ -78,9 +76,9 @@ public class Movement : MonoBehaviour
     private void Move()
     {
         float moveSpeed = isSprinting ? sprintSpeed : speed;
-        Vector3 movement = GetMovementInfo(moveSpeed);
+        Vector3 movement = GetMovementInfo(moveSpeed * 10);
 
-        rb.MovePosition(rb.position + movement);
+        rb.AddForce(movement, ForceMode.VelocityChange);
 
         if (isSprinting)
         {
