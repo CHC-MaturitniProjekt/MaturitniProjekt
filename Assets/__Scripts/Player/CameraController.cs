@@ -43,7 +43,6 @@ public class CameraController : MonoBehaviour
 
         Look();
         HeadBob();
-
     }
 
     private void Look()
