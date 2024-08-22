@@ -44,10 +44,9 @@ public class Movement : MonoBehaviour
     {
         Move();
         GroundCheck();
-        Dl("Sprint time: " + currentSprintTime);
+        //Dl("Sprint time: " + currentSprintTime);
 
         SetMovementStates();
-        //Dl(PlayerManager.Instance.CurrentState);
     }
 
     private void OnMoveInput(Vector2 input)

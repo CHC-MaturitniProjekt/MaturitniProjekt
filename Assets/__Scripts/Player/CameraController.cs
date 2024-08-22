@@ -7,7 +7,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private InputReader input;
     [SerializeField] private float fov;
-    [SerializeField] private float fovIncrease;
+    [SerializeField] private float runFovIncrease;
+    [SerializeField] private float jumpFovIncrease;
     [SerializeField] private float mouseSensitivity = 100f;
 
     private float xRotation = 0f;
@@ -27,7 +28,9 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //Debug.Log(PlayerManager.Instance.CurrentState);
+        Debug.Log(PlayerManager.Instance.CurrentState);
+        FovChange();
+
         Look();
     }
 
@@ -43,19 +46,24 @@ public class CameraController : MonoBehaviour
         playerBody.Rotate(Vector3.up * mouseX);
     }
 
-    public void FovChange(bool isSprinting)
+    public void FovChange()
     {
-        switch (isSprinting)
+        switch (PlayerManager.Instance.CurrentState)
         {
-            case true:
-                cam.fieldOfView = fov + fovIncrease;
+            case PlayerManager.MovementState.Running:
+                cam.fieldOfView = fov + runFovIncrease;
                 break;
-            case false:
-                cam.fieldOfView = fov;
+            case PlayerManager.MovementState.Jumping:
+                cam.fieldOfView = fov + jumpFovIncrease;
                 break;
             default:
+                cam.fieldOfView = fov;
                 break;
         }
-            
+    }
+
+    public void HeadBob()
+    {
+
     }
 }

@@ -783,7 +783,7 @@ GameObject:
   - component: {fileID: 1320984568}
   - component: {fileID: 1320984567}
   - component: {fileID: 1320984566}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1378,7 +1378,8 @@ MonoBehaviour:
   cam: {fileID: 530506285}
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
   fov: 90
-  fovIncrease: 5
+  runFovIncrease: 5
+  jumpFovIncrease: 10
   mouseSensitivity: 15
 --- !u!1 &2111500578
 GameObject:

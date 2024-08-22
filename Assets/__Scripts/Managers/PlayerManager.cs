@@ -32,22 +32,6 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        _movement = FindObjectOfType<Movement>();
-        _camera = FindObjectOfType<CameraController>();
-    }
-
-    void Update()
-    {
-        FovChange();
-    }
-
-    private void FovChange()
-    {
-        _camera.FovChange(_movement.isSprinting);
-    }
-
     public void SetMovementState(MovementState newState)
     {
         CurrentState = newState;
