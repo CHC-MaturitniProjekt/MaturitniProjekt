@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     private float currentSprintTime;
 
     public bool isSprinting = false;
+    [SerializeField] private float sprintRecoveryTime;
     [SerializeField] private float jumpForce;
     private bool isJumping = false;
     private bool isGrounded;
@@ -19,14 +20,6 @@ public class Movement : MonoBehaviour
 
     private Vector2 movementInput;
     private Rigidbody rb;
-
-    //-------------------
-    //       TODO
-    // -sprint recovery
-    // -fix sprint probiha i kdyz hrac nebezi
-    // -po dokonceni sprintu se zpusti znova
-    //
-    //-------------------
 
     public void Dl<T>(T var)
     {
@@ -37,7 +30,8 @@ public class Movement : MonoBehaviour
     {
         input.MoveEvent += OnMoveInput;
         input.JumpEvent += OnJumpInput;
-        input.SprintEvent += OnSprintInput;
+        input.SprintStart += OnSprintInput;
+        input.SprintEnd += OnSprintEnd;
 
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
@@ -75,10 +69,11 @@ public class Movement : MonoBehaviour
         {
             isSprinting = true;
         }
-        else
-        {
-            isSprinting = false;
-        }
+    }
+
+    private void OnSprintEnd()
+    {
+        isSprinting = false;
     }
 
     private void Move()
@@ -120,11 +115,9 @@ public class Movement : MonoBehaviour
 
     private void SprintRecovery()
     {
-        float recoveryRate = 1f;
-
         if (currentSprintTime < sprintTime)
         {
-            currentSprintTime += recoveryRate * Time.deltaTime;
+            currentSprintTime += sprintRecoveryTime * Time.deltaTime;
         }
 
     }

@@ -1357,6 +1357,7 @@ MonoBehaviour:
   sprintSpeed: 18
   sprintTime: 5
   isSprinting: 0
+  sprintRecoveryTime: 2
   jumpForce: 170
   groundLayer:
     serializedVersion: 2
@@ -1377,7 +1378,7 @@ MonoBehaviour:
   cam: {fileID: 530506285}
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
   fov: 90
-  fovIncrease: 15
+  fovIncrease: 5
   mouseSensitivity: 15
 --- !u!1 &2111500578
 GameObject:
