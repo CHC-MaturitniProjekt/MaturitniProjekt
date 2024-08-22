@@ -11,8 +11,18 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float jumpFovIncrease;
     [SerializeField] private float mouseSensitivity = 100f;
 
+    [Header("Head Bob Settings")]
+    [SerializeField] private float walkSpeed = 0.18f;
+    [SerializeField] private float walkAmount = 0.2f;
+    [SerializeField] private float runSpeed = 0.25f;
+    [SerializeField] private float runAmount = 0.3f;
+    [SerializeField] private float idleSpeed = 0.05f;
+    [SerializeField] private float idleAmount = 0.05f;
+
     private float xRotation = 0f;
     private Vector2 mouseMove = Vector2.zero;
+    private float timer = 0.0f;
+    private Vector3 initialCameraPosition;
 
     private void Start()
     {
@@ -32,6 +42,8 @@ public class CameraController : MonoBehaviour
         FovChange();
 
         Look();
+        HeadBob();
+
     }
 
     private void Look()
@@ -64,6 +76,28 @@ public class CameraController : MonoBehaviour
 
     public void HeadBob()
     {
+        float bobbingSpeed;
+        float bobbingAmount;
 
+        switch (PlayerManager.Instance.CurrentState)
+        {
+            case PlayerManager.MovementState.Running:
+                bobbingSpeed = runSpeed;
+                bobbingAmount = runAmount;
+                break;
+            case PlayerManager.MovementState.Walking:
+                bobbingSpeed = walkSpeed;
+                bobbingAmount = walkAmount;
+                break;
+            default:
+                bobbingSpeed = idleSpeed;
+                bobbingAmount = idleAmount;
+                break;
+        }
+
+        timer += Time.deltaTime * bobbingSpeed * 10;
+        float waveslice = Mathf.Sin(timer);
+        cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * bobbingAmount, 0);
+        
     }
 }
