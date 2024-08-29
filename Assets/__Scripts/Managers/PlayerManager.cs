@@ -5,8 +5,6 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
-    private Movement _movement;
-    private CameraController _camera;
 
     public enum MovementState
     {
@@ -14,7 +12,8 @@ public class PlayerManager : MonoBehaviour
         Walking,
         Running,
         Crouching,
-        Jumping
+        Jumping,
+        CrouchRun
     }
 
     public MovementState CurrentState { get; private set; }

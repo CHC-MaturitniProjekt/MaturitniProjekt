@@ -8,6 +8,7 @@ public class Movement : MonoBehaviour
 
     [SerializeField] private float speed;
     [SerializeField] private float sprintSpeed;
+    [SerializeField] private float crouchSpeed;
     [SerializeField] private float sprintTime;
     private float currentSprintTime;
 
@@ -17,6 +18,7 @@ public class Movement : MonoBehaviour
     private bool isJumping = false;
     private bool isGrounded;
     public LayerMask groundLayer;
+    private bool isCrouched;
 
     private Vector2 movementInput;
     private Rigidbody rb;
@@ -32,12 +34,18 @@ public class Movement : MonoBehaviour
         input.JumpEvent += OnJumpInput;
         input.SprintStart += OnSprintInput;
         input.SprintEnd += OnSprintEnd;
+        input.CrouchEvent += OnCrouchInput;
 
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         currentSprintTime = sprintTime;
+    }
+
+    private void OnCrouchInput()
+    {
+        Crouch();
     }
 
     void FixedUpdate()
@@ -75,7 +83,18 @@ public class Movement : MonoBehaviour
 
     private void Move()
     {
-        float moveSpeed = isSprinting ? sprintSpeed : speed;
+        //float moveSpeed = isSprinting ? sprintSpeed : speed;
+        float moveSpeed;
+        if (isSprinting && !isCrouched) {
+            moveSpeed = sprintSpeed;
+        } else if (isCrouched && !isSprinting) {
+            moveSpeed = crouchSpeed;
+        } else if (isCrouched && isSprinting) {
+            moveSpeed = (crouchSpeed + sprintSpeed) / 2;
+        } else {
+            moveSpeed = speed;
+        }
+        
         Vector3 movement = GetMovementInfo(moveSpeed * 10);
 
         rb.AddForce(movement, ForceMode.VelocityChange);
@@ -125,6 +144,12 @@ public class Movement : MonoBehaviour
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
+    private void Crouch()
+    {
+        isCrouched = !isCrouched;
+        Debug.Log("crouched: " + isCrouched);
+    }
+
     private void GroundCheck()
     {
         bool wasGrounded = isGrounded;
@@ -148,9 +173,17 @@ public class Movement : MonoBehaviour
             {
                 PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Idle);
             }
-            else if (isSprinting)
+            else if (isSprinting && !isCrouched)
             {
                 PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Running);
+            }
+            else if (isCrouched && !isSprinting)
+            {
+                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Crouching);
+            }
+            else if (isCrouched && isSprinting)
+            {
+                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.CrouchRun);
             }
             else
             {

@@ -9,15 +9,19 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float fov;
     [SerializeField] private float runFovIncrease;
     [SerializeField] private float jumpFovIncrease;
+    [SerializeField] private float crouchFovIncrease;
     [SerializeField] private float mouseSensitivity = 100f;
+    [SerializeField] private float crouchHeight;
 
     [Header("Head Bob Settings")]
-    [SerializeField] private float walkSpeed = 0.18f;
-    [SerializeField] private float walkAmount = 0.2f;
-    [SerializeField] private float runSpeed = 0.25f;
-    [SerializeField] private float runAmount = 0.3f;
-    [SerializeField] private float idleSpeed = 0.05f;
-    [SerializeField] private float idleAmount = 0.05f;
+    [SerializeField] private float walkSpeed;
+    [SerializeField] private float walkAmount;
+    [SerializeField] private float runSpeed;
+    [SerializeField] private float runAmount;
+    [SerializeField] private float idleSpeed;
+    [SerializeField] private float idleAmount;
+    [SerializeField] private float crouchSpeed;
+    [SerializeField] private float crouchAmount;
 
     private float xRotation = 0f;
     private Vector2 mouseMove = Vector2.zero;
@@ -38,11 +42,13 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log(PlayerManager.Instance.CurrentState);
+        //Debug.Log(PlayerManager.Instance.CurrentState);
         FovChange();
 
         Look();
         HeadBob();
+
+        Crouch();
     }
 
     private void Look()
@@ -69,6 +75,12 @@ public class CameraController : MonoBehaviour
             case PlayerManager.MovementState.Jumping:
                 targetFov = fov + jumpFovIncrease;
                 break;
+            case PlayerManager.MovementState.Crouching:
+                targetFov = fov + crouchFovIncrease;
+                break;
+            case PlayerManager.MovementState.CrouchRun:
+                targetFov = fov + (crouchFovIncrease + runFovIncrease) / 2;
+                break;
             default:
                 targetFov = fov;
                 break;
@@ -91,6 +103,14 @@ public class CameraController : MonoBehaviour
                 bobbingSpeed = walkSpeed;
                 bobbingAmount = walkAmount;
                 break;
+            case PlayerManager.MovementState.Crouching:
+                bobbingSpeed = crouchSpeed;
+                bobbingAmount = crouchAmount;
+                break;
+            case PlayerManager.MovementState.CrouchRun:
+                bobbingSpeed = (crouchSpeed + runSpeed) / 2;
+                bobbingAmount = (crouchAmount + runAmount) / 2;
+                break;
             default:
                 bobbingSpeed = idleSpeed;
                 bobbingAmount = idleAmount;
@@ -100,6 +120,17 @@ public class CameraController : MonoBehaviour
         timer += Time.deltaTime * bobbingSpeed * 10;
         float waveslice = Mathf.Sin(timer);
         cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * bobbingAmount, 0);
+        
+    }
+
+    private void Crouch()
+    {
+        if (PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Crouching)
+        {
+            cam.transform.localPosition += new Vector3(0, crouchHeight, 0);
+        } else {
+            cam.transform.localPosition += initialCameraPosition;
+        }
         
     }
 

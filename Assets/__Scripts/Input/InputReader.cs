@@ -71,4 +71,9 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
             SprintEnd?.Invoke();
         }
     }
+    public event Action CrouchEvent;
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        CrouchEvent?.Invoke();
+    }
 }

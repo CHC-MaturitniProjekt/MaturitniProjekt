@@ -80,6 +80,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""crouch"",
+                    ""type"": ""Value"",
+                    ""id"": ""509aea94-d54c-4c76-8c28-4da0d35216d7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -228,6 +237,28 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""3b1f327b-636d-476f-ba89-84467d6120db"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b6daa22b-93f8-4955-ba7f-523771d81329"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""d440c001-10f8-4bb4-8eb9-ef0faf2bed0d"",
                     ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
@@ -261,6 +292,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Main_jump = m_Main.FindAction("jump", throwIfNotFound: true);
         m_Main_look = m_Main.FindAction("look", throwIfNotFound: true);
         m_Main_sprint = m_Main.FindAction("sprint", throwIfNotFound: true);
+        m_Main_crouch = m_Main.FindAction("crouch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -328,6 +360,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_jump;
     private readonly InputAction m_Main_look;
     private readonly InputAction m_Main_sprint;
+    private readonly InputAction m_Main_crouch;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
@@ -338,6 +371,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @jump => m_Wrapper.m_Main_jump;
         public InputAction @look => m_Wrapper.m_Main_look;
         public InputAction @sprint => m_Wrapper.m_Main_sprint;
+        public InputAction @crouch => m_Wrapper.m_Main_crouch;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -365,6 +399,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @sprint.started += instance.OnSprint;
             @sprint.performed += instance.OnSprint;
             @sprint.canceled += instance.OnSprint;
+            @crouch.started += instance.OnCrouch;
+            @crouch.performed += instance.OnCrouch;
+            @crouch.canceled += instance.OnCrouch;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -387,6 +424,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @sprint.started -= instance.OnSprint;
             @sprint.performed -= instance.OnSprint;
             @sprint.canceled -= instance.OnSprint;
+            @crouch.started -= instance.OnCrouch;
+            @crouch.performed -= instance.OnCrouch;
+            @crouch.canceled -= instance.OnCrouch;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -412,5 +452,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
     }
 }
