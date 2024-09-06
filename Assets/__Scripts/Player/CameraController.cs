@@ -42,7 +42,6 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //Debug.Log(PlayerManager.Instance.CurrentState);
         FovChange();
 
         Look();
@@ -125,10 +124,12 @@ public class CameraController : MonoBehaviour
 
     private void Crouch()
     {
-        if (PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Crouching)
+        if (PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Crouching || PlayerManager.Instance.CurrentState == PlayerManager.MovementState.CrouchRun)
         {
             cam.transform.localPosition += new Vector3(0, crouchHeight, 0);
-        } else {
+        } 
+        else
+        {
             cam.transform.localPosition += initialCameraPosition;
         }
         

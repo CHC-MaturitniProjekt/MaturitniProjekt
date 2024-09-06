@@ -147,7 +147,6 @@ public class Movement : MonoBehaviour
     private void Crouch()
     {
         isCrouched = !isCrouched;
-        Debug.Log("crouched: " + isCrouched);
     }
 
     private void GroundCheck()
@@ -166,29 +165,22 @@ public class Movement : MonoBehaviour
         if (isJumping)
         {
             PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Jumping);
+            return;
         }
-        else if (isGrounded)
+
+        if (!isGrounded) return;
+
+        if (movementInput == Vector2.zero)
         {
-            if (movementInput == Vector2.zero)
-            {
-                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Idle);
-            }
-            else if (isSprinting && !isCrouched)
-            {
-                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Running);
-            }
-            else if (isCrouched && !isSprinting)
-            {
-                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Crouching);
-            }
-            else if (isCrouched && isSprinting)
-            {
-                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.CrouchRun);
-            }
-            else
-            {
-                PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Walking);
-            }
+            PlayerManager.Instance.SetMovementState(!isCrouched ? PlayerManager.MovementState.Idle : PlayerManager.MovementState.Crouching);
+        }
+        else if (isCrouched)
+        {
+            PlayerManager.Instance.SetMovementState(isSprinting ? PlayerManager.MovementState.CrouchRun : PlayerManager.MovementState.Crouching);
+        }
+        else
+        {
+            PlayerManager.Instance.SetMovementState(isSprinting ? PlayerManager.MovementState.Running : PlayerManager.MovementState.Walking);
         }
     }
 }
