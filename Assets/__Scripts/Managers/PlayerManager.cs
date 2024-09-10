@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
+    private float playerSprintTime;
 
     public enum MovementState
     {
@@ -34,5 +35,15 @@ public class PlayerManager : MonoBehaviour
     public void SetMovementState(MovementState newState)
     {
         CurrentState = newState;
+    }
+
+    public void SetPlayerSprintTime(float sprintTime)
+    {
+        playerSprintTime = sprintTime;
+    }
+
+    public float GetPlayerSprintTime()
+    {
+        return playerSprintTime;
     }
 }

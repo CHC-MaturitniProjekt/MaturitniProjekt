@@ -83,7 +83,6 @@ public class Movement : MonoBehaviour
 
     private void Move()
     {
-        //float moveSpeed = isSprinting ? sprintSpeed : speed;
         float moveSpeed;
         if (isSprinting && !isCrouched) {
             moveSpeed = sprintSpeed;
@@ -121,6 +120,7 @@ public class Movement : MonoBehaviour
         if (currentSprintTime > 0)
         {
             currentSprintTime -= Time.deltaTime;
+            PlayerManager.Instance.SetPlayerSprintTime(currentSprintTime);
         }
         else
         {
