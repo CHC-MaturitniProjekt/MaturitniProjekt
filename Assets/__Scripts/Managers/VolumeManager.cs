@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -23,7 +21,7 @@ public class VolumeManager : MonoBehaviour
 
     private void Update()
     {
-        if (PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Running)
+        if (PlayerManager.Instance.GetPlayerSprintTime() <= maxSprintTime)
         {
             UpdateVignetteEffect();
         }
@@ -33,7 +31,6 @@ public class VolumeManager : MonoBehaviour
     {
         float sprintTime = PlayerManager.Instance.GetPlayerSprintTime();
         float sprintRatio = Mathf.Clamp01(sprintTime / maxSprintTime);
-        vignette.intensity.value = Mathf.Lerp(0.35f, 0.01f, sprintRatio);
-
+        vignette.intensity.value = Mathf.Lerp(0.35f, 0.05f, sprintRatio);
     }
 }
