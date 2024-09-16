@@ -76,4 +76,28 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
     {
         CrouchEvent?.Invoke();
     }
+
+    public event Action CamModeEvent;
+    public void OnCamMode(InputAction.CallbackContext context)
+    {
+        CamModeEvent?.Invoke();
+    }
+
+    public event Action CamIndexIncrement;
+    public void OnCamIndexIncrement(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            CamIndexIncrement.Invoke();
+        }
+    }
+
+    public event Action CamIndexDecrement;
+    public void OnCamIndexDecrement(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Performed)
+        {
+            CamIndexDecrement.Invoke();
+        }
+    }
 }
