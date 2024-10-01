@@ -10,9 +10,12 @@ public class PickUp : MonoBehaviour
     [SerializeField] private Transform itemHolster;
     [SerializeField] private float itemScale = 0.5f;
     [SerializeField] private float throwForce = 8f;
+    [SerializeField] private int itemCount = 3;
 
     private bool isHoldingItem = false;
     private GameObject currentItem;
+    private int itemIndex;
+    private GameObject[] items;
 
     void Start()
     {
@@ -55,6 +58,11 @@ public class PickUp : MonoBehaviour
         {
             collider.enabled = false;
         }
+    }
+
+    private void SwitchItem()
+    {
+        //todo - pridat lool
     }
 
     public void DropItem(GameObject item)
