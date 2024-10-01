@@ -94,6 +94,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "drop",
+                    "type": "Button",
+                    "id": "f6f600be-dfd7-4378-973d-9c388712a90c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -314,6 +323,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "camIndexDecrement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e23a825-372e-40b1-bb37-7b54711064c7",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "drop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

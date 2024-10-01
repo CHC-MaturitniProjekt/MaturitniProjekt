@@ -42,8 +42,10 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
     public event Action InteractEvent;
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.phase == InputActionPhase.Performed)
+        {
             InteractEvent?.Invoke();
+        }
     }
 
     public event Action JumpEvent;
@@ -98,6 +100,15 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
         if(context.phase == InputActionPhase.Performed)
         {
             CamIndexDecrement.Invoke();
+        }
+    }
+
+    public event Action DropEvent;
+    public void OnDrop(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            DropEvent?.Invoke();
         }
     }
 }

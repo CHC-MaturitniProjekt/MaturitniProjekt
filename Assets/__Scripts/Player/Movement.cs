@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float sprintTime;
     private float currentSprintTime;
 
-    public bool isSprinting = false;
+    private bool isSprinting = false;
     [SerializeField] private float sprintRecoveryTime;
     [SerializeField] private float jumpForce;
     private bool isJumping = false;
