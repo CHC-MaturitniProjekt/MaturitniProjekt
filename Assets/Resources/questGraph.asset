@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35459f3a87f18d4499c25b2dc1250006, type: 3}
+  m_Name: questGraph
+  m_EditorClassIdentifier: 
+  nodeLinks:
+  - baseNodeGUID: dac13b07-dee2-4bcf-b784-baf5f8d80333
+    portName: Next
+    targetNodeGUID: 37d3c762-682c-40ff-ae85-64653eb208e7
+  - baseNodeGUID: 37d3c762-682c-40ff-ae85-64653eb208e7
+    portName: Choice 1
+    targetNodeGUID: 4e6fc6f9-9f53-4a35-9352-9d8dcc62d43b
+  - baseNodeGUID: 4e6fc6f9-9f53-4a35-9352-9d8dcc62d43b
+    portName: dulezity gay sex
+    targetNodeGUID: d80a3384-c1a8-41a8-9eb1-8bf73a58bdc9
+  questNodeData:
+  - GUID: 37d3c762-682c-40ff-ae85-64653eb208e7
+    QuestName: 
+    QuestDescription: 
+    Position: {x: 200.66667, y: 100}
+  - GUID: d80a3384-c1a8-41a8-9eb1-8bf73a58bdc9
+    QuestName: 
+    QuestDescription: Quest Node
+    Position: {x: 796, y: 363.3333}
+  - GUID: 4e6fc6f9-9f53-4a35-9352-9d8dcc62d43b
+    QuestName: 
+    QuestDescription: 
+    Position: {x: 414.66666, y: 127.333336}
