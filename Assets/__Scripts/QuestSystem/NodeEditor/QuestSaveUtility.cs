@@ -64,7 +64,6 @@ public class GraphSaveUtility
     public void LoadGraph()
     {
 
-        Debug.Log("debug test");
         _containerCache = Resources.Load<QuestContainer>("questGraph");
         if (_containerCache == null)
         {
@@ -124,6 +123,7 @@ public class GraphSaveUtility
 
     private void ClearGraph()
     {
+        if (Nodes.Count > 0) return;
         Nodes.Find(x => x.EntryPoint).GUID = _containerCache.nodeLinks[0].baseNodeGUID;
 
         foreach (var node in Nodes)

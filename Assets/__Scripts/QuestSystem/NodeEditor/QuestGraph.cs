@@ -42,16 +42,39 @@ public class QuestGraph : EditorWindow
     {
         var toolbar = new Toolbar();
 
-        var nodeCreateButton = new Button(() =>
+        var createNodeButton = new Button(() =>
         {
-            questGraphView.CreateNode("Quest Node");
-        });
-        nodeCreateButton.text = "Create Node";
-        toolbar.Add(nodeCreateButton);
-
-        toolbar.Add(new Button(() => SaveData()) { text = "Save data"});
+            ShowNodeCreationDropdown();
+        })
+        {
+            text = "Create Node"
+        };
+        toolbar.Add(createNodeButton);
+        toolbar.Add(new Button(() => SaveData()) { text = "Save data" });
 
         rootVisualElement.Add(toolbar);
+    }
+
+    private void ShowNodeCreationDropdown()
+    {
+        var dropdownMenu = new GenericMenu();
+
+        dropdownMenu.AddItem(new GUIContent("Quest Node"), false, () =>
+        {
+            questGraphView.CreateNode(QuestNode.NodeTypes.MainQuestNode);
+        });
+
+        dropdownMenu.AddItem(new GUIContent("Objective Node"), false, () =>
+        {
+            questGraphView.CreateNode(QuestNode.NodeTypes.ObjectiveNode);
+        });
+
+        dropdownMenu.AddItem(new GUIContent("Reward Node"), false, () =>
+        {
+            questGraphView.CreateNode(QuestNode.NodeTypes.RewardNode);
+        });
+
+        dropdownMenu.ShowAsContext();
     }
 
     private void SaveData()
@@ -68,10 +91,6 @@ public class QuestGraph : EditorWindow
 
     private void LoadGraph()
     {
-        /*if (string.IsNullOrEmpty(name))
-        {
-            EditorUtility.DisplayDialog("Error", "Error: File missing", "ok");
-        }*/
         Debug.Log("loading");
         var saveUtility = GraphSaveUtility.GetInstance(questGraphView);
         saveUtility.LoadGraph();

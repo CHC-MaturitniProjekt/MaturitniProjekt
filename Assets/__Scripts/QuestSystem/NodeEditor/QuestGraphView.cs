@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
 using UnityEditor.Experimental.GraphView;
@@ -11,7 +12,7 @@ using Label = UnityEngine.UIElements.Label;
 public class QuestGraphView : GraphView
 {
     public readonly Vector2 defNodeSize = new Vector2(150, 200);
-    private readonly Vector2 defNodePosition = new Vector2(150, 150);
+    private readonly Vector2 defNodePosition = new Vector2(350, 350);
 
    public QuestGraphView()
     {
@@ -74,9 +75,50 @@ public class QuestGraphView : GraphView
     }
 
 
-    public void CreateNode(string nodeName)
+    public void CreateNode(QuestNode.NodeTypes nodeType)
     {
-        AddElement(CreateQuestNode(nodeName));
+        QuestNode node;
+
+        switch (nodeType)
+        {
+            case QuestNode.NodeTypes.MainQuestNode:
+                node = new MainQuestNode
+                {
+                    title = "Quest Node",
+                    QuestName = "New Quest",
+                    QuestDescription = "Describe the quest here"
+                };
+                break;
+
+            case QuestNode.NodeTypes.ObjectiveNode:
+                node = new ObjectiveNode
+                {
+                    title = "Objective Node",
+                    ObjectiveDescription = "Describe the objective here",
+                    ObjectiveType = "Fetch"
+                };
+                break;
+
+            case QuestNode.NodeTypes.RewardNode:
+                node = new RewardNode
+                {
+                    title = "Reward Node",
+                    RewardType = "XP",
+                    RewardValue = 100
+                };
+                break;
+
+            default:
+                Debug.LogError($"Unknown node type: {nodeType}");
+                return;
+        }
+
+        node.DrawNode();
+        node.style.backgroundColor = UnityEngine.Color.black;
+
+        node.GUID = Guid.NewGuid().ToString();
+        node.SetPosition(new Rect(Vector2.zero, new Vector2(500, 450)));
+        AddElement(node);
     }
 
 
@@ -85,30 +127,20 @@ public class QuestGraphView : GraphView
         var questNode = new QuestNode
         {
             title = nodeName,
-            QuestDescription = nodeName,
+            QuestName = nodeName,
+            QuestDescription = "Default quest description",
             GUID = Guid.NewGuid().ToString()
-
         };
 
-        var inputPort = GeneratePort(questNode, Direction.Input, Port.Capacity.Multi);
-        inputPort.portName = "Input";
-        questNode.inputContainer.Add(inputPort);
-
-        var btn = new Button(() =>
-        {
-            AddChoicePort(questNode);
-        });
-        btn.text = "New choice";
-        questNode.titleContainer.Add(btn);
-
-        questNode.RefreshExpandedState();
-        questNode.RefreshPorts();
+        questNode.DrawNode();
 
         questNode.SetPosition(new Rect(defNodePosition, defNodeSize));
 
+        AddElement(questNode);
 
         return questNode;
     }
+
 
     public void AddChoicePort(QuestNode questNode, string overriddenPortName = "")
     {
