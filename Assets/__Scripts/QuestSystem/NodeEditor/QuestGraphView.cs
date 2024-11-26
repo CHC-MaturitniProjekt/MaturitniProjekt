@@ -56,8 +56,6 @@ public class QuestGraphView : GraphView
         {
             QuestName = "test",
             title = "Start",
-            QuestDescription = "testuju",
-            QuestType = "Swag",
             GUID = Guid.NewGuid().ToString(),
             EntryPoint = true
         };
@@ -120,9 +118,8 @@ public class QuestGraphView : GraphView
         node.SetPosition(new Rect(Vector2.zero, new Vector2(500, 450)));
         AddElement(node);
     }
-
-
-    public QuestNode CreateQuestNode(string nodeName)
+    
+    /*public QuestNode CreateQuestNode(string nodeName)
     {
         var questNode = new QuestNode
         {
@@ -139,8 +136,7 @@ public class QuestGraphView : GraphView
         AddElement(questNode);
 
         return questNode;
-    }
-
+    }*/
 
     public void AddChoicePort(QuestNode questNode, string overriddenPortName = "")
     {

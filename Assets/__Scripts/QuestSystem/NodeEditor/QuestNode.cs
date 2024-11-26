@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -20,7 +21,7 @@ public class QuestNode : Node
 
     public string QuestName;
     public string QuestDescription;
-    public string QuestType;
+    public QuestNode.NodeTypes QuestType;
 
     public bool EntryPoint = false;
 
@@ -35,13 +36,14 @@ public class MainQuestNode : QuestNode
 {
     public string QuestName;
     public string QuestDescription;
-    public string QuestType;
     public Color TitleColor = new Color(50f / 255f, 0f / 255f, 0f / 255f);
 
     public bool EntryPoint = false;
 
     public override void DrawNode()
     {
+        QuestType = NodeTypes.MainQuestNode;
+        
         var titleElement = this.titleContainer;
         titleElement.style.backgroundColor = new StyleColor(TitleColor);
 
@@ -85,6 +87,8 @@ public class ObjectiveNode : QuestNode
 
     public override void DrawNode()
     {
+        QuestType = NodeTypes.ObjectiveNode;
+        
         var inputPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(float));
         inputPort.portName = "Objective";
         outputContainer.Add(inputPort);
@@ -109,9 +113,7 @@ public class ObjectiveNode : QuestNode
         Add(optional);
 
         base.DrawNode();
-
     }
-
 }
 
 public class RewardNode : QuestNode
@@ -122,6 +124,8 @@ public class RewardNode : QuestNode
 
     public override void DrawNode()
     {
+        QuestType = NodeTypes.RewardNode;
+        
         var inputPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(float));
         inputPort.portName = "Rewards";
         outputContainer.Add(inputPort);

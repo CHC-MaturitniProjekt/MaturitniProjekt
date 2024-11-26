@@ -5,7 +5,7 @@ using UnityEngine;
 public class QuestNodeData
 {
     public string GUID;
-    public string NodeType; 
+    public QuestNode.NodeTypes NodeType; 
     public string QuestName;
     public string QuestDescription;
     public string ObjectiveDescription;

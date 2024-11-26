@@ -50,9 +50,11 @@ public class GraphSaveUtility
             questContainer.questNodeData.Add(new QuestNodeData()
             {
                 GUID = questNode.GUID,
-                QuestName = questNode.QuestName,
-                QuestDescription = questNode.QuestDescription,
-                Position = questNode.GetPosition().position
+                QuestName = "questNode.QuestName",
+                QuestDescription = "questNode.QuestDescription",
+                Position = questNode.GetPosition().position,
+                NodeType = questNode.QuestType,
+                
             });
         }
 
@@ -112,12 +114,16 @@ public class GraphSaveUtility
     {
         foreach (var nodeData in _containerCache.questNodeData)
         {
-            var tempNode = _targetGraphView.CreateQuestNode(nodeData.QuestName);
-            tempNode.GUID = nodeData.GUID;
-            _targetGraphView.AddElement(tempNode);
+            _targetGraphView.CreateNode(nodeData.NodeType);
+            /*tempNode.GUID = nodeData.GUID;
+            tempNode.QuestName = nodeData.QuestName;
+            tempNode.QuestType = nodeData.NodeType;
+            _targetGraphView.AddElement(tempNode);*/
 
             var nodePorts = _containerCache.nodeLinks.Where(x => x.baseNodeGUID == nodeData.GUID).ToList();
+            /*
             nodePorts.ForEach(x => _targetGraphView.AddChoicePort(tempNode, x.portName));
+        */
         }
     }
 

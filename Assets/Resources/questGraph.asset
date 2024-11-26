@@ -12,5 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35459f3a87f18d4499c25b2dc1250006, type: 3}
   m_Name: questGraph
   m_EditorClassIdentifier: 
-  nodeLinks: []
-  questNodeData: []
+  nodeLinks:
+  - baseNodeGUID: 33925ced-0670-40cf-8b25-54e4acd8927b
+    portName: Next
+    targetNodeGUID: 90544aab-7a0c-4059-9d40-b5eaf4c352f6
+  - baseNodeGUID: 90544aab-7a0c-4059-9d40-b5eaf4c352f6
+    portName: Objectives
+    targetNodeGUID: 06578ab6-e374-4a1d-a627-4a1f53a34bb0
+  questNodeData:
+  - GUID: 90544aab-7a0c-4059-9d40-b5eaf4c352f6
+    NodeType: 0
+    QuestName: questNode.QuestName
+    QuestDescription: questNode.QuestDescription
+    ObjectiveDescription: 
+    ObjectiveType: 
+    RewardType: 
+    RewardValue: 0
+    Position: {x: 188, y: 160}
+  - GUID: 06578ab6-e374-4a1d-a627-4a1f53a34bb0
+    NodeType: 1
+    QuestName: questNode.QuestName
+    QuestDescription: questNode.QuestDescription
+    ObjectiveDescription: 
+    ObjectiveType: 
+    RewardType: 
+    RewardValue: 0
+    Position: {x: 553.3333, y: 21.333334}
