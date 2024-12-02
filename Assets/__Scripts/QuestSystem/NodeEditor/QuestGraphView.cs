@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,7 +14,9 @@ public class QuestGraphView : GraphView
 {
     public readonly Vector2 defNodeSize = new Vector2(150, 200);
     private readonly Vector2 defNodePosition = new Vector2(350, 350);
+    private QuestContainer _containerCache;
 
+    
    public QuestGraphView()
     {
         styleSheets.Add(Resources.Load<StyleSheet>("NodeEditor"));
@@ -27,7 +30,7 @@ public class QuestGraphView : GraphView
         var grid = new GridBackground();
         Insert(0, grid);
         grid.StretchToParentSize();
-
+        
         AddElement(GenerateEntryNode());
     }
 
@@ -50,13 +53,27 @@ public class QuestGraphView : GraphView
         return node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, typeof(float));
     }
 
-    private QuestNode GenerateEntryNode()
+    public QuestNode GenerateEntryNode()
     {
+        _containerCache = Resources.Load<QuestContainer>("questGraph");
+
+        if (_containerCache == null)
+        {
+            _containerCache = ScriptableObject.CreateInstance<QuestContainer>();
+            _containerCache.entryNodeGUID = Guid.NewGuid().ToString();
+            if (!AssetDatabase.IsValidFolder("Assets/Resources"))
+            {
+                AssetDatabase.CreateFolder("Assets", "Resources");
+            }
+            AssetDatabase.CreateAsset(_containerCache, "Assets/Resources/questGraph.asset");
+            AssetDatabase.SaveAssets();
+        }
+
         var node = new QuestNode
         {
             QuestName = "test",
             title = "Start",
-            GUID = Guid.NewGuid().ToString(),
+            GUID = _containerCache.entryNodeGUID,
             EntryPoint = true
         };
 
@@ -73,7 +90,7 @@ public class QuestGraphView : GraphView
     }
 
 
-    public void CreateNode(QuestNode.NodeTypes nodeType)
+    public void CreateNode(QuestNode.NodeTypes nodeType, Vector2 position = default)
     {
         QuestNode node;
 
@@ -101,7 +118,7 @@ public class QuestGraphView : GraphView
                 node = new RewardNode
                 {
                     title = "Reward Node",
-                    RewardType = "XP",
+                    RewardType = "PerkPoints",
                     RewardValue = 100
                 };
                 break;
@@ -119,69 +136,68 @@ public class QuestGraphView : GraphView
         AddElement(node);
     }
     
-    /*public QuestNode CreateQuestNode(string nodeName)
+    public QuestNode CreateNode(QuestNode.NodeTypes nodeType, QuestNodeData nodeData)
     {
-        var questNode = new QuestNode
-        {
-            title = nodeName,
-            QuestName = nodeName,
-            QuestDescription = "Default quest description",
-            GUID = Guid.NewGuid().ToString()
-        };
-
-        questNode.DrawNode();
-
-        questNode.SetPosition(new Rect(defNodePosition, defNodeSize));
-
-        AddElement(questNode);
-
-        return questNode;
-    }*/
-
-    public void AddChoicePort(QuestNode questNode, string overriddenPortName = "")
-    {
-        var generatedPort = GeneratePort(questNode, Direction.Output);
-
-        var oldLabel = generatedPort.contentContainer.Q<Label>("type");
-        generatedPort.contentContainer.Remove(oldLabel);
-
-        var outputPortCount = questNode.outputContainer.Query("connector").ToList().Count;
-        var choicePortName = string.IsNullOrEmpty(overriddenPortName) ? $"Choice {outputPortCount}" : overriddenPortName;
+        QuestNode node;
         
-        var nameTextField = new TextField
+        switch (nodeType)
         {
-            name = string.Empty,
-            value = choicePortName
-        };
-        nameTextField.RegisterValueChangedCallback(e => generatedPort.portName = e.newValue);
-        generatedPort.contentContainer.Add(new Label("  "));
-        generatedPort.contentContainer.Add(nameTextField);
+            case QuestNode.NodeTypes.MainQuestNode:
+                node = new MainQuestNode
+                {
+                    title = nodeType.ToString(),
+                    QuestName = nodeData.QuestName,
+                    QuestDescription = nodeData.QuestDescription
+                };
+                break;
 
-        var deleteButton = new Button(() => RemovePort(questNode, generatedPort)) {
-            text = "X"
-        };
-        generatedPort.contentContainer.Add(deleteButton);
+            case QuestNode.NodeTypes.ObjectiveNode:
+                node = new ObjectiveNode
+                {
+                    title = nodeType.ToString(),
+                    QuestName = nodeData.QuestName,
+                    QuestDescription = nodeData.QuestDescription,
+                    ObjectiveDescription = nodeData.ObjectiveDescription,
+                    ObjectiveType = nodeData.ObjectiveType,
+                    /*
+                    isOptional = nodeData.isOptional
+                    */
 
+                };
+                break;
 
-        generatedPort.portName = choicePortName;
+            case QuestNode.NodeTypes.RewardNode:
+                node = new RewardNode
+                {
+                    title = nodeType.ToString(),
+                    QuestName = nodeData.QuestName,
+                    QuestDescription = nodeData.QuestDescription,
+                    RewardType = nodeData.RewardType,
+                    RewardValue = nodeData.RewardValue
+                };
+                break;
 
-        questNode.outputContainer.Add(generatedPort);
-        questNode.RefreshPorts();
-        questNode.RefreshExpandedState();
-    }
+            default:
+                node = new RewardNode
+                {
+                    title = "",
+                    QuestName = "",
+                    QuestDescription = "",
+                    RewardType = "",
+                    RewardValue = 0
+                };
+                Debug.LogError($"Unknown node type: {nodeType}");
+                return node;
+        }
 
-    private void RemovePort(QuestNode questNode, Port generatedPort)
-    {
-        var targetEdge = edges.ToList().Where(x => x.output.portName == generatedPort.portName && x.output.node == generatedPort.node);
+        node.DrawNode();
+        node.style.backgroundColor = UnityEngine.Color.black;
 
-        if (!targetEdge.Any()) return;
-
-        var edge = targetEdge.First();
-        edge.input.Disconnect(edge);
-        RemoveElement(targetEdge.First());
-
-        questNode.outputContainer.Remove(generatedPort);
-        questNode.RefreshPorts();
-        questNode.RefreshExpandedState();
+        node.GUID = Guid.NewGuid().ToString();
+        node.SetPosition(new Rect(nodeData.Position, new Vector2(500, 450)));
+        AddElement(node);
+        return node;
     }
 }
+
+

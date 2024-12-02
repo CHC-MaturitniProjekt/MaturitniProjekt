@@ -13,28 +13,36 @@ MonoBehaviour:
   m_Name: questGraph
   m_EditorClassIdentifier: 
   nodeLinks:
-  - baseNodeGUID: 33925ced-0670-40cf-8b25-54e4acd8927b
+  - baseNodeGUID: 
     portName: Next
-    targetNodeGUID: 90544aab-7a0c-4059-9d40-b5eaf4c352f6
-  - baseNodeGUID: 90544aab-7a0c-4059-9d40-b5eaf4c352f6
+    targetNodeGUID: e43017ba-e392-459e-8388-e41f4dfcd2b3
+  - baseNodeGUID: e43017ba-e392-459e-8388-e41f4dfcd2b3
     portName: Objectives
-    targetNodeGUID: 06578ab6-e374-4a1d-a627-4a1f53a34bb0
+    targetNodeGUID: abe28687-0c2e-47f5-b6db-53f4c8f6403a
   questNodeData:
-  - GUID: 90544aab-7a0c-4059-9d40-b5eaf4c352f6
+  - GUID: e43017ba-e392-459e-8388-e41f4dfcd2b3
     NodeType: 0
-    QuestName: questNode.QuestName
-    QuestDescription: questNode.QuestDescription
+    QuestName: New Quest
+    QuestDescription: Describe the quest here
     ObjectiveDescription: 
     ObjectiveType: 
+    CompletionCriteria: []
     RewardType: 
     RewardValue: 0
-    Position: {x: 188, y: 160}
-  - GUID: 06578ab6-e374-4a1d-a627-4a1f53a34bb0
+    Position: {x: 302.66666, y: 68.666664}
+    isOptional: 0
+  - GUID: abe28687-0c2e-47f5-b6db-53f4c8f6403a
     NodeType: 1
-    QuestName: questNode.QuestName
-    QuestDescription: questNode.QuestDescription
-    ObjectiveDescription: 
-    ObjectiveType: 
+    QuestName: 
+    QuestDescription: 
+    ObjectiveDescription: Describe the objective here
+    ObjectiveType: Interact
+    CompletionCriteria:
+    - CriteriaType: NpcInteractionCriteria, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
+      JsonData: '{"NpcName":"Swag"}'
     RewardType: 
     RewardValue: 0
-    Position: {x: 553.3333, y: 21.333334}
+    Position: {x: 690, y: 86}
+    isOptional: 0
+  entryNodeGUID: 

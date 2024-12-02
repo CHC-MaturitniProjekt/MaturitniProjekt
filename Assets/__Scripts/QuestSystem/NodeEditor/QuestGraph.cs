@@ -21,7 +21,7 @@ public class QuestGraph : EditorWindow
         ConstructGraphView();
         GenerateToolBar();
 
-        var graphSaveUtility = GraphSaveUtility.GetInstance(questGraphView);
+        var graphSaveUtility = QuestSaveUtility.GetInstance(questGraphView);
         graphSaveUtility.LoadGraph();
 
     }
@@ -80,7 +80,7 @@ public class QuestGraph : EditorWindow
     private void SaveData()
     {
         Debug.Log("save");
-        var saveUtility = GraphSaveUtility.GetInstance(questGraphView);
+        var saveUtility = QuestSaveUtility.GetInstance(questGraphView);
         saveUtility.SaveGraph();
     }
 
@@ -92,7 +92,7 @@ public class QuestGraph : EditorWindow
     private void LoadGraph()
     {
         Debug.Log("loading");
-        var saveUtility = GraphSaveUtility.GetInstance(questGraphView);
+        var saveUtility = QuestSaveUtility.GetInstance(questGraphView);
         saveUtility.LoadGraph();
 
 

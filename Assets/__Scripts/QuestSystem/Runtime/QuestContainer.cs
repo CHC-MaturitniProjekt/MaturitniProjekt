@@ -8,5 +8,6 @@ public class QuestContainer : ScriptableObject
 {
     public List<NodeLinkData> nodeLinks = new List<NodeLinkData>();
     public List<QuestNodeData> questNodeData = new List<QuestNodeData>();
+    public string entryNodeGUID;
 
 }
