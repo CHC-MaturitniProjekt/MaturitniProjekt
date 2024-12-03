@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestManager : MonoBehaviour
 {
@@ -10,10 +12,19 @@ public class QuestManager : MonoBehaviour
 
     [SerializeField]
     private List<string[]> questConnections = new List<string[]>();
+
+    [SerializeField]
+    private TMP_Text questTitleText;
+    [SerializeField]
+    private TMP_Text questObjectivesText;
+    [SerializeField]
+    private TMP_Text questRewardsText;
+
     void Awake()
     {
         LoadQuests();
         ConnectQuests();
+        DisplayQuestInfo();
     }
 
     void Start()
@@ -58,6 +69,21 @@ public class QuestManager : MonoBehaviour
             {
                 Debug.Log(tmp);
             }
+        }
+    }
+
+    private void DisplayQuestInfo()
+    {
+        if (questList.Count > 0)
+        {
+            var mainQuest = questList[0]; // Assuming the first quest is the main quest
+            questTitleText.text = mainQuest.QuestName;
+
+            string objectives = "";
+            questObjectivesText.text = mainQuest.ObjectiveDescription;
+
+            string rewards = "";
+            questRewardsText.text = mainQuest.RewardValue.ToString();
         }
     }
 }
