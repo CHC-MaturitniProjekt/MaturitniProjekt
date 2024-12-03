@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class QuestManager : MonoBehaviour
 {
     public QuestContainer questContainer;
+   
     [SerializeField]
     private List<QuestNodeData> questList = new List<QuestNodeData>();
 
@@ -23,7 +24,6 @@ public class QuestManager : MonoBehaviour
     void Awake()
     {
         LoadQuests();
-        ConnectQuests();
         DisplayQuestInfo();
     }
 
@@ -32,39 +32,27 @@ public class QuestManager : MonoBehaviour
 
     }
 
-    void Update()
-    {
-
-    }
-
     private void LoadQuests()
     {
-        foreach (var node in questContainer.questNodeData)
+        foreach (var node in questContainer.questNodeData) //uklada data o questech
         {
             questList.Add(node);
         }
-    }
-
-    private void ConnectQuests()
-    {
-        foreach (var link in questContainer.nodeLinks)
+        
+        foreach (var link in questContainer.nodeLinks)  //uklada spojeni mezi questy
         {
             List<string> connection = new List<string>();
             connection.Add(link.baseNodeGUID);
-            Debug.Log("Base GUID: " + link.baseNodeGUID);
 
             foreach (var node in questContainer.questNodeData)
             {
                 if (node.GUID == link.targetNodeGUID)
                 {
                     connection.Add(node.GUID);
-                    Debug.Log("GUID: " + node.GUID);
                 }
             }
-
             questConnections.Add(connection.ToArray());
 
-            Debug.Log("Connection: ");
             foreach (var tmp in questConnections)
             {
                 Debug.Log(tmp);
@@ -76,7 +64,7 @@ public class QuestManager : MonoBehaviour
     {
         if (questList.Count > 0)
         {
-            var mainQuest = questList[0]; // Assuming the first quest is the main quest
+            var mainQuest = questList[0];
             questTitleText.text = mainQuest.QuestName;
 
             string objectives = "";
