@@ -59,6 +59,14 @@ public class QuestGraph : EditorWindow
     {
         var dropdownMenu = new GenericMenu();
 
+        dropdownMenu.AddItem(new GUIContent("Start Node"), false, () =>
+        {
+            if (!NodeExists(QuestNode.NodeTypes.Start))
+                questGraphView.CreateNode(QuestNode.NodeTypes.Start);
+            else
+                Debug.LogWarning("Start Node již existuje!");
+        });
+
         dropdownMenu.AddItem(new GUIContent("Quest Node"), false, () =>
         {
             questGraphView.CreateNode(QuestNode.NodeTypes.MainQuestNode);
@@ -76,12 +84,23 @@ public class QuestGraph : EditorWindow
 
         dropdownMenu.ShowAsContext();
     }
+    private bool NodeExists(QuestNode.NodeTypes nodeType)
+    {
+        foreach (var node in questGraphView.nodes.ToList())
+        {
+            if (node is QuestNode questNode && questNode.QuestType == nodeType)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void SaveData()
     {
         Debug.Log("save");
         var saveUtility = QuestSaveUtility.GetInstance(questGraphView);
-        saveUtility.SaveGraph();
+       // saveUtility.SaveGraph();
     }
 
     private void OnDisable()
@@ -93,8 +112,6 @@ public class QuestGraph : EditorWindow
     {
         Debug.Log("loading");
         var saveUtility = QuestSaveUtility.GetInstance(questGraphView);
-        saveUtility.LoadGraph();
-
-
+       // saveUtility.LoadGraph();
     }
 }

@@ -25,55 +25,55 @@ public class QuestSaveUtility
     
     }
 
-    public void SaveGraph()
-{
-    if (!Edges.Any()) return;
+    //public void SaveGraph()
+    //{
+    //    if (!Edges.Any()) return;
 
-    var questContainer = ScriptableObject.CreateInstance<QuestContainer>();
+    //    var questContainer = ScriptableObject.CreateInstance<QuestContainer>();
 
-    var entryNode = Nodes.Find(x => x.EntryPoint);
-    if (entryNode != null)
-    {
-        questContainer.entryNodeGUID = entryNode.GUID;
-    }
+    //    var entryNode = Nodes.Find(x => x.EntryPoint);
+    //    if (entryNode != null)
+    //    {
+    //        questContainer.entryNodeGUID = entryNode.GUID;
+    //    }
 
-    var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
-    for (int i = 0; i < connectedPorts.Length; i++)
-    {
-        var outputNode = connectedPorts[i].output.node as QuestNode;
-        var inputNode = connectedPorts[i].input.node as QuestNode;
+    //    var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
+    //    for (int i = 0; i < connectedPorts.Length; i++)
+    //    {
+    //        var outputNode = connectedPorts[i].output.node as QuestNode;
+    //        var inputNode = connectedPorts[i].input.node as QuestNode;
 
-        questContainer.nodeLinks.Add(new NodeLinkData
-        {
-            baseNodeGUID = outputNode.GUID,
-            portName = connectedPorts[i].output.portName,
-            targetNodeGUID = inputNode.GUID
-        });
-    }
+    //        questContainer.nodeLinks.Add(new NodeLinkData
+    //        {
+    //            baseNodeGUID = outputNode.GUID,
+    //            portName = connectedPorts[i].output.portName,
+    //            targetNodeGUID = inputNode.GUID
+    //        });
+    //    }
 
-    foreach (var questNode in Nodes.Where(node => !node.EntryPoint))
-    {
-        questContainer.questNodeData.Add(new QuestNodeData()
-        {
-            GUID = questNode.GUID,
-            NodeType = questNode.QuestType,
-            QuestName = questNode.QuestName,
-            QuestDescription = questNode.QuestDescription,
-            ObjectiveDescription = (questNode as ObjectiveNode)?.ObjectiveDescription,
-            ObjectiveType = (questNode as ObjectiveNode)?.ObjectiveType,
-            CompletionCriteria = CompletionCriteriaSerializer.Serialize(questNode.CompletionCriteria),
-            RewardType = (questNode as RewardNode)?.RewardTypes.ToString(),
-            RewardValue = (questNode as RewardNode)?.RewardValue ?? 0,
-            Position = questNode.GetPosition().position,
-            /*
-            isOptional = (questNode as ObjectiveNode)?.isOptional ?? false
-        */
-        });
-    }
+    //    foreach (var questNode in Nodes.Where(node => !node.EntryPoint))
+    //    {
+    //        questContainer.questNodeData.Add(new QuestNodeData()
+    //        {
+    //            GUID = questNode.GUID,
+    //            NodeType = questNode.QuestType,
+    //            QuestName = questNode.QuestName,
+    //            QuestDescription = questNode.QuestDescription,
+    //            ObjectiveDescription = (questNode as ObjectiveNode)?.ObjectiveDescription,
+    //            ObjectiveType = (questNode as ObjectiveNode)?.ObjectiveType,
+    //            CompletionCriteria = CompletionCriteriaSerializer.Serialize(questNode.CompletionCriteria),
+    //            RewardType = (questNode as RewardNode)?.RewardTypes.ToString(),
+    //            RewardValue = (questNode as RewardNode)?.RewardValue ?? 0,
+    //            Position = questNode.GetPosition().position,
+    //            /*
+    //            isOptional = (questNode as ObjectiveNode)?.isOptional ?? false
+    //        */
+    //        });
+    //    }
 
-    AssetDatabase.CreateAsset(questContainer, "Assets/Resources/questGraph.asset");
-    AssetDatabase.SaveAssets();
-}
+    //    AssetDatabase.CreateAsset(questContainer, "Assets/Resources/questGraph.asset");
+    //    AssetDatabase.SaveAssets();
+    //}
 
     public void LoadGraph()
     {
@@ -85,14 +85,14 @@ public class QuestSaveUtility
         }
 
         ClearGraph();
-        CreateNodes();
+       // CreateNodes();
         ConnectNodes();
 
-        var entryNode = Nodes.Find(x => x.EntryPoint);
-        if (entryNode != null)
-        {
-            entryNode.GUID = _containerCache.entryNodeGUID;
-        }
+        //var entryNode = Nodes.Find(x => x.EntryPoint);
+        //if (entryNode != null)
+        //{
+        //    entryNode.GUID = _containerCache.entryNodeGUID;
+        //}
     }
 
     public void ConnectNodes()
@@ -150,39 +150,38 @@ public class QuestSaveUtility
         _targetGraphView.Add(tempEdge);
     }
 
-    private void CreateNodes()
-    {
-        foreach (var nodeData in _containerCache.questNodeData)
-        {
-            var tempNode = _targetGraphView.CreateNode(nodeData.NodeType, nodeData);
-            tempNode.GUID = nodeData.GUID;
-            tempNode.QuestName = nodeData.QuestName;
-            tempNode.QuestType = nodeData.NodeType;
-            tempNode.CompletionCriteria = CompletionCriteriaSerializer.Deserialize(nodeData.CompletionCriteria);
-            _targetGraphView.AddElement(tempNode);
+    //private void CreateNodes()
+    //{
+    //    foreach (var nodeData in _containerCache.questNodeData)
+    //    {
+    //        var tempNode = _targetGraphView.CreateNode(nodeData.NodeType, nodeData);
+    //        tempNode.GUID = nodeData.GUID;
+    //        tempNode.QuestName = nodeData.QuestName;
+    //        tempNode.QuestType = nodeData.NodeType;
+    //        tempNode.CompletionCriteria = CompletionCriteriaSerializer.Deserialize(nodeData.CompletionCriteria);
+    //        _targetGraphView.AddElement(tempNode);
             
-            var nodePorts = _containerCache.nodeLinks.Where(x => x.baseNodeGUID == nodeData.GUID).ToList();
-        }
-    }
+    //        var nodePorts = _containerCache.nodeLinks.Where(x => x.baseNodeGUID == nodeData.GUID).ToList();
+    //    }
+    //}
     
-
     private void ClearGraph()
     {
         if (!Nodes.Any()) return;
 
-        var entryNode = Nodes.Find(x => x.EntryPoint);
-        if (entryNode != null)
-        {
-            entryNode.GUID = _containerCache.entryNodeGUID;
-        }
+        //var entryNode = Nodes.Find(x => x.EntryPoint);
+        //if (entryNode != null)
+        //{
+        //    entryNode.GUID = _containerCache.entryNodeGUID;
+        //}
 
-        foreach (var node in Nodes)
-        {
-            if (node.EntryPoint) continue;
+        //foreach (var node in Nodes)
+        //{
+        //    if (node.EntryPoint) continue;
 
-            Edges.Where(x => x.input.node == node).ToList().ForEach(edge => _targetGraphView.RemoveElement(edge));
-            _targetGraphView.RemoveElement(node);
-        }
+        //    Edges.Where(x => x.input.node == node).ToList().ForEach(edge => _targetGraphView.RemoveElement(edge));
+        //    _targetGraphView.RemoveElement(node);
+        //}
     }
 }
 

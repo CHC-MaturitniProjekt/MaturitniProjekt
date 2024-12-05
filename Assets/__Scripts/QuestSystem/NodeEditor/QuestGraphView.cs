@@ -1,3 +1,4 @@
+using Assets.__Scripts.QuestSystem.NodeEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static QuestNode;
 using Label = UnityEngine.UIElements.Label;
 
 public class QuestGraphView : GraphView
@@ -30,30 +32,40 @@ public class QuestGraphView : GraphView
         var grid = new GridBackground();
         Insert(0, grid);
         grid.StretchToParentSize();
-        
-        AddElement(GenerateEntryNode());
+
+        EditorApplication.delayCall += afterGraphInicialization;
+    }
+
+    public void afterGraphInicialization()
+    {
+        GenerateEntryNode();
     }
 
     public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
     {
         var compatiblePorts = new List<Port>();
+
         ports.ForEach((port) =>
         {
             if (startPort != port && startPort.node != port.node)
             {
-                compatiblePorts.Add(port);
+                if (startPort is CustomPort startCustomPort && port is CustomPort targetCustomPort)
+                {
+                    if (startCustomPort.connectionType == targetCustomPort.connectionType)
+                    {
+                        if (startCustomPort.direction != targetCustomPort.direction)
+                        {
+                            compatiblePorts.Add(port);
+                        }
+                    }
+                }
             }
         });
 
         return compatiblePorts;
     }
 
-    private Port GeneratePort(QuestNode node, Direction portDirection, Port.Capacity capacity = Port.Capacity.Single)
-    {
-        return node.InstantiatePort(Orientation.Horizontal, portDirection, capacity, typeof(float));
-    }
-
-    public QuestNode GenerateEntryNode()
+    public void GenerateEntryNode()
     {
         _containerCache = Resources.Load<QuestContainer>("questGraph");
 
@@ -69,24 +81,7 @@ public class QuestGraphView : GraphView
             AssetDatabase.SaveAssets();
         }
 
-        var node = new QuestNode
-        {
-            QuestName = "test",
-            title = "Start",
-            GUID = _containerCache.entryNodeGUID,
-            EntryPoint = true
-        };
-
-        var generatedPort = GeneratePort(node, Direction.Output);
-        generatedPort.portName = "Next";
-        node.outputContainer.Add(generatedPort);
-
-        node.RefreshExpandedState();
-        node.RefreshPorts();
-
-        node.SetPosition(new Rect(100, 100, 100, 150));
-
-        return node;
+        CreateNode(NodeTypes.Start);
     }
 
 
@@ -122,7 +117,12 @@ public class QuestGraphView : GraphView
                     RewardValue = 100
                 };
                 break;
-
+            case QuestNode.NodeTypes.Start:
+                node = new StartQuestNode
+                {
+                    title = "Start"
+                };
+                break;
             default:
                 Debug.LogError($"Unknown node type: {nodeType}");
                 return;
@@ -155,8 +155,6 @@ public class QuestGraphView : GraphView
                 node = new ObjectiveNode
                 {
                     title = nodeType.ToString(),
-                    QuestName = nodeData.QuestName,
-                    QuestDescription = nodeData.QuestDescription,
                     ObjectiveDescription = nodeData.ObjectiveDescription,
                     ObjectiveType = nodeData.ObjectiveType,
                     /*
@@ -170,8 +168,6 @@ public class QuestGraphView : GraphView
                 node = new RewardNode
                 {
                     title = nodeType.ToString(),
-                    QuestName = nodeData.QuestName,
-                    QuestDescription = nodeData.QuestDescription,
                     RewardType = nodeData.RewardType,
                     RewardValue = nodeData.RewardValue
                 };
@@ -181,8 +177,6 @@ public class QuestGraphView : GraphView
                 node = new RewardNode
                 {
                     title = "",
-                    QuestName = "",
-                    QuestDescription = "",
                     RewardType = "",
                     RewardValue = 0
                 };
