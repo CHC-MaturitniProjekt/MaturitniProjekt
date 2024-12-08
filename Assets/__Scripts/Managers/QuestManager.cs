@@ -14,22 +14,9 @@ public class QuestManager : MonoBehaviour
     [SerializeField]
     private List<string[]> questConnections = new List<string[]>();
 
-    [SerializeField]
-    private TMP_Text questTitleText;
-    [SerializeField]
-    private TMP_Text questObjectivesText;
-    [SerializeField]
-    private TMP_Text questRewardsText;
-
     void Awake()
     {
         LoadQuests();
-        DisplayQuestInfo();
-    }
-
-    void Start()
-    {
-
     }
 
     private void LoadQuests()
@@ -57,21 +44,6 @@ public class QuestManager : MonoBehaviour
             {
                 Debug.Log(tmp);
             }
-        }
-    }
-
-    private void DisplayQuestInfo()
-    {
-        if (questList.Count > 0)
-        {
-            var mainQuest = questList[0];
-            questTitleText.text = mainQuest.QuestName;
-
-            string objectives = "";
-            questObjectivesText.text = mainQuest.ObjectiveDescription;
-
-            string rewards = "";
-            questRewardsText.text = mainQuest.RewardValue.ToString();
         }
     }
 }
