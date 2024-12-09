@@ -17,9 +17,9 @@ public class StartQuestNode : QuestNode
 
     public override void DrawNode()
     {
-        var inputPort = new CustomPort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, ConnectionType.Quest);
-        inputPort.portName = "Start";
-        inputContainer.Add(inputPort);
+        var outputPort = new CustomPort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, ConnectionType.Quest);
+        outputPort.portName = "Start";
+        outputContainer.Add(outputPort);
 
         RefreshExpandedState();
         RefreshPorts();

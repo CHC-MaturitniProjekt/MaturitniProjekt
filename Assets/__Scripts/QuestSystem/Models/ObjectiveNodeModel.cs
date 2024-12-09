@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class ObjectiveNodeModel : QuestNodeModel
 {
-    public string QuestName;
-    public string QuestDescription;
+    public string ObjectiveDescription;
+    public string ObjectiveType;
+    public bool isOptional;
+    public List<ICompletionCriteria> CompletionCriteria = new List<ICompletionCriteria>();
 }

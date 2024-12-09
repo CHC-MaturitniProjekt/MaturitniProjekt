@@ -12,37 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35459f3a87f18d4499c25b2dc1250006, type: 3}
   m_Name: questGraph
   m_EditorClassIdentifier: 
-  nodeLinks:
-  - baseNodeGUID: 
-    portName: Next
-    targetNodeGUID: e43017ba-e392-459e-8388-e41f4dfcd2b3
-  - baseNodeGUID: e43017ba-e392-459e-8388-e41f4dfcd2b3
-    portName: Objectives
-    targetNodeGUID: abe28687-0c2e-47f5-b6db-53f4c8f6403a
+  nodeLinks: []
   questNodeData:
-  - GUID: e43017ba-e392-459e-8388-e41f4dfcd2b3
-    NodeType: 0
-    QuestName: joooooooooooo
-    QuestDescription: mnamisek :3
-    ObjectiveDescription: 
-    ObjectiveType: 
-    CompletionCriteria: []
-    RewardType: 
-    RewardValue: 0
-    Position: {x: 302.66666, y: 68.666664}
-    isOptional: 0
-  - GUID: abe28687-0c2e-47f5-b6db-53f4c8f6403a
-    NodeType: 1
-    QuestName: 
-    QuestDescription: 
-    ObjectiveDescription: Describe the objective here
-    ObjectiveType: Interact
-    CompletionCriteria:
-    - CriteriaType: NpcInteractionCriteria, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null
-      JsonData: '{"NpcName":"Swag"}'
-    RewardType: 
-    RewardValue: 0
-    Position: {x: 690, y: 86}
-    isOptional: 0
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"03fb2e16-565a-4d5d-82e0-bfd3cf5abcab","position":{"x":797.0,"y":8.0},"ObjectiveDescription":"Describe
+      the objective here","ObjectiveType":"Fetch","isOptional":false}'
   entryNodeGUID: 

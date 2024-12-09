@@ -36,7 +36,7 @@ public class QuestManager : MonoBehaviour
     {
         foreach (var node in questContainer.questNodeData) //uklada data o questech
         {
-            questList.Add(node);
+           // questList.Add(node);
         }
         
         foreach (var link in questContainer.nodeLinks)  //uklada spojeni mezi questy
@@ -46,9 +46,9 @@ public class QuestManager : MonoBehaviour
 
             foreach (var node in questContainer.questNodeData)
             {
-                if (node.GUID == link.targetNodeGUID)
+                if (SerializableQuestNodeModel.DeserializeNodeModel(node).GUID == link.targetNodeGUID)
                 {
-                    connection.Add(node.GUID);
+                    connection.Add(SerializableQuestNodeModel.DeserializeNodeModel(node).GUID);
                 }
             }
             questConnections.Add(connection.ToArray());

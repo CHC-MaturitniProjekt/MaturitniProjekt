@@ -18,6 +18,17 @@ public class CustomPort : Port
         this.portColor = GetPortColor(connectionType);
     }
 
+    private static Color GetPortColor(ConnectionType connectionType)
+    {
+        return connectionType switch
+        {
+            ConnectionType.Quest => Color.red,
+            ConnectionType.Reward => Color.green,
+            ConnectionType.Objective => Color.cyan,
+            _ => Color.white
+        };
+    }
+
     public class CustomEdgeConnectorListener : IEdgeConnectorListener
     {
         private GraphViewChange m_GraphViewChange;
@@ -82,16 +93,5 @@ public class CustomPort : Port
                 edge.output.Connect(item);
             }
         }
-    }
-
-    private static Color GetPortColor(ConnectionType connectionType)
-    {
-        return connectionType switch
-        {
-            ConnectionType.Quest => Color.red,
-            ConnectionType.Reward => Color.green,
-            ConnectionType.Objective => Color.cyan,
-            _ => Color.white
-        };
     }
 }
