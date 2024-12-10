@@ -13,13 +13,19 @@ public class Interact : MonoBehaviour
     [Header("Highlight")]
     [SerializeField] private string NPCTag;
     [SerializeField] private string ItemTag;
+    [SerializeField] private string PCTag;
 
     private Outline currentOutline;
     private string currentHitTag;
     private GameObject selectedObj;
+    
+    private CameraController camController;
+
 
     void Start()
     {
+        camController = FindObjectOfType<CameraController>();
+
         input.InteractEvent += OnInteract;
     }
 
@@ -38,6 +44,9 @@ public class Interact : MonoBehaviour
             case var value when value == ItemTag:
                 InteractWithItem();
                 break;
+            case var value when value == PCTag:
+                InteractWithPC();
+                break;
             default:
                 Debug.Log("nn");
                 break;
@@ -55,7 +64,7 @@ public class Interact : MonoBehaviour
         {
             currentHitTag = hit.collider.tag;
 
-            if (currentHitTag == NPCTag || currentHitTag == ItemTag)
+            if (currentHitTag == NPCTag || currentHitTag == ItemTag || currentHitTag == PCTag)
             {
                 Outline outline = hit.collider.GetComponent<Outline>();
                 selectedObj = hit.collider.gameObject;
@@ -76,7 +85,7 @@ public class Interact : MonoBehaviour
 
     void Highlight(Outline outline)
     {
-        if (currentHitTag == NPCTag || currentHitTag == ItemTag)
+        if (currentHitTag == NPCTag || currentHitTag == ItemTag || currentHitTag == PCTag)
         {
             if (currentOutline != outline)
             {
@@ -84,7 +93,7 @@ public class Interact : MonoBehaviour
                 
                 currentOutline = outline;
                 if (currentOutline != null)
-                {
+                {   
                     currentOutline.OutlineWidth = 5f;
                 }
                 else
@@ -116,5 +125,10 @@ public class Interact : MonoBehaviour
         {
             PlayerManager.Instance.PickUpItem(selectedObj);
         }
+    }
+
+    private void InteractWithPC()
+    {
+        camController.isUsingPC = !camController.isUsingPC;
     }
 }

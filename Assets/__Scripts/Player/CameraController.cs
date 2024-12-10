@@ -28,12 +28,20 @@ public class CameraController : MonoBehaviour
     private Vector2 mouseMove = Vector2.zero;
     private float timer = 0.0f;
     private Vector3 initialCameraPosition;
-
+    
+    public bool isUsingPC;
+    CursorController cursorController;
+    
     private void Start()
     {
+        cursorController = FindObjectOfType<CursorController>();
+
+        
         Cursor.lockState = CursorLockMode.Locked;
         input.LookEvent += Input_LookEvent;
         cam.m_Lens.FieldOfView = fov;
+        
+        isUsingPC = false;
     }
 
     private void Input_LookEvent(Vector2 obj)
@@ -44,7 +52,6 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         FovChange();
-
         Look();
         HeadBob();
 
@@ -53,14 +60,26 @@ public class CameraController : MonoBehaviour
 
     private void Look()
     {
-        float mouseX = mouseMove.x * mouseSensitivity * Time.deltaTime;
-        float mouseY = mouseMove.y * mouseSensitivity * Time.deltaTime;
+        if (!isUsingPC)
+             { 
+            float mouseX = mouseMove.x * mouseSensitivity * Time.deltaTime;
+            float mouseY = mouseMove.y * mouseSensitivity * Time.deltaTime;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
-        playerBody.Rotate(Vector3.up * mouseX);
+        
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);                              //fix nefaka :(
+            
+            cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
+            playerBody.Rotate(Vector3.up * mouseX);
+        }
+        else
+        {   
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = false;
+        }
+        
+       
     }
 
     public void FovChange()

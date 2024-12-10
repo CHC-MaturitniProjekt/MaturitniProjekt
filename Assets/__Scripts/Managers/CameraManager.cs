@@ -10,7 +10,7 @@ public class CameraManager : MonoBehaviour
 
     private bool isCameraModeActive = false;
     private int activeCameraIndex = 0;
-
+    
     void Start()
     {
         input.CamModeEvent += Input_CamModeEvent;

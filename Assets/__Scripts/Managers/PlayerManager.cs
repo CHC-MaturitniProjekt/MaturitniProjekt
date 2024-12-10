@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager Instance { get; private set; }
     private float playerSprintTime;
     private PickUp pickUpScript;
-
+    
     public enum MovementState
     {
         Idle,
