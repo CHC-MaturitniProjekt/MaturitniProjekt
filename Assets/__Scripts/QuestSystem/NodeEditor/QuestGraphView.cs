@@ -72,7 +72,6 @@ public class QuestGraphView : GraphView
         if (_containerCache == null)
         {
             _containerCache = ScriptableObject.CreateInstance<QuestContainer>();
-            _containerCache.entryNodeGUID = Guid.NewGuid().ToString();
             if (!AssetDatabase.IsValidFolder("Assets/Resources"))
             {
                 AssetDatabase.CreateFolder("Assets", "Resources");
@@ -136,18 +135,24 @@ public class QuestGraphView : GraphView
         AddElement(node);
     }
     
-    public QuestNode CreateNode(QuestNode.NodeTypes nodeType, QuestNodeData nodeData)
+    public QuestNode CreateNode(QuestNode.NodeTypes nodeType, QuestNodeModel nodeData)
     {
         QuestNode node;
         
         switch (nodeType)
         {
+            case QuestNode.NodeTypes.Start:
+                node = new StartQuestNode
+                {
+                    title = nodeType.ToString(),
+                };
+                break;
             case QuestNode.NodeTypes.MainQuestNode:
                 node = new MainQuestNode
                 {
                     title = nodeType.ToString(),
-                    QuestName = nodeData.QuestName,
-                    QuestDescription = nodeData.QuestDescription
+                    QuestName = (nodeData as MainQuestNodeModel).QuestName,
+                    QuestDescription = (nodeData as MainQuestNodeModel).QuestDescription
                 };
                 break;
 
@@ -155,30 +160,25 @@ public class QuestGraphView : GraphView
                 node = new ObjectiveNode
                 {
                     title = nodeType.ToString(),
-                    ObjectiveDescription = nodeData.ObjectiveDescription,
-                    ObjectiveType = nodeData.ObjectiveType,
-                    /*
-                    isOptional = nodeData.isOptional
-                    */
-
+                    ObjectiveDescription = (nodeData as ObjectiveNodeModel).ObjectiveDescription,
+                    ObjectiveType = (nodeData as ObjectiveNodeModel).ObjectiveType,
+                    isOptional = (nodeData as ObjectiveNodeModel).isOptional,
+                    CompletionCriteria = (nodeData as ObjectiveNodeModel).CompletionCriteria
                 };
                 break;
-
             case QuestNode.NodeTypes.RewardNode:
                 node = new RewardNode
                 {
                     title = nodeType.ToString(),
-                    RewardType = nodeData.RewardType,
-                    RewardValue = nodeData.RewardValue
+                    RewardType = (nodeData as RewardNodeModel).RewardType,
+                    RewardValue = (nodeData as RewardNodeModel).RewardValue
                 };
                 break;
 
             default:
-                node = new RewardNode
+                node = new StartQuestNode
                 {
-                    title = "",
-                    RewardType = "",
-                    RewardValue = 0
+                    title = "Start",
                 };
                 Debug.LogError($"Unknown node type: {nodeType}");
                 return node;
@@ -187,8 +187,8 @@ public class QuestGraphView : GraphView
         node.DrawNode();
         node.style.backgroundColor = UnityEngine.Color.black;
 
-        node.GUID = Guid.NewGuid().ToString();
-        node.SetPosition(new Rect(nodeData.Position, new Vector2(500, 450)));
+        node.GUID = nodeData.GUID;
+        node.SetPosition(new Rect(nodeData.position, new Vector2(500, 450)));
         AddElement(node);
         return node;
     }

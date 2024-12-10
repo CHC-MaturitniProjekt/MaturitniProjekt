@@ -51,6 +51,7 @@ public class QuestGraph : EditorWindow
         };
         toolbar.Add(createNodeButton);
         toolbar.Add(new Button(() => SaveData()) { text = "Save data" });
+        toolbar.Add(new Button(() => LoadGraph()) { text = "Load data" });
 
         rootVisualElement.Add(toolbar);
     }
@@ -100,7 +101,7 @@ public class QuestGraph : EditorWindow
     {
         Debug.Log("save");
         var saveUtility = QuestSaveUtility.GetInstance(questGraphView);
-       // saveUtility.SaveGraph();
+        saveUtility.SaveGraph();
     }
 
     private void OnDisable()
@@ -112,6 +113,6 @@ public class QuestGraph : EditorWindow
     {
         Debug.Log("loading");
         var saveUtility = QuestSaveUtility.GetInstance(questGraphView);
-       // saveUtility.LoadGraph();
+        saveUtility.LoadGraph();
     }
 }

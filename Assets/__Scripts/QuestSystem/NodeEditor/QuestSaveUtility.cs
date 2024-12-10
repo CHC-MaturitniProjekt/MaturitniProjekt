@@ -1,3 +1,4 @@
+using Assets.__Scripts.QuestSystem.NodeEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,55 +26,42 @@ public class QuestSaveUtility
     
     }
 
-    //public void SaveGraph()
-    //{
-    //    if (!Edges.Any()) return;
+    public void SaveGraph()
+    {
+        var questContainer = ScriptableObject.CreateInstance<QuestContainer>();
 
-    //    var questContainer = ScriptableObject.CreateInstance<QuestContainer>();
+        foreach (var edge in Edges)
+        {
+            var outputNode = edge.output.node as QuestNode;
+            var inputNode = edge.input.node as QuestNode;
 
-    //    var entryNode = Nodes.Find(x => x.EntryPoint);
-    //    if (entryNode != null)
-    //    {
-    //        questContainer.entryNodeGUID = entryNode.GUID;
-    //    }
+            if (outputNode == null || inputNode == null)
+            {
+                Debug.LogError("Edge has null nodes.");
+                continue;
+            }
 
-    //    var connectedPorts = Edges.Where(x => x.input.node != null).ToArray();
-    //    for (int i = 0; i < connectedPorts.Length; i++)
-    //    {
-    //        var outputNode = connectedPorts[i].output.node as QuestNode;
-    //        var inputNode = connectedPorts[i].input.node as QuestNode;
+            questContainer.nodeLinks.Add(new NodeLinkData
+            {
+                baseNodeGUID = outputNode.GUID,
+                portName = edge.output.portName,
+                targetNodeGUID = inputNode.GUID
+            });
+        }
 
-    //        questContainer.nodeLinks.Add(new NodeLinkData
-    //        {
-    //            baseNodeGUID = outputNode.GUID,
-    //            portName = connectedPorts[i].output.portName,
-    //            targetNodeGUID = inputNode.GUID
-    //        });
-    //    }
+        foreach (var questNode in Nodes)
+        {
+            QuestNodeModel nodeModel = CreateNodeModel(questNode);
+            if (nodeModel != null)
+            {
+                var serializableModel = SerializableQuestNodeModel.SerializeNodeModel(nodeModel);
+                questContainer.questNodeData.Add(serializableModel);
+            }
+        }
 
-    //    foreach (var questNode in Nodes.Where(node => !node.EntryPoint))
-    //    {
-    //        questContainer.questNodeData.Add(new QuestNodeData()
-    //        {
-    //            GUID = questNode.GUID,
-    //            NodeType = questNode.QuestType,
-    //            QuestName = questNode.QuestName,
-    //            QuestDescription = questNode.QuestDescription,
-    //            ObjectiveDescription = (questNode as ObjectiveNode)?.ObjectiveDescription,
-    //            ObjectiveType = (questNode as ObjectiveNode)?.ObjectiveType,
-    //            CompletionCriteria = CompletionCriteriaSerializer.Serialize(questNode.CompletionCriteria),
-    //            RewardType = (questNode as RewardNode)?.RewardTypes.ToString(),
-    //            RewardValue = (questNode as RewardNode)?.RewardValue ?? 0,
-    //            Position = questNode.GetPosition().position,
-    //            /*
-    //            isOptional = (questNode as ObjectiveNode)?.isOptional ?? false
-    //        */
-    //        });
-    //    }
-
-    //    AssetDatabase.CreateAsset(questContainer, "Assets/Resources/questGraph.asset");
-    //    AssetDatabase.SaveAssets();
-    //}
+        AssetDatabase.CreateAsset(questContainer, "Assets/Resources/questGraph.asset");
+        AssetDatabase.SaveAssets();
+    }
 
     public void LoadGraph()
     {
@@ -85,14 +73,12 @@ public class QuestSaveUtility
         }
 
         ClearGraph();
-       // CreateNodes();
+        CreateNodes();
+        if (Nodes.FirstOrDefault(node => node.QuestType == QuestNode.NodeTypes.Start) == null)
+        {
+            _targetGraphView.CreateNode(QuestNode.NodeTypes.Start);
+        }
         ConnectNodes();
-
-        //var entryNode = Nodes.Find(x => x.EntryPoint);
-        //if (entryNode != null)
-        //{
-        //    entryNode.GUID = _containerCache.entryNodeGUID;
-        //}
     }
 
     public void ConnectNodes()
@@ -129,14 +115,74 @@ public class QuestSaveUtility
                     continue;
                 }
 
-                LinkNodes(outputPort, inputPort);
-
-                targetNode.SetPosition(new Rect(
-                    _containerCache.questNodeData.First(x => x.GUID == targetNodeGUID).Position, _targetGraphView.defNodeSize
-                ));
+                var targetNodeData = _containerCache.questNodeData.FirstOrDefault(x => SerializableQuestNodeModel.DeserializeNodeModel(x).GUID == targetNodeGUID);
+                if (targetNodeData != null)
+                {
+                    var targetNodeModel = SerializableQuestNodeModel.DeserializeNodeModel(targetNodeData);
+                    if (targetNodeModel != null)
+                    {
+                        targetNode.SetPosition(new Rect(targetNodeModel.position, _targetGraphView.defNodeSize));
+                        LinkNodes(outputPort, inputPort);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Unable to deserialize target node with GUID {targetNodeGUID}.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Node data for GUID {targetNodeGUID} not found in container.");
+                }
             }
         }
     }
+    private QuestNodeModel CreateNodeModel(QuestNode node)
+    {
+        switch (node.QuestType)
+        {
+            case QuestNode.NodeTypes.Start:
+                return new StartNodeModel
+                {
+                    GUID = node.GUID,
+                    QuestType = node.QuestType,
+                    position = node.GetPosition().position,
+                };
+            case QuestNode.NodeTypes.MainQuestNode:
+                return new MainQuestNodeModel
+                {
+                    GUID = node.GUID,
+                    QuestType = node.QuestType,
+                    position = node.GetPosition().position,
+                    QuestName = ((MainQuestNode)node).QuestName,
+                    QuestDescription = ((MainQuestNode)node).QuestDescription
+                };
+            case QuestNode.NodeTypes.ObjectiveNode:
+                return new ObjectiveNodeModel
+                {
+                    GUID = node.GUID,
+                    QuestType = node.QuestType,
+                    position = node.GetPosition().position,
+                    ObjectiveType = ((ObjectiveNode)node).ObjectiveType,
+                    ObjectiveDescription = ((ObjectiveNode)node).ObjectiveDescription,
+                    isOptional = ((ObjectiveNode)node).isOptional,
+                    CompletionCriteria = ((ObjectiveNode)node).CompletionCriteria
+                };
+            case QuestNode.NodeTypes.RewardNode:
+                return new RewardNodeModel
+                {
+                    GUID = node.GUID,
+                    QuestType = node.QuestType,
+                    position = node.GetPosition().position,
+                    RewardType = ((RewardNode)node).RewardType,
+                    RewardValue = ((RewardNode)node).RewardValue
+                };
+            default:
+                Debug.LogError($"Unsupported node type: {node.QuestType}");
+                return null;
+        }
+    }
+
+
     private void LinkNodes(Port output, Port input)
     {
         var tempEdge = new Edge
@@ -150,40 +196,33 @@ public class QuestSaveUtility
         _targetGraphView.Add(tempEdge);
     }
 
-    //private void CreateNodes()
-    //{
-    //    foreach (var nodeData in _containerCache.questNodeData)
-    //    {
-    //        var tempNode = _targetGraphView.CreateNode(nodeData.NodeType, nodeData);
-    //        tempNode.GUID = nodeData.GUID;
-    //        tempNode.QuestName = nodeData.QuestName;
-    //        tempNode.QuestType = nodeData.NodeType;
-    //        tempNode.CompletionCriteria = CompletionCriteriaSerializer.Deserialize(nodeData.CompletionCriteria);
-    //        _targetGraphView.AddElement(tempNode);
-            
-    //        var nodePorts = _containerCache.nodeLinks.Where(x => x.baseNodeGUID == nodeData.GUID).ToList();
-    //    }
-    //}
-    
+    private void CreateNodes()
+    {
+        foreach (var serializableNode in _containerCache.questNodeData)
+        {
+            var nodeModel = SerializableQuestNodeModel.DeserializeNodeModel(serializableNode);
+            if (nodeModel != null)
+            {
+                var createdNode = _targetGraphView.CreateNode(nodeModel.QuestType, nodeModel);
+                _targetGraphView.AddElement(createdNode);
+            }
+        }
+    }
+
+
+
     private void ClearGraph()
     {
         if (!Nodes.Any()) return;
 
-        //var entryNode = Nodes.Find(x => x.EntryPoint);
-        //if (entryNode != null)
-        //{
-        //    entryNode.GUID = _containerCache.entryNodeGUID;
-        //}
-
-        //foreach (var node in Nodes)
-        //{
-        //    if (node.EntryPoint) continue;
-
-        //    Edges.Where(x => x.input.node == node).ToList().ForEach(edge => _targetGraphView.RemoveElement(edge));
-        //    _targetGraphView.RemoveElement(node);
-        //}
+        foreach (var node in Nodes)
+        {
+            Edges.Where(x => x.input.node == node).ToList().ForEach(edge => _targetGraphView.RemoveElement(edge));
+            _targetGraphView.RemoveElement(node);
+        }
     }
 }
+
 
 public static class CompletionCriteriaSerializer
 {
