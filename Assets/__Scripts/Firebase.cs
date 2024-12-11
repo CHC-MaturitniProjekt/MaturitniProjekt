@@ -6,8 +6,13 @@ using UnityEngine;
 
 public class Firebase : MonoBehaviour
 {
+    UIManager uiManager;
 
-
+    void Awake()
+    {
+        uiManager = FindAnyObjectByType<UIManager>();
+    }
+    
     void Start()
     {
         FirebaseConfig config = new FirebaseConfig("https://augumentum-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -20,14 +25,19 @@ public class Firebase : MonoBehaviour
         {
             Debug.Log($"Title: {quest.Value.title}, Description: {quest.Value.description}, Reward: {quest.Value.reward}");
         }
-
-
         client.StartListening("quests", OnDataChanged);
+        client.StartListening("stats", OnStatsChange);
     }
 
     void OnDataChanged(string eventType, string data)
     {
         Debug.Log($"Event: {eventType}, Data: {data}");
+    }
+
+    void OnStatsChange(string eventType, string data)
+    {
+        Debug.Log($"Event: {eventType}, Data: {data}");
+        uiManager.AddNotification("Stats chaned");
     }
 
     void Update()

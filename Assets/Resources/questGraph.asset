@@ -12,10 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35459f3a87f18d4499c25b2dc1250006, type: 3}
   m_Name: questGraph
   m_EditorClassIdentifier: 
-  nodeLinks: []
+  nodeLinks:
+  - baseNodeGUID: 93e94d62-53fc-46f7-97fe-3849f1f786df
+    portName: Start
+    targetNodeGUID: f6bfc7d0-628b-4c83-ad42-9632b3ff98ea
+  - baseNodeGUID: f6bfc7d0-628b-4c83-ad42-9632b3ff98ea
+    portName: Objectives
+    targetNodeGUID: 03fb2e16-565a-4d5d-82e0-bfd3cf5abcab
   questNodeData:
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"03fb2e16-565a-4d5d-82e0-bfd3cf5abcab","position":{"x":797.0,"y":8.0},"ObjectiveDescription":"Describe
+    JsonData: '{"QuestType":2,"GUID":"03fb2e16-565a-4d5d-82e0-bfd3cf5abcab","position":{"x":797.3333129882813,"y":8.0},"ObjectiveDescription":"Describe
       the objective here","ObjectiveType":"Fetch","isOptional":false}'
-  entryNodeGUID: 
+  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":0,"GUID":"68e22216-294c-4cf3-87e2-947764e8c5de","position":{"x":0.0,"y":0.0}}'
+  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":0,"GUID":"93e94d62-53fc-46f7-97fe-3849f1f786df","position":{"x":0.0,"y":0.0}}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"f6bfc7d0-628b-4c83-ad42-9632b3ff98ea","position":{"x":242.0,"y":-20.0},"QuestName":"New
+      Quest","QuestDescription":"Describe the quest here"}'
