@@ -42,8 +42,10 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
     public event Action InteractEvent;
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.phase == InputActionPhase.Performed)
+        {
             InteractEvent?.Invoke();
+        }
     }
 
     public event Action JumpEvent;
@@ -75,5 +77,38 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
     public void OnCrouch(InputAction.CallbackContext context)
     {
         CrouchEvent?.Invoke();
+    }
+
+    public event Action CamModeEvent;
+    public void OnCamMode(InputAction.CallbackContext context)
+    {
+        CamModeEvent?.Invoke();
+    }
+
+    public event Action CamIndexIncrement;
+    public void OnCamIndexIncrement(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            CamIndexIncrement.Invoke();
+        }
+    }
+
+    public event Action CamIndexDecrement;
+    public void OnCamIndexDecrement(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Performed)
+        {
+            CamIndexDecrement.Invoke();
+        }
+    }
+
+    public event Action DropEvent;
+    public void OnDrop(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            DropEvent?.Invoke();
+        }
     }
 }

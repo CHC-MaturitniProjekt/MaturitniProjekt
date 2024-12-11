@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Interactable
+  - Camera
+  - NPC
+  - Item
+  - PC
   layers:
   - Default
   - TransparentFX
@@ -35,8 +40,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - PCScreen
+  - Interactable
   m_SortingLayers:
   - name: Default
     uniqueID: 0

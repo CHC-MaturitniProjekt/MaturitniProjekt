@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float sprintTime;
     private float currentSprintTime;
 
-    public bool isSprinting = false;
+    private bool isSprinting = false;
     [SerializeField] private float sprintRecoveryTime;
     [SerializeField] private float jumpForce;
     private bool isJumping = false;
@@ -84,19 +84,25 @@ public class Movement : MonoBehaviour
     private void Move()
     {
         float moveSpeed;
-        if (isSprinting && !isCrouched) {
-            moveSpeed = sprintSpeed;
-        } else if (isCrouched && !isSprinting) {
-            moveSpeed = crouchSpeed;
-        } else if (isCrouched && isSprinting) {
-            moveSpeed = (crouchSpeed + sprintSpeed) / 2;
-        } else {
-            moveSpeed = speed;
+        if (isSprinting && !isCrouched)
+        {
+            moveSpeed = Mathf.Lerp(rb.velocity.magnitude, sprintSpeed, Time.fixedDeltaTime * 5f);
         }
-        
-        Vector3 movement = GetMovementInfo(moveSpeed * 10);
+        else if (isCrouched && !isSprinting)
+        {
+            moveSpeed = Mathf.Lerp(rb.velocity.magnitude, crouchSpeed, Time.fixedDeltaTime * 5f);
+        }
+        else if (isCrouched && isSprinting)
+        {
+            moveSpeed = Mathf.Lerp(rb.velocity.magnitude, (crouchSpeed + sprintSpeed) / 2, Time.fixedDeltaTime * 5f);
+        }
+        else
+        {
+            moveSpeed = Mathf.Lerp(rb.velocity.magnitude, speed, Time.fixedDeltaTime * 5f);
+        }
 
-        rb.AddForce(movement, ForceMode.VelocityChange);
+        Vector3 movement = GetMovementInfo(moveSpeed);
+        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
 
         if (isSprinting)
         {
@@ -112,7 +118,7 @@ public class Movement : MonoBehaviour
     {
         Vector3 forwardMovement = transform.forward * -movementInput.x;
         Vector3 rightMovement = transform.right * movementInput.y;
-        return (forwardMovement + rightMovement).normalized * moveSpeed * Time.fixedDeltaTime;
+        return (forwardMovement + rightMovement).normalized * moveSpeed;
     }
 
     private void SprintTimer()
@@ -141,7 +147,7 @@ public class Movement : MonoBehaviour
     private void Jump()
     {
         isJumping = true;
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z); 
     }
 
     private void Crouch()
