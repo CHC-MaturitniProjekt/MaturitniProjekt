@@ -10027,7 +10027,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 1767728395}
   questPrefab: {fileID: 1277835162}
-  notificationPrefab: {fileID: 1554169041}
+  notificationManager: {fileID: 1554169045}
 --- !u!1 &331471047
 GameObject:
   m_ObjectHideFlags: 0
@@ -40935,7 +40935,7 @@ MonoBehaviour:
   useLocalization: 1
   updateOnAnimate: 1
   minimizeAfter: 3
-  defaultState: 1
+  defaultState: 0
   afterMinimize: 0
   onDestroy:
     m_PersistentCalls:
@@ -53099,7 +53099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2081405435
 Transform:
   m_ObjectHideFlags: 0
