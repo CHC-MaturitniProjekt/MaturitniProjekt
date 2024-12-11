@@ -39,7 +39,7 @@ public class FirebaseClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in GetAsync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in GetAsync: {ex.Message}");
             throw;
         }
     }
@@ -67,7 +67,7 @@ public class FirebaseClient
         }
         catch (AggregateException ex)
         {
-            Console.WriteLine($"Error in GetSync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in GetSync: {ex.Message}");
             throw ex.Flatten().InnerException;
         }
     }
@@ -98,7 +98,7 @@ public class FirebaseClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in PutAsync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in PutAsync: {ex.Message}");
             throw;
         }
     }
@@ -129,7 +129,7 @@ public class FirebaseClient
         }
         catch (AggregateException ex)
         {
-            Console.WriteLine($"Error in PutSync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in PutSync: {ex.Message}");
             throw ex.Flatten().InnerException;
         }
     }
@@ -160,7 +160,7 @@ public class FirebaseClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in PostAsync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in PostAsync: {ex.Message}");
             throw;
         }
     }
@@ -192,7 +192,7 @@ public class FirebaseClient
         }
         catch (AggregateException ex)
         {
-            Console.WriteLine($"Error in PostSync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in PostSync: {ex.Message}");
             throw ex.Flatten().InnerException;
         }
     }
@@ -223,7 +223,7 @@ public class FirebaseClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in PatchAsync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in PatchAsync: {ex.Message}");
             throw;
         }
     }
@@ -254,7 +254,7 @@ public class FirebaseClient
         }
         catch (AggregateException ex)
         {
-            Console.WriteLine($"Error in PatchSync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in PatchSync: {ex.Message}");
             throw ex.Flatten().InnerException;
         }
     }
@@ -279,7 +279,7 @@ public class FirebaseClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in DeleteAsync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in DeleteAsync: {ex.Message}");
             return false;
         }
     }
@@ -304,7 +304,7 @@ public class FirebaseClient
         }
         catch (AggregateException ex)
         {
-            Console.WriteLine($"Error in DeleteSync: {ex.Message}");
+           UnityEngine.Debug.LogError($"Error in DeleteSync: {ex.Message}");
             return false;
         }
     }
@@ -347,7 +347,10 @@ public class FirebaseClient
                             if (dataLine.StartsWith("data:"))
                             {
                                 string data = dataLine.Substring("data:".Length).Trim();
-                                onDataReceived(eventName, data);
+                                UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                                {
+                                    onDataReceived(eventName, data);
+                                });
                             }
                         }
                     }
@@ -356,7 +359,10 @@ public class FirebaseClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in StreamAsync: {ex.Message}");
+            UnityMainThreadDispatcher.Instance.Enqueue(() =>
+            {
+                UnityEngine.Debug.LogError($"Error in StreamAsync: {ex.Message}");
+            });
             throw;
         }
     }
@@ -380,13 +386,19 @@ public class FirebaseClient
                     {
                         if (eventName == "put" || eventName == "patch")
                         {
-                            onDataChanged(eventName, data);
+                            UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                            {
+                                onDataChanged(eventName, data);
+                            });
                         }
                     });
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error in StartListening: {ex.Message}");
+                    UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                    {
+                        UnityEngine.Debug.LogError($"Error in StartListening: {ex.Message}");
+                    });
                     await Task.Delay(5000); // Retry after delay
                 }
             }
