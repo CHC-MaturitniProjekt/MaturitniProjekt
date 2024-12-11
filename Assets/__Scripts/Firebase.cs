@@ -25,7 +25,7 @@ public class Firebase : MonoBehaviour
         {
             Debug.Log($"Title: {quest.Value.title}, Description: {quest.Value.description}, Reward: {quest.Value.reward}");
         }
-        client.StartListening("quests", OnDataChanged);
+       //client.StartListening("quests", OnDataChanged);
         client.StartListening("stats", OnStatsChange);
     }
 
@@ -38,6 +38,7 @@ public class Firebase : MonoBehaviour
     {
         Debug.Log($"Event: {eventType}, Data: {data}");
         uiManager.AddNotification("Stats chaned");
+       
     }
 
     void Update()

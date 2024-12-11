@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -347,10 +348,7 @@ public class FirebaseClient
                             if (dataLine.StartsWith("data:"))
                             {
                                 string data = dataLine.Substring("data:".Length).Trim();
-                                UnityMainThreadDispatcher.Instance.Enqueue(() =>
-                                {
-                                    onDataReceived(eventName, data);
-                                });
+                                 onDataReceived(eventName, data);
                             }
                         }
                     }
@@ -359,10 +357,8 @@ public class FirebaseClient
         }
         catch (Exception ex)
         {
-            UnityMainThreadDispatcher.Instance.Enqueue(() =>
-            {
-                UnityEngine.Debug.LogError($"Error in StreamAsync: {ex.Message}");
-            });
+            
+           UnityEngine.Debug.LogError($"Error in StreamAsync: {ex.Message}");
             throw;
         }
     }
@@ -386,7 +382,7 @@ public class FirebaseClient
                     {
                         if (eventName == "put" || eventName == "patch")
                         {
-                            UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                            UnityMainThreadDispatcher.Instance().Enqueue(() =>
                             {
                                 onDataChanged(eventName, data);
                             });
@@ -395,10 +391,7 @@ public class FirebaseClient
                 }
                 catch (Exception ex)
                 {
-                    UnityMainThreadDispatcher.Instance.Enqueue(() =>
-                    {
-                        UnityEngine.Debug.LogError($"Error in StartListening: {ex.Message}");
-                    });
+                   UnityEngine.Debug.LogError($"Error in StartListening: {ex.Message}");
                     await Task.Delay(5000); // Retry after delay
                 }
             }

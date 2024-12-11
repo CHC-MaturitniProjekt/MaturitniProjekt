@@ -87,6 +87,7 @@ public class UIManager : MonoBehaviour
             string notif = notifList[lastProcessedNotifIndex];
             lastProcessedNotifIndex++;
 
+            notificationManager.defaultState = NotificationManager.DefaultState.Expanded;
             notificationManager.notificationText = notif;
             notificationManager.UpdateUI();
             
