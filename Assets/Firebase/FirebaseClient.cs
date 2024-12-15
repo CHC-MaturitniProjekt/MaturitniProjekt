@@ -155,16 +155,26 @@ public class FirebaseClient
             {
                 StringContent content = new StringContent(rawJson, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PostAsync(url, content);
-                string resRawJson = response.Content.ReadAsStringAsync().Result;
+
+                string resRawJson = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    UnityEngine.Debug.LogError($"PostAsync Error: {response.StatusCode}, {resRawJson}");
+                    throw new HttpRequestException($"Firebase PostAsync failed with status: {response.StatusCode}");
+                }
+
+                UnityEngine.Debug.Log($"PostAsync Success: {resRawJson}");
                 return new FirebaseResponse { RawJson = resRawJson };
             }
         }
         catch (Exception ex)
         {
-           UnityEngine.Debug.LogError($"Error in PostAsync: {ex.Message}");
+            UnityEngine.Debug.LogError($"Error in PostAsync: {ex.Message}");
             throw;
         }
     }
+
 
 
     /// <summary>

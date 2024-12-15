@@ -26,12 +26,9 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        AddQuest("Analne potesit tobana");
-        AddQuest("Vypij 5 piv");
-        AddQuest("Rimming s babickou");
+        AddQuest("Promluv si s kamarádem");
         
-        AddNotification("Prijata nova quest");
-        AddNotification("Prijata nova quest");
+        AddNotification("Vítej");
     }
 
     public void AddQuest(string newQuest)

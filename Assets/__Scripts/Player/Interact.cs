@@ -20,11 +20,12 @@ public class Interact : MonoBehaviour
     private GameObject selectedObj;
     
     private CameraController camController;
-
+    private Firebase firebase;
 
     void Start()
     {
         camController = FindObjectOfType<CameraController>();
+        firebase = FindObjectOfType<Firebase>();
 
         input.InteractEvent += OnInteract;
     }
@@ -93,12 +94,8 @@ public class Interact : MonoBehaviour
                 
                 currentOutline = outline;
                 if (currentOutline != null)
-                {   
-                    currentOutline.OutlineWidth = 5f;
-                }
-                else
                 {
-                    Debug.Log(currentOutline);
+                    currentOutline.OutlineWidth = 5f;
                 }
             }
         }
@@ -116,6 +113,7 @@ public class Interact : MonoBehaviour
     private void InteractWithNPC()
     {
         Debug.Log("Interacting with NPC");
+        firebase.AddQuest("Lorem ipsum", "Lorem ipsum dolor sit amet", "100");
     }
 
     private void InteractWithItem()
