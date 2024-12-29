@@ -28,6 +28,8 @@ public class CameraController : MonoBehaviour
     private Vector2 mouseMove = Vector2.zero;
     private float timer = 0.0f;
     private Vector3 initialCameraPosition;
+    private Vector2 currentMouseDelta;
+    private Vector2 currentMouseDeltaVelocity;
     
     public bool isUsingPC;
     CursorController cursorController;
@@ -35,7 +37,6 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         cursorController = FindObjectOfType<CursorController>();
-
         
         Cursor.lockState = CursorLockMode.Locked;
         input.LookEvent += Input_LookEvent;
@@ -59,9 +60,11 @@ public class CameraController : MonoBehaviour
     }
 
     private void Look()
-    {
-        if (!isUsingPC)
-             { 
+    { 
+        if (!isUsingPC) 
+        { 
+            currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, mouseMove, ref currentMouseDeltaVelocity, 0.05f);
+
             float mouseX = mouseMove.x * mouseSensitivity * Time.deltaTime;
             float mouseY = mouseMove.y * mouseSensitivity * Time.deltaTime;
 
