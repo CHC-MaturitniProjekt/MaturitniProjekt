@@ -9,7 +9,7 @@ public class QuestManager : MonoBehaviour
     public QuestContainer questContainer;
    
     [SerializeField]
-    private List<QuestNodeData> questList = new List<QuestNodeData>();
+    private List<ParsedQuestModel> questList = new List<ParsedQuestModel>();
 
     [SerializeField]
     private List<string[]> questConnections = new List<string[]>();
@@ -23,7 +23,11 @@ public class QuestManager : MonoBehaviour
     {
         foreach (var node in questContainer.questNodeData) //uklada data o questech
         {
-           // questList.Add(node);
+            var parsedQuest = ParseQuestData(node);
+            if (parsedQuest != null)
+            {
+                questList.Add(parsedQuest);
+            }
         }
         
         foreach (var link in questContainer.nodeLinks)  //uklada spojeni mezi questy
@@ -45,5 +49,40 @@ public class QuestManager : MonoBehaviour
                 Debug.Log(tmp);
             }
         }
+    }
+
+    private ParsedQuestModel ParseQuestData(SerializableQuestNodeModel node)
+    {
+        var questNodeModel = SerializableQuestNodeModel.DeserializeNodeModel(node);
+        if (questNodeModel.QuestType == QuestNode.NodeTypes.MainQuestNode)
+        {
+            var parsedQuestModel = new ParsedQuestModel
+            {
+                GUID = questNodeModel.GUID,
+                QuestName = questNodeModel.QuestType.ToString(),
+                QuestDescription = "Description",
+                Objectives = new List<string>(),
+                Rewards = new List<string>(),
+                isOptional = false,
+                isCompleted = false
+            };
+
+            foreach (var objectiveNode in questContainer.questNodeData)
+            {
+                var objectiveModel = SerializableQuestNodeModel.DeserializeNodeModel(objectiveNode);
+                if (objectiveModel.QuestType == QuestNode.NodeTypes.ObjectiveNode)
+                {
+                    parsedQuestModel.Objectives.Add(JsonUtility.ToJson(objectiveModel));
+                }
+                else if (objectiveModel.QuestType == QuestNode.NodeTypes.RewardNode)
+                {
+                    parsedQuestModel.Rewards.Add(JsonUtility.ToJson(objectiveModel));
+                }
+            }
+
+            return parsedQuestModel;
+        }
+
+        return null;
     }
 }

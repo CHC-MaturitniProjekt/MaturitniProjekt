@@ -14,8 +14,8 @@ public class QuestNodeModel
 [Serializable]
 public class SerializableQuestNodeModel
 {
-    public string NodeType; // Typ uzlu (napø. MainQuestNode, ObjectiveNode, ...)
-    public string JsonData; // Serializovaná data uzlu
+    public string NodeType; // Typ uzlu (napÅ™. MainQuestNode, ObjectiveNode, ...)
+    public string JsonData; // SerializovanÃ¡ data uzlu
 
     public SerializableQuestNodeModel(string nodeType, string jsonData)
     {
@@ -25,7 +25,7 @@ public class SerializableQuestNodeModel
 
     public static SerializableQuestNodeModel SerializeNodeModel(QuestNodeModel nodeModel)
     {
-        var nodeType = nodeModel.GetType().AssemblyQualifiedName; // Získá plný typ tøídy
+        var nodeType = nodeModel.GetType().AssemblyQualifiedName; // ZÃ­skÃ¡ plnÃ½ typ tÅ™Ã­dy
         var jsonData = JsonUtility.ToJson(nodeModel);             // Serializuje do JSON
         return new SerializableQuestNodeModel(nodeType, jsonData);
     }
@@ -35,5 +35,4 @@ public class SerializableQuestNodeModel
         var nodeType = Type.GetType(serializableModel.NodeType); // Najde typ uzlu
         return (QuestNodeModel)JsonUtility.FromJson(serializableModel.JsonData, nodeType);
     }
-
 }

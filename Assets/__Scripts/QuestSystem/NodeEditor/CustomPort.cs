@@ -23,8 +23,8 @@ public class CustomPort : Port
         return connectionType switch
         {
             ConnectionType.Quest => Color.red,
-            ConnectionType.Reward => Color.green,
-            ConnectionType.Objective => Color.cyan,
+            ConnectionType.Reward => Color.cyan,
+            ConnectionType.Objective => Color.green,
             _ => Color.white
         };
     }
