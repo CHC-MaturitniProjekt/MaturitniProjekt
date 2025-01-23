@@ -10047,6 +10047,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvas: {fileID: 1767728395}
   questPrefab: {fileID: 1277835162}
+  objectivePrefab: {fileID: 1776539196003672219, guid: 33bdf85a3b604a74795f2f1877f721ce,
+    type: 3}
+  objectiveSlot: {fileID: 99487805}
   notificationManager: {fileID: 1554169045}
 --- !u!1 &331471047
 GameObject:
@@ -10848,7 +10851,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bab236cbb7bcd44ea25dd4ba0ae7ea9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  questContainer: {fileID: 11400000, guid: 50d6ed67d3a3c7b4f97d22f8c0dee23b, type: 2}
   questList: []
 --- !u!1 &403759666
 GameObject:
@@ -22246,6 +22248,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2960663175316893247, guid: 2bde85e1ad4a58b4cb30dfbd1ceebab3,
+        type: 3}
+      propertyPath: minimizeAfter
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5592768532578344979, guid: 2bde85e1ad4a58b4cb30dfbd1ceebab3,
         type: 3}
       propertyPath: m_text
@@ -22385,6 +22392,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Quest
+      objectReference: {fileID: 0}
+    - target: {fileID: 9172591354753980629, guid: 2bde85e1ad4a58b4cb30dfbd1ceebab3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -51288,6 +51300,7 @@ GameObject:
   - component: {fileID: 2028090233}
   - component: {fileID: 2028090234}
   - component: {fileID: 2028090235}
+  - component: {fileID: 2028090236}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -51500,6 +51513,18 @@ MonoBehaviour:
   itemScale: 0.25
   throwForce: 8
   itemCount: 3
+--- !u!114 &2028090236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028090226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b0726e346a1be4989948f32703ecfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2035742059 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3257686548136090565, guid: 41ab1084db0416847aa346afff005130,
@@ -55271,9 +55296,30 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -1719546734608104347, guid: f8fe812b0c2913b4d8782c4cbade6737,
         type: 3}
+    - target: {fileID: 4783511581883775041, guid: 7d43133b47cbe4b42ae2c042f9d08d2d,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 65982e7b45e79d049ba3979290f0702e, type: 2}
+    - target: {fileID: 8169943537268494187, guid: 7d43133b47cbe4b42ae2c042f9d08d2d,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -5879322330806545662, guid: f8fe812b0c2913b4d8782c4cbade6737,
+        type: 3}
     - target: {fileID: 8169943537268494187, guid: 7d43133b47cbe4b42ae2c042f9d08d2d,
         type: 3}
       propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169943537268494187, guid: 7d43133b47cbe4b42ae2c042f9d08d2d,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8169943537268494187, guid: 7d43133b47cbe4b42ae2c042f9d08d2d,
+        type: 3}
+      propertyPath: m_ProvidesContacts
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

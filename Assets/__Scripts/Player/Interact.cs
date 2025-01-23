@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cinemachine;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -20,12 +21,17 @@ public class Interact : MonoBehaviour
     private GameObject selectedObj;
     
     private CameraController camController;
-    private Firebase firebase;
+    private QuestTrigger questTrigger;
+    
+    private QuestManager questManager;
+    private List<ParsedQuestModel> questList;
 
     void Start()
     {
-        camController = FindObjectOfType<CameraController>();
-        firebase = FindObjectOfType<Firebase>();
+        camController = FindFirstObjectByType<CameraController>();
+        
+        questTrigger = FindFirstObjectByType<QuestTrigger>();
+        questManager = FindFirstObjectByType<QuestManager>();
 
         input.InteractEvent += OnInteract;
     }
@@ -49,7 +55,6 @@ public class Interact : MonoBehaviour
                 InteractWithPC();
                 break;
             default:
-                Debug.Log("nn");
                 break;
         }
     }
@@ -113,12 +118,12 @@ public class Interact : MonoBehaviour
     private void InteractWithNPC()
     {
         Debug.Log("Interacting with NPC");
-        firebase.AddQuest("Lorem ipsum", "Lorem ipsum dolor sit amet", "100");
+        questList = questManager.GetQuestList();
+        questTrigger.TriggerQuest(questList[0]);
     }
 
     private void InteractWithItem()
     {
-        //ziskat item z raycastu
         if (selectedObj)
         {
             PlayerManager.Instance.PickUpItem(selectedObj);

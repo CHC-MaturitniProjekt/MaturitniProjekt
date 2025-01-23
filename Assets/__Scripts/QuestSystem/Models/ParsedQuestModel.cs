@@ -10,8 +10,9 @@ public class ParsedQuestModel
     public string GUID;
     public string QuestName;
     public string QuestDescription;
-    public List<string> Objectives = new List<string>();
-    public List<string> Rewards = new List<string>();
+    public List<ObjectiveNodeModel> Objectives = new List<ObjectiveNodeModel>();
+    public List<RewardNodeModel> Rewards = new List<RewardNodeModel>();
     public bool isOptional;
     public bool isCompleted;
+    public bool isActive;
 }

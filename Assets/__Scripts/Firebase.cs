@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -13,6 +15,10 @@ public class Firebase : MonoBehaviour
     void Awake()
     {
         uiManager = FindAnyObjectByType<UIManager>();
+        if (uiManager == null)
+        {
+            Debug.LogError("UIManager not found. Please ensure it is added to the scene.");
+        }
     }
     
     void Start()
@@ -22,18 +28,18 @@ public class Firebase : MonoBehaviour
 
         FirebaseResponse response = client.GetSync("quests");
 
-        Dictionary<string, QuestM> quests = response.ResultAs<Dictionary<string, QuestM>>();
-        if (quests != null)
+        Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
+        Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+        /*foreach (var quest in quests)
         {
-            foreach (var quest in quests) 
-            {
-                Debug.Log($"Title: {quest.Value.title}, Description: {quest.Value.description}, Reward: {quest.Value.reward}"); 
-            }
-        }
+            Debug.Log(quest.Value.QuestName);
+        }*/
+    
         
        //client.StartListening("quests", OnDataChanged);
         client.StartListening("upgrades", OnStatsChange);
-        //client.StartListening("quests", OnQuestsChange);
+        client.StartListening("quests", OnQuestsChange);
     }
 
     void OnDataChanged(string eventType, string data)
@@ -51,27 +57,67 @@ public class Firebase : MonoBehaviour
     void OnQuestsChange(string eventType, string data)
     {
         Debug.Log($"Event: {eventType}, Data: {data}");
-        data.Split('"');
-        string title = data.Split('"')[3];
-        uiManager.AddQuest(title);
-       
+
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+      
+        FirebaseResponse response = client.GetSync("quests");
+        Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
+        
+        var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data, settings);
+        if (jsonData != null && jsonData.ContainsKey("data"))
+        {
+            var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData["data"].ToString());
+            foreach (var item in dataDict)
+            {
+                string[] parts = item.Key.Split('/');
+                if (parts.Length == 2 && parts[1] == "isActive")
+                {
+                    string questId = parts[0];
+                    bool isActive = Convert.ToBoolean(item.Value);
+                    
+                    if (isActive)
+                    {
+                        uiManager.PinQuest(questId);
+                    }
+                    else if (!isActive)
+                    {
+                        uiManager.UnPinQuest();
+                    }
+                }
+                else
+                {
+                    string questId = parts[0];
+                    uiManager.AddQuest(questId);
+                }
+            }
+        }
     }
     
-    public async void AddQuest(string title, string description, string reward)
+    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, bool isActive)
     {
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+        
+        string objectivesJson = JsonConvert.SerializeObject(objectives, settings);
+        string rewardsJson = JsonConvert.SerializeObject(rewards, settings);
+
+        
         string jsonQuest = $@"{{
-            ""title"": ""{title}"",
-            ""description"": ""{description}"",
-            ""reward"": ""{reward}"",
-            ""criteria"": {{
-                ""name"": {{
-                    ""0"": 0,
-                    ""5"": 5
-                }}
-            }}
+            ""QuestName"": ""{title}"",
+            ""QuestDescription"": ""{description}"",           
+            ""Objectives"": {objectivesJson},
+            ""Rewards"": {rewardsJson},
+            ""isActive"": {isActive.ToString().ToLower()}
         }}";
-        FirebaseResponse response = await client.PostAsync("quests", jsonQuest);
-        uiManager.AddQuest(title);
+        
+        
+        FirebaseResponse response = client.PutSync($"quests/{guid}", jsonQuest);
+        //uiManager.AddQuest(title);
         if (response != null && !string.IsNullOrEmpty(response.RawJson))
         {
             Debug.Log($"Quest added successfully: {response.RawJson}");
@@ -81,7 +127,6 @@ public class Firebase : MonoBehaviour
             Debug.LogError("Failed to add quest. Response is null or empty.");
         }
     }
-
 
     void Update()
     {

@@ -16,42 +16,55 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private NotificationManager notificationManager;
 
-    private List<string> questList = new List<string>();
     private List<string> notifList = new List<string>();
     private int lastProcessedQuestIndex = 0;
     private int lastProcessedNotifIndex = 0;
 
     private bool isRunningQuests = false;
+    private bool isPinned = false;
     private bool isRunningNotifs = false;
+    
+    private QuestManager questManager;
+    private List<ParsedQuestModel> questList;
 
     void Start()
     {
-        AddQuest("Promluv si s kamarádem");
+        //AddQuest("Promluv si s kamarádem");
         
         AddNotification("Vítej");
+        
+        questManager = FindFirstObjectByType<QuestManager>();
+        questList = questManager.GetQuestList();
     }
 
-    public void AddQuest(string newQuest)
+    public void AddQuest(string questId)
     {
-        questList.Add(newQuest);
-
-        if (!isRunningQuests)
+        string questName = "";
+        foreach (var quest in questList)
         {
-            StartCoroutine(RunQuests());
+            if(quest.GUID == questId)
+            {
+                questName = quest.QuestName;
+            }
+        }
+        
+        if (!isRunningQuests && !isPinned)
+        {
+            StartCoroutine(RunQuests(questName));
         }
     }
 
-    private IEnumerator RunQuests()
+    private IEnumerator RunQuests(string questName)
     {
         isRunningQuests = true;
     
         while (lastProcessedQuestIndex < questList.Count)
         {
-            string quest = questList[lastProcessedQuestIndex];
             lastProcessedQuestIndex++;
-
+            Debug.Log(questList.Count + " " + lastProcessedNotifIndex);
+            
             questPrefab.defaultState = QuestItem.DefaultState.Expanded;
-            questPrefab.questText = quest;
+            questPrefab.questText = questName;
             questPrefab.UpdateUI();
             
             questPrefab.AnimateQuest();
@@ -62,7 +75,33 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
 
-        isRunningQuests = false; // All quests are processed
+        isRunningQuests = false;
+    }
+    
+    public void PinQuest(string questId)
+    {
+        isPinned = true;
+        string questName = "";
+        foreach (var quest in questList)
+        {
+            if(quest.GUID == questId)
+            {
+                questName = quest.QuestName;
+                break;
+            }
+        }
+        
+        questPrefab.defaultState = QuestItem.DefaultState.Expanded;
+        questPrefab.questText = questName;
+        questPrefab.UpdateUI();
+        questPrefab.AnimateQuest();
+        questPrefab.ExpandQuest();
+    }
+
+    public void UnPinQuest()
+    {
+        questPrefab.MinimizeQuest();
+        isPinned = false;
     }
     
     public void AddNotification(string notifText)
