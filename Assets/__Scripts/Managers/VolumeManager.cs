@@ -24,7 +24,6 @@ public class VolumeManager : MonoBehaviour
         if (volume.profile.TryGet(out vignette))
         {
             vignette.intensity.value = 0f;
-            Debug.Log("Vignette initialized successfully.");
         }
     }
 
@@ -32,7 +31,6 @@ public class VolumeManager : MonoBehaviour
     {
         float sprintTime = PlayerManager.Instance.GetPlayerSprintTime();
         float sprintRecoveryTime = PlayerManager.Instance.GetPlayerSprintRecoveryTime();
-        Debug.Log($"Sprint Time: {sprintTime}, Recovery Time: {sprintRecoveryTime}");
 
         if (sprintTime > 0)
         {
@@ -53,18 +51,15 @@ public class VolumeManager : MonoBehaviour
         float sprintRatio = Mathf.Clamp01(sprintTime / maxSprintTime);
         float targetIntensity = Mathf.Lerp(0.35f, 0.05f, sprintRatio); 
         vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, targetIntensity, Time.deltaTime * 5f);
-        Debug.Log($"Updating vignette intensity: {vignette.intensity.value}");
     }
 
     private void KeepMaxVignetteEffect()
     {
         vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0.35f, Time.deltaTime * 5f);
-        Debug.Log($"Keeping max vignette intensity during recovery: {vignette.intensity.value}");
     }
 
     private void SmoothResetVignetteEffect()
     {
         vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0f, Time.deltaTime * 2f);
-        Debug.Log($"Resetting vignette intensity: {vignette.intensity.value}");
     }
 }
