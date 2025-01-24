@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
     private float playerSprintTime;
+    private float playerSprintRecoveryT;
     private PickUp pickUpScript;
     
     public enum MovementState
@@ -49,6 +50,16 @@ public class PlayerManager : MonoBehaviour
     public float GetPlayerSprintTime()
     {
         return playerSprintTime;
+    }
+    
+    public void SetPlayerRecoveryTime(float sprintTime)
+    {
+        playerSprintRecoveryT = sprintTime;
+    }
+    
+    public float GetPlayerSprintRecoveryTime()
+    {
+        return playerSprintRecoveryT;
     }
 
     public void PickUpItem(GameObject item)

@@ -14,23 +14,57 @@ public class VolumeManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log(volume.profile.TryGet(out vignette));
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
 
-        vignette.intensity.value = 0f;
+        if (volume.profile.TryGet(out vignette))
+        {
+            vignette.intensity.value = 0f;
+            Debug.Log("Vignette initialized successfully.");
+        }
     }
 
     private void Update()
     {
-        if (PlayerManager.Instance.GetPlayerSprintTime() <= maxSprintTime)
+        float sprintTime = PlayerManager.Instance.GetPlayerSprintTime();
+        float sprintRecoveryTime = PlayerManager.Instance.GetPlayerSprintRecoveryTime();
+        Debug.Log($"Sprint Time: {sprintTime}, Recovery Time: {sprintRecoveryTime}");
+
+        if (sprintTime > 0)
         {
-            UpdateVignetteEffect();
+            UpdateVignetteEffect(sprintTime);
+        }
+        else if (sprintRecoveryTime > 0)
+        {
+            KeepMaxVignetteEffect();
+        }
+        else
+        {
+            SmoothResetVignetteEffect();
         }
     }
 
-    private void UpdateVignetteEffect()
+    private void UpdateVignetteEffect(float sprintTime)
     {
-        float sprintTime = PlayerManager.Instance.GetPlayerSprintTime();
         float sprintRatio = Mathf.Clamp01(sprintTime / maxSprintTime);
-        vignette.intensity.value = Mathf.Lerp(0.35f, 0.05f, sprintRatio);
+        float targetIntensity = Mathf.Lerp(0.35f, 0.05f, sprintRatio); 
+        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, targetIntensity, Time.deltaTime * 5f);
+        Debug.Log($"Updating vignette intensity: {vignette.intensity.value}");
+    }
+
+    private void KeepMaxVignetteEffect()
+    {
+        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0.35f, Time.deltaTime * 5f);
+        Debug.Log($"Keeping max vignette intensity during recovery: {vignette.intensity.value}");
+    }
+
+    private void SmoothResetVignetteEffect()
+    {
+        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0f, Time.deltaTime * 2f);
+        Debug.Log($"Resetting vignette intensity: {vignette.intensity.value}");
     }
 }

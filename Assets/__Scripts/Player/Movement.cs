@@ -139,6 +139,7 @@ public class Movement : MonoBehaviour
     {
         if (currentSprintTime < sprintTime)
         {
+            PlayerManager.Instance.SetPlayerRecoveryTime(sprintRecoveryTime);
             currentSprintTime += sprintRecoveryTime * Time.deltaTime;
         }
 

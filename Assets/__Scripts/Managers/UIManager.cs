@@ -61,7 +61,6 @@ public class UIManager : MonoBehaviour
         while (lastProcessedQuestIndex < questList.Count)
         {
             lastProcessedQuestIndex++;
-            Debug.Log(questList.Count + " " + lastProcessedNotifIndex);
             
             questPrefab.defaultState = QuestItem.DefaultState.Expanded;
             questPrefab.questText = questName;
@@ -107,7 +106,6 @@ public class UIManager : MonoBehaviour
     public void AddNotification(string notifText)
     {
         notifList.Add(notifText);
-        Debug.Log(notifText);
         //if (!isRunningNotifs)
         //{
             StartCoroutine(RunNotifications());
@@ -135,6 +133,5 @@ public class UIManager : MonoBehaviour
         }
 
         isRunningNotifs = false;
-        Debug.Log(isRunningNotifs);
     }
 }

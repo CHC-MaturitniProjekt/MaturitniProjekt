@@ -401,7 +401,8 @@ public class FirebaseClient
                 }
                 catch (Exception ex)
                 {
-                   UnityEngine.Debug.LogError($"Error in StartListening: {ex.Message}");
+                    if (UnityEditor.EditorApplication.isPlaying)
+                        UnityEngine.Debug.LogError($"Error in StartListening: {ex.Message}");
                     await Task.Delay(5000); // Retry after delay
                 }
             }

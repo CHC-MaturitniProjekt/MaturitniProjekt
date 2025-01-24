@@ -29,15 +29,7 @@ public class Firebase : MonoBehaviour
         FirebaseResponse response = client.GetSync("quests");
 
         Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
-        Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-        /*foreach (var quest in quests)
-        {
-            Debug.Log(quest.Value.QuestName);
-        }*/
-    
         
-       //client.StartListening("quests", OnDataChanged);
         client.StartListening("upgrades", OnStatsChange);
         client.StartListening("quests", OnQuestsChange);
     }
@@ -118,18 +110,5 @@ public class Firebase : MonoBehaviour
         
         FirebaseResponse response = client.PutSync($"quests/{guid}", jsonQuest);
         //uiManager.AddQuest(title);
-        if (response != null && !string.IsNullOrEmpty(response.RawJson))
-        {
-            Debug.Log($"Quest added successfully: {response.RawJson}");
-        }
-        else
-        {
-            Debug.LogError("Failed to add quest. Response is null or empty.");
-        }
-    }
-
-    void Update()
-    {
-
     }
 }

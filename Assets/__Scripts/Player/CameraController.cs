@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
     
-    public bool isUsingPC;
+    [HideInInspector] public bool isUsingPC;
     CursorController cursorController;
     
     private void Start()
@@ -77,7 +77,6 @@ public class CameraController : MonoBehaviour
         }
         else
         {   
-            
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = false;
         }
