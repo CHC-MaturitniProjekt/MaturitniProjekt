@@ -8,31 +8,24 @@ public class NPCMovement : MonoBehaviour
     [SerializeField] private Transform playerPosition;
     [SerializeField] private float waitTime = 2f;
     [SerializeField] private float detectionRadius = 10f;
+    [SerializeField] private float detectionAngle = 80f;
     [SerializeField] private float stopFollowingRadius = 12f;
     [SerializeField] private float stopDistance = 2f;
 
     private NavMeshAgent agent;
     private int currentWaypointIndex;
     private bool isWaiting;
-    private NPCBehaviour currentBehaviour;
 
-    public enum NPCBehaviour
-    {
-        Patrol,
-        FollowPlayer
-    }
+    private NPCBrain npcBrain;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        npcBrain = GetComponent<NPCBrain>();
 
         if (waypoints.Length > 0)
         {
-            SetNPCBehaviour(NPCBehaviour.Patrol);
-        }
-        else
-        {
-            Debug.LogWarning("No waypoints assigned to NPCMovement.");
+            npcBrain.currentBehaviour = NPCBrain.NPCBehaviour.Wander;
         }
     }
 
@@ -41,29 +34,24 @@ public class NPCMovement : MonoBehaviour
         if (isWaiting || !agent.isOnNavMesh)
             return;
 
-        switch (currentBehaviour)
+        switch (npcBrain.currentBehaviour)
         {
-            case NPCBehaviour.Patrol:
+            case NPCBrain.NPCBehaviour.Wander:
                 HandlePatrol();
                 break;
 
-            case NPCBehaviour.FollowPlayer:
+            case NPCBrain.NPCBehaviour.FollowPlayer:
                 HandleFollowPlayer();
+                break;
+            case NPCBrain.NPCBehaviour.RunAway:
+                HandleRunAway();
+                break;
+            case NPCBrain.NPCBehaviour.LookAtPlayer:
+                LookAtPlayer();
                 break;
         }
 
         DetectPlayer();
-    }
-
-    private void SetNPCBehaviour(NPCBehaviour behaviour)
-    {
-        currentBehaviour = behaviour;
-
-        if (behaviour == NPCBehaviour.Patrol && waypoints.Length > 0)
-        {
-            agent.SetDestination(waypoints[currentWaypointIndex].position);
-            Debug.Log("Patrolling" + waypoints[currentWaypointIndex].position);
-        }
     }
 
     private void DetectPlayer()
@@ -72,19 +60,18 @@ public class NPCMovement : MonoBehaviour
         float distanceToPlayer = directionToPlayer.magnitude;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
+        if (distanceToPlayer < detectionRadius && angleToPlayer < detectionAngle)
+        {
+            npcBrain.currentBehaviour = NPCBrain.NPCBehaviour.LookAtPlayer;
+        }
+        else if (distanceToPlayer > stopFollowingRadius)
+        {
+            agent.isStopped = false;
+            npcBrain.currentBehaviour = NPCBrain.NPCBehaviour.Wander;
+        }
+
         Debug.DrawRay(transform.position, transform.forward * detectionRadius, Color.green);
         Debug.DrawRay(transform.position, directionToPlayer, Color.red);
-
-        if (distanceToPlayer < detectionRadius && angleToPlayer < 80f && currentBehaviour != NPCBehaviour.FollowPlayer)
-        {
-            SetNPCBehaviour(NPCBehaviour.FollowPlayer);
-            Debug.Log("Following player");
-        }
-        else if (distanceToPlayer > stopFollowingRadius && currentBehaviour == NPCBehaviour.FollowPlayer)
-        {
-            SetNPCBehaviour(NPCBehaviour.Patrol);
-            Debug.Log("Patrolling");
-        }
     }
 
     private void HandlePatrol()
@@ -101,8 +88,7 @@ public class NPCMovement : MonoBehaviour
     private void HandleFollowPlayer()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, playerPosition.position);
-        Debug.Log("Distance to player: " + distanceToPlayer);
-        
+
         if (distanceToPlayer > stopDistance)
         {
             agent.SetDestination(playerPosition.position);
@@ -112,6 +98,21 @@ public class NPCMovement : MonoBehaviour
             agent.velocity = Vector3.zero;
             agent.ResetPath();
         }
+    }
+
+    private void HandleRunAway()
+    {
+        Vector3 directionToPlayer = playerPosition.position - transform.position;
+        Vector3 runAwayDirection = -directionToPlayer;
+        agent.SetDestination(transform.position + runAwayDirection);
+    }
+    
+    private void LookAtPlayer()
+    {
+        Vector3 directionToPlayer = playerPosition.position - transform.position;
+        Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+        agent.isStopped = true;
     }
 
     private IEnumerator WaitAtWaypoint()
@@ -131,11 +132,11 @@ public class NPCMovement : MonoBehaviour
 
         agent.velocity = Vector3.zero;
         agent.ResetPath();
-        if (currentBehaviour == NPCBehaviour.Patrol && waypoints.Length > 0)
+        if (npcBrain.currentBehaviour == NPCBrain.NPCBehaviour.Wander && waypoints.Length > 0)
         {
             agent.SetDestination(waypoints[currentWaypointIndex].position);
         }
-        else if (currentBehaviour == NPCBehaviour.FollowPlayer)
+        else if (npcBrain.currentBehaviour == NPCBrain.NPCBehaviour.FollowPlayer)
         {
             agent.SetDestination(playerPosition.position);
         }
