@@ -63,14 +63,16 @@ public class CameraController : MonoBehaviour
     { 
         if (!isUsingPC) 
         { 
+            /*
             currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, mouseMove, ref currentMouseDeltaVelocity, 0.05f);
+            */
 
             float mouseX = mouseMove.x * mouseSensitivity * Time.deltaTime;
             float mouseY = mouseMove.y * mouseSensitivity * Time.deltaTime;
 
         
             xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);                              //fix nefaka :(
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);                             
             
             cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
             playerBody.Rotate(Vector3.up * mouseX);

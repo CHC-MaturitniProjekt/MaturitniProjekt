@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 935899b62f48ae5498594680ed17d133, type: 3}
-  m_Name: New Dialogue Database
+  m_Name: New Dialogue Database (Auto-Backup)
   m_EditorClassIdentifier: 
   version: 0.1
   author: Test
@@ -184,13 +184,7 @@ MonoBehaviour:
       - originConversationID: 1
         originDialogueID: 0
         destinationConversationID: 1
-        destinationDialogueID: 1
-        isConnector: 0
-        priority: 2
-      - originConversationID: 1
-        originDialogueID: 0
-        destinationConversationID: 1
-        destinationDialogueID: 2
+        destinationDialogueID: 5
         isConnector: 0
         priority: 2
       conditionsString: 
@@ -200,8 +194,8 @@ MonoBehaviour:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 160
-        y: 30
+        x: 354.1392
+        y: 38.058617
         width: 160
         height: 30
     - id: 1
@@ -215,11 +209,11 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Actor
-        value: 2
+        value: 1
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: 1
+        value: 2
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -227,7 +221,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: fdafds
+        value: "Pojdi ty kryso jedna cig\xE1nsk\xE1"
         type: 0
         typeString: 
       - title: Sequence
@@ -255,8 +249,8 @@ MonoBehaviour:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 376
-        y: 213.33333
+        x: 570.1392
+        y: 221.39194
         width: 160
         height: 30
     - id: 2
@@ -270,11 +264,11 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Actor
-        value: 2
+        value: 1
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: 1
+        value: 2
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -282,7 +276,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: fdafadsfdsa
+        value: "M\xE1m se skv\u011Ble k\xE1mo B) d\xEDky za opt\xE1n\xED!"
         type: 0
         typeString: 
       - title: Sequence
@@ -310,8 +304,8 @@ MonoBehaviour:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 66.58156
-        y: 219.48944
+        x: 260.72073
+        y: 227.54807
         width: 160
         height: 30
     - id: 3
@@ -325,11 +319,11 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Actor
-        value: 1
+        value: 2
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: 2
+        value: 1
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -337,7 +331,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: fds
+        value: "Supr \u010Dupr adios"
         type: 0
         typeString: 
       - title: Sequence
@@ -359,8 +353,8 @@ MonoBehaviour:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 71.5461
-        y: 337.57452
+        x: 262.75488
+        y: 334.64413
         width: 160
         height: 30
     - id: 4
@@ -374,11 +368,11 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Actor
-        value: 1
+        value: 2
         type: 5
         typeString: CustomFieldType_Actor
       - title: Conversant
-        value: 2
+        value: 1
         type: 5
         typeString: CustomFieldType_Actor
       - title: Menu Text
@@ -386,7 +380,8 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: fdfdsafsdsadfdsaa
+        value: "Cos to \u0159ek? Za to ti znesv\u011Bt\xEDm \u010Dokoprdeln\xEDk!
+          >:(("
         type: 0
         typeString: 
       - title: Sequence
@@ -405,16 +400,90 @@ MonoBehaviour:
       userScript: 
       onExecute:
         m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 3395966967584499392, guid: b8a512fc65b26ae41ac885af93d8cd1c,
+              type: 3}
+            m_TargetAssemblyTypeName: 
+            m_MethodName: 
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: 
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 1
+      canvasRect:
+        serializedVersion: 2
+        x: 575.8129
+        y: 337.34933
+        width: 160
+        height: 30
+    - id: 5
+      fields:
+      - title: Title
+        value: 
+        type: 0
+        typeString: 
+      - title: Description
+        value: 
+        type: 0
+        typeString: 
+      - title: Actor
+        value: 2
+        type: 5
+        typeString: CustomFieldType_Actor
+      - title: Conversant
+        value: 1
+        type: 5
+        typeString: CustomFieldType_Actor
+      - title: Menu Text
+        value: 
+        type: 0
+        typeString: 
+      - title: Dialogue Text
+        value: "Ahoj kamar\xE1de! Jakpak se m\xE1\u0161?"
+        type: 0
+        typeString: 
+      - title: Sequence
+        value: 
+        type: 0
+        typeString: 
+      conversationID: 1
+      isRoot: 0
+      isGroup: 0
+      nodeColor: 
+      delaySimStatus: 0
+      falseConditionAction: Block
+      conditionPriority: 2
+      outgoingLinks:
+      - originConversationID: 1
+        originDialogueID: 5
+        destinationConversationID: 1
+        destinationDialogueID: 2
+        isConnector: 0
+        priority: 2
+      - originConversationID: 1
+        originDialogueID: 5
+        destinationConversationID: 1
+        destinationDialogueID: 1
+        isConnector: 0
+        priority: 2
+      conditionsString: 
+      userScript: 
+      onExecute:
+        m_PersistentCalls:
           m_Calls: []
       canvasRect:
         serializedVersion: 2
-        x: 381.6738
-        y: 329.2907
+        x: 367.77554
+        y: 136.54346
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 0, y: 2.1276855}
-    canvasZoom: 0.94000006
+    canvasScrollPosition: {x: 110.52286, y: 0}
+    canvasZoom: 0.8800001
   - id: 2
     fields:
     - title: Title

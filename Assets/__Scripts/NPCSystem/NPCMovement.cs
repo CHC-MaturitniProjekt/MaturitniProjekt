@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -47,11 +48,12 @@ public class NPCMovement : MonoBehaviour
                 HandleRunAway();
                 break;
             case NPCBrain.NPCBehaviour.LookAtPlayer:
-                LookAtPlayer();
+                HandleLookAt();
                 break;
         }
 
         DetectPlayer();
+        ScanSurroundings();
     }
 
     private void DetectPlayer()
@@ -73,6 +75,19 @@ public class NPCMovement : MonoBehaviour
         Debug.DrawRay(transform.position, transform.forward * detectionRadius, Color.green);
         Debug.DrawRay(transform.position, directionToPlayer, Color.red);
     }
+    
+    private void ScanSurroundings()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius);
+
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Item"))
+            {
+                npcBrain.currentBehaviour = NPCBrain.NPCBehaviour.RunAway;
+            }
+        }
+    }
 
     private void HandlePatrol()
     {
@@ -84,7 +99,7 @@ public class NPCMovement : MonoBehaviour
             StartCoroutine(WaitAtWaypoint());
         }
     }
-
+    
     private void HandleFollowPlayer()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, playerPosition.position);
@@ -105,14 +120,22 @@ public class NPCMovement : MonoBehaviour
         Vector3 directionToPlayer = playerPosition.position - transform.position;
         Vector3 runAwayDirection = -directionToPlayer;
         agent.SetDestination(transform.position + runAwayDirection);
+        
+        StartCoroutine(RunAwayTimer());
     }
     
-    private void LookAtPlayer()
+    private void HandleLookAt()
     {
         Vector3 directionToPlayer = playerPosition.position - transform.position;
         Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
         agent.isStopped = true;
+    }
+    
+    private IEnumerator RunAwayTimer()
+    {
+        yield return new WaitForSeconds(4f);
+        npcBrain.currentBehaviour = NPCBrain.NPCBehaviour.Wander;
     }
 
     private IEnumerator WaitAtWaypoint()
@@ -139,6 +162,14 @@ public class NPCMovement : MonoBehaviour
         else if (npcBrain.currentBehaviour == NPCBrain.NPCBehaviour.FollowPlayer)
         {
             agent.SetDestination(playerPosition.position);
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Item"))
+        {
+            npcBrain.currentBehaviour = NPCBrain.NPCBehaviour.RunAway;
         }
     }
 }

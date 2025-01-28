@@ -26,6 +26,12 @@ public class NPCBrain : MonoBehaviour
     public NPCBehaviour currentBehaviour;
     
     
+    public void SetEmotion(NPCEmotion emotion)
+    {
+        currentEmotion = emotion;
+    }
+    
+    
     void Start()
     {
         

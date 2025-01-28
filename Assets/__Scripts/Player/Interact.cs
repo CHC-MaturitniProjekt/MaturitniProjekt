@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cinemachine;
+using PixelCrushers.DialogueSystem;
 using TMPro;
 using UnityEngine;
 
@@ -154,11 +155,28 @@ public class Interact : MonoBehaviour
         }
     }
 
-    private void InteractWithNPC()
+    /*private void InteractWithNPC()
     {
         Debug.Log("Interacting with NPC");
         questList = questManager.GetQuestList();
         questTrigger.TriggerQuest(questList[0]);
+    }*/
+    
+    private void InteractWithNPC()
+    {
+        Debug.Log("Interacting with NPC");
+
+        // Check if the selected NPC has a Dialogue System Trigger
+        DialogueSystemTrigger dialogueTrigger = selectedObj.GetComponent<DialogueSystemTrigger>();
+        if (dialogueTrigger)
+        {
+            dialogueTrigger.OnUse(); // This triggers the assigned dialogue
+        }
+        else
+        {
+            // If no Dialogue System Trigger, manually start a conversation
+            DialogueManager.StartConversation("New Conversation 1", selectedObj.transform);
+        }
     }
 
     private void InteractWithItem()
