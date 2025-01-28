@@ -10,13 +10,12 @@ public class IdkTest : MonoBehaviour
     void Start()
     {
         ultraWeb = new UltraWeb(1080, 1920);
-        pomoc = GetComponent<RawImage>();
-        ultraWeb.getTexture();
+     
     }
 
     
     void Update()
     {
-       
+        ultraWeb.getTexture();
     }
 }

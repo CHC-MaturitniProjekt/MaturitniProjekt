@@ -8,13 +8,14 @@ using UnityEngine;
 
 public class UltraWeb
 {
-    private const string DllName = "Assets/UltraWeb/Plugins/ULWrapper";
-
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
     private static extern bool Test();
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
-    private static extern void InitializeUltralight();
+    private static extern int InitializeUltralight();
+
+    [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int CreateRenderer();
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
     private static extern int CreateView(int width, int height);
@@ -39,26 +40,29 @@ public class UltraWeb
     {
         this.height = height;
         this.width = width;
-        InitializeUltralight();
-        int status = CreateView(width, height);
-        Debug.Log(status);
+
+
+        Debug.Log(InitializeUltralight());
+        Debug.Log(CreateRenderer());
+        Debug.Log(CreateView(width, height));
     }
 
     public void getTexture()
     {
+        UpdateLogic();
         int width, height, stride;
         int status = GetBitmapData(out width, out height, out stride);
         Debug.Log(status);
         if(status == 1)
         {
-            Debug.Log(width);
-            Debug.Log(height);
-            Debug.Log(stride);
+           //Debug.Log(width);
+            //Debug.Log(height);
+            //Debug.Log(stride);
         }
     }
 
     ~UltraWeb() 
     {
-        ShutdownUltralight();
+      //  ShutdownUltralight();
     }
 }
