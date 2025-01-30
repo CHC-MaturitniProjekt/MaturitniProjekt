@@ -102,11 +102,11 @@ MonoBehaviour:
     - title: Title
       value: New Conversation 1
       type: 0
-      typeString: 
+      typeString: CustomFieldType_Text
     - title: Description
       value: 
       type: 0
-      typeString: 
+      typeString: CustomFieldType_Text
     - title: Actor
       value: 1
       type: 5
@@ -221,7 +221,7 @@ MonoBehaviour:
         type: 0
         typeString: 
       - title: Dialogue Text
-        value: "Pojdi ty kryso jedna cig\xE1nsk\xE1"
+        value: "Nechci se s tebou bavit! Jdi pry\u010D!"
         type: 0
         typeString: 
       - title: Sequence
@@ -313,11 +313,11 @@ MonoBehaviour:
       - title: Title
         value: 
         type: 0
-        typeString: 
+        typeString: CustomFieldType_Text
       - title: Description
         value: 
         type: 0
-        typeString: 
+        typeString: CustomFieldType_Text
       - title: Actor
         value: 2
         type: 5
@@ -329,12 +329,16 @@ MonoBehaviour:
       - title: Menu Text
         value: 
         type: 0
-        typeString: 
+        typeString: CustomFieldType_Text
       - title: Dialogue Text
         value: "Supr \u010Dupr adios"
         type: 0
-        typeString: 
+        typeString: CustomFieldType_Text
       - title: Sequence
+        value: 
+        type: 0
+        typeString: CustomFieldType_Text
+      - title: EventGuid
         value: 
         type: 0
         typeString: 
@@ -347,7 +351,9 @@ MonoBehaviour:
       conditionPriority: 2
       outgoingLinks: []
       conditionsString: 
-      userScript: 
+      userScript: 'TriggerQuest(questList[0]);
+
+'
       onExecute:
         m_PersistentCalls:
           m_Calls: []
@@ -397,7 +403,7 @@ MonoBehaviour:
       conditionPriority: 2
       outgoingLinks: []
       conditionsString: 
-      userScript: SetNPCBehaviour(1)
+      userScript: SetNPCBehaviour("FollowPlayer")
       onExecute:
         m_PersistentCalls:
           m_Calls:
@@ -482,7 +488,7 @@ MonoBehaviour:
         width: 160
         height: 30
     entryGroups: []
-    canvasScrollPosition: {x: 59.106567, y: 0}
+    canvasScrollPosition: {x: 0, y: 0}
     canvasZoom: 0.97
   - id: 2
     fields:
@@ -560,7 +566,7 @@ MonoBehaviour:
         value: None()
         type: 0
         typeString: 
-      conversationID: 0
+      conversationID: 2
       isRoot: 0
       isGroup: 0
       nodeColor: 
