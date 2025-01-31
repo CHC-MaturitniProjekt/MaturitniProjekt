@@ -107,6 +107,7 @@ public class QuestManager : MonoBehaviour
             var parsedQuestModel = new ParsedQuestModel
             {
                 GUID = questNodeModel.GUID,
+                QuestID = (questNodeModel as MainQuestNodeModel).QuestID,
                 QuestName = (questNodeModel as MainQuestNodeModel).QuestName,
                 QuestDescription = (questNodeModel as MainQuestNodeModel).QuestDescription,
                 Objectives = new List<ObjectiveNodeModel>(),

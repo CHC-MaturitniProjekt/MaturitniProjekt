@@ -65,7 +65,7 @@ public class QuestGraph : EditorWindow
             if (!NodeExists(QuestNode.NodeTypes.Start))
                 questGraphView.CreateNode(QuestNode.NodeTypes.Start);
             else
-                Debug.LogWarning("Start Node již existuje!");
+                Debug.LogWarning("Start Node jiÅ¾ existuje!");
         });
 
         dropdownMenu.AddItem(new GUIContent("Quest Node"), false, () =>

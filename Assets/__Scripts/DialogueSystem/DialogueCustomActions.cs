@@ -21,16 +21,23 @@ public class DialogueActionsLibrary : MonoBehaviour
         }
     }
     
-    private void Start()
+    private QuestManager questManager;
+    private List<ParsedQuestModel> questList;
+    
+    private Firebase firebase;
+    
+    void Start()
     {
-        questTrigger = FindObjectOfType<QuestTrigger>();
+        firebase = FindFirstObjectByType<Firebase>();
+        
+        questManager = FindFirstObjectByType<QuestManager>();
     }
     
     private void RegisterLuaFunctions()
     {
         Lua.RegisterFunction("SetNPCBehaviour", this, SymbolExtensions.GetMethodInfo(() => SetNPCBehaviour("")));
         Lua.RegisterFunction("SetNPCEmotion", this, SymbolExtensions.GetMethodInfo(() => SetNPCEmotion("")));
-        Lua.RegisterFunction("TriggerQuest", this, SymbolExtensions.GetMethodInfo(() => questTrigger.TriggerQuest(null)));
+        Lua.RegisterFunction("TriggerQuest", this, SymbolExtensions.GetMethodInfo(() => TriggerQuest(5)));
     }
 
     public void SetNPCBehaviour(string behaviourString)
@@ -71,5 +78,22 @@ public class DialogueActionsLibrary : MonoBehaviour
         {
             Debug.LogError("Invalid emotion: " + emotionString);
         }
+    }
+    
+    public void TriggerQuest(double questID)
+    {
+        questList = questManager.GetQuestList();
+        ParsedQuestModel questData = questList.Find(quest => quest.QuestID == (int)questID);
+        Debug.Log("Quest data: " + questData);
+        if (questData != null && CheckConditions())
+        {
+            firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.isActive);
+        }
+    }
+    
+    private bool CheckConditions()
+    {
+        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        return true;
     }
 }

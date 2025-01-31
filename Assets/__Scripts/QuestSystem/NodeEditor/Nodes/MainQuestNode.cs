@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PixelCrushers.DialogueSystem.ChatMapper;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,7 +15,8 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
     {
         public string QuestName;
         public string QuestDescription;
-
+        public int QuestID;
+        
         public MainQuestNode()
         {
             QuestType = NodeTypes.MainQuestNode;
@@ -42,6 +44,10 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             rewardPort.portName = "Rewards";
             outputContainer.Add(rewardPort);
 
+            var questIDField = new IntegerField("Quest ID") { value = QuestID };
+            questIDField.RegisterValueChangedCallback(evt => QuestID = evt.newValue);
+            mainContainer.Add(questIDField);
+            
             var questNameField = new TextField("Quest Name") { value = QuestName };
             questNameField.RegisterValueChangedCallback(evt => QuestName = evt.newValue);
             mainContainer.Add(questNameField);

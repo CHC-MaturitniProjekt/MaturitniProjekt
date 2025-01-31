@@ -5117,7 +5117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1816795d2838f643acc6f6f815cfff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flattenFolder: 1
+  flattenFolder: 0
   flattenEvent: 1
   OnFlattenEvent:
     m_PersistentCalls:
@@ -9735,6 +9735,37 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1715837052}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &321407596
+GameObject:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 321407597}
+  m_Layer: 0
+  m_Name: //a
+  m_TagString: EditorOnly
+  m_Icon: {fileID: 2800000, guid: 4724f3b6006a28f4ca8f7de7bf926d39, type: 3}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &321407597
+Transform:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321407596}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &331364174
 GameObject:
   m_ObjectHideFlags: 0
@@ -13324,7 +13355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1816795d2838f643acc6f6f815cfff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flattenFolder: 1
+  flattenFolder: 0
   flattenEvent: 1
   OnFlattenEvent:
     m_PersistentCalls:
@@ -16173,7 +16204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1816795d2838f643acc6f6f815cfff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flattenFolder: 1
+  flattenFolder: 0
   flattenEvent: 1
   OnFlattenEvent:
     m_PersistentCalls:
@@ -38804,7 +38835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1816795d2838f643acc6f6f815cfff9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flattenFolder: 1
+  flattenFolder: 0
   flattenEvent: 1
   OnFlattenEvent:
     m_PersistentCalls:
@@ -41847,6 +41878,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 8c2f683eedd69624d8824d5fe4c1c576,
         type: 2}
+    - target: {fileID: 11426072, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
+      propertyPath: displaySettings.dialogueUI
+      value: 
+      objectReference: {fileID: 1024589797444566, guid: 576820d27454daf4bb3b31f6c63b04ca,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -54562,6 +54598,7 @@ SceneRoots:
   - {fileID: 655104064}
   - {fileID: 1209210417}
   - {fileID: 1486746946}
+  - {fileID: 321407597}
   - {fileID: 935776901}
   - {fileID: 509356548}
   - {fileID: 822618588}

@@ -8,6 +8,7 @@ using static QuestNode;
 public class ParsedQuestModel
 {
     public string GUID;
+    public int QuestID;
     public string QuestName;
     public string QuestDescription;
     public List<ObjectiveNodeModel> Objectives = new List<ObjectiveNodeModel>();

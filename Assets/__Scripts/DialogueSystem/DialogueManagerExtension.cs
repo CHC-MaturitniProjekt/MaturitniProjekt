@@ -18,6 +18,7 @@ public class DialogueManagerExtension : MonoBehaviour
 
     private void OnDisable()
     {
+        if (DialogueManager.instance == null) return;
         DialogueManager.instance.conversationStarted -= OnConversationStart;
         DialogueManager.instance.conversationEnded -= OnConversationEnd;
     }

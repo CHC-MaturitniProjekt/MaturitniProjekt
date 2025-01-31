@@ -109,6 +109,7 @@ public class Firebase : MonoBehaviour
         
         
         FirebaseResponse response = client.PutSync($"quests/{guid}", jsonQuest);
+        Debug.Log(response); 
         //uiManager.AddQuest(title);
     }
 }

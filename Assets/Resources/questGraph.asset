@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: questGraph
   m_EditorClassIdentifier: 
   nodeLinks:
-  - baseNodeGUID: 46a8b2a6-1e03-4da8-b0cb-b7ad653a2d7a
-    portName: Start
-    targetNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
   - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
     portName: Objectives
     targetNodeGUID: 617a00b9-35c2-4dae-9f3e-55ca8f00c443
@@ -34,39 +31,36 @@ MonoBehaviour:
   - baseNodeGUID: f131ed47-8343-4aaf-9f19-1757f58d346a
     portName: Rewards
     targetNodeGUID: 3adb5c94-15cd-4a0e-ba4f-d09d70e39fee
+  - baseNodeGUID: 46a8b2a6-1e03-4da8-b0cb-b7ad653a2d7a
+    portName: Start
+    targetNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
   questNodeData:
-  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":0,"GUID":"46a8b2a6-1e03-4da8-b0cb-b7ad653a2d7a","position":{"x":0.0,"y":0.0}}'
-  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":0,"GUID":"f645bc71-faf4-45b0-aa5e-59210dd97d4b","position":{"x":0.0,"y":0.0}}'
   - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":1,"GUID":"e089628e-cabe-4e98-b724-4527eb29a4f7","position":{"x":298.6666564941406,"y":-38.66666793823242},"QuestName":"New
-      Quest","QuestDescription":"Describe the quest here"}'
-  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"f131ed47-8343-4aaf-9f19-1757f58d346a","position":{"x":702.6666870117188,"y":-20.666667938232423},"QuestName":"New
-      Quest","QuestDescription":"Describe the quest here"}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"62586641-c258-42ab-bcfd-428b4bde6791","position":{"x":1284.6666259765625,"y":-38.66666793823242},"ObjectiveDescription":"fdsafdas","ObjectiveType":"Interact","isOptional":true}'
-  - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":3,"GUID":"3adb5c94-15cd-4a0e-ba4f-d09d70e39fee","position":{"x":1284.6666259765625,"y":381.33331298828127},"RewardType":"PerkPoints","RewardValue":100}'
-  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":0,"GUID":"d2151842-9d7e-4405-9420-38649f51af03","position":{"x":0.0,"y":0.0}}'
+      Quest","QuestDescription":"Describe the quest here","QuestID":5}'
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":3,"GUID":"030120ee-17e9-4f82-a583-f4c2151f35ae","position":{"x":440.6666564941406,"y":579.3333740234375},"RewardType":"PerkPoints","RewardValue":100}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"617a00b9-35c2-4dae-9f3e-55ca8f00c443","position":{"x":702.6666870117188,"y":226.6666717529297},"ObjectiveDescription":"eeeeee","ObjectiveType":"Collect","isOptional":true}'
-  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":0,"GUID":"039f899b-9629-4d17-87d3-219e0c425011","position":{"x":0.0,"y":0.0}}'
+    JsonData: '{"QuestType":2,"GUID":"617a00b9-35c2-4dae-9f3e-55ca8f00c443","position":{"x":702.6666870117188,"y":226.6666717529297},"ObjectiveDescription":"eeeeee","ObjectiveType":"Collect","isOptional":true,"isCompleted":false}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"d13bca12-9d6c-4a37-ac45-6b97a50f911b","position":{"x":572.6666870117188,"y":381.33331298828127},"ObjectiveDescription":"fds","ObjectiveType":"Interact","isOptional":true}'
+    JsonData: '{"QuestType":2,"GUID":"d13bca12-9d6c-4a37-ac45-6b97a50f911b","position":{"x":572.6666870117188,"y":381.33331298828127},"ObjectiveDescription":"fds","ObjectiveType":"Interact","isOptional":true,"isCompleted":false}'
+  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":0,"GUID":"46a8b2a6-1e03-4da8-b0cb-b7ad653a2d7a","position":{"x":14.666666984558106,"y":-38.66666793823242}}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"62586641-c258-42ab-bcfd-428b4bde6791","position":{"x":1162.0,"y":-29.33333396911621},"ObjectiveDescription":"fdsafdas","ObjectiveType":"Interact","isOptional":true,"isCompleted":false}'
+  - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":3,"GUID":"3adb5c94-15cd-4a0e-ba4f-d09d70e39fee","position":{"x":1162.0,"y":390.6666564941406},"RewardType":"PerkPoints","RewardValue":100}'
+  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":0,"GUID":"b952638d-a729-4684-862d-76b80654d826","position":{"x":0.0,"y":0.0}}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"f131ed47-8343-4aaf-9f19-1757f58d346a","position":{"x":702.6666870117188,"y":-29.33333396911621},"QuestName":"New
+      Quest","QuestDescription":"Describe the quest here","QuestID":69}'
