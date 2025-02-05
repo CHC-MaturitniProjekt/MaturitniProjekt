@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -110,6 +111,35 @@ public class Firebase : MonoBehaviour
         
         FirebaseResponse response = client.PutSync($"quests/{guid}", jsonQuest);
         Debug.Log(response); 
-        //uiManager.AddQuest(title);
     }
+
+    public async Task<bool> CheckQuest(string questGUID)
+    {
+        bool isAdded = false;
+        FirebaseResponse response = client.GetSync("quests");
+        Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
+
+        if (quests == null)
+        {
+            Debug.LogError("Quests dictionary is null.");
+            return isAdded;
+        }
+
+        foreach (var quest in quests)
+        {
+            if (quest.Key == questGUID)
+            {
+                isAdded = true;
+                break;
+            }
+        }
+        return isAdded;
+    }
+    
+    /*public async Task<bool> CheckQuest(string questGUID)
+    {
+        FirebaseResponse response = client.GetSync($"quests/{questGUID}");
+        Debug.Log(response);
+        return false;
+    }*/
 }

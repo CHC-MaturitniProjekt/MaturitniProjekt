@@ -5,9 +5,12 @@ public class DialogueManagerExtension : MonoBehaviour
 {
     private CameraManager cameraManager;
     
+    private NPCBrain npcBrain;
+    
     private void Start()
     {
         cameraManager = FindObjectOfType<CameraManager>();
+        npcBrain = FindObjectOfType<NPCBrain>();
     }
     
     private void OnEnable()
@@ -34,5 +37,8 @@ public class DialogueManagerExtension : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        
+        //npcBrain.SetBehaviour(NPCBrain.NPCBehaviour.Wander);            //udelat nejak jinak
+        
     }
 }

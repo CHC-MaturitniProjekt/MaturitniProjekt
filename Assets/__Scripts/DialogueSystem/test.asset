@@ -12,8 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dbbc84c70300ba489dc1fe1961516ec, type: 3}
   m_Name: test
   m_EditorClassIdentifier: 
-  conditionFunctions: []
+  conditionFunctions:
+  - functionName: CheckQuestHaving
+    parameters: 01000000
+    returnValue: 1
+  - functionName: IsHoldingItem
+    parameters: 02000000
+    returnValue: 1
   scriptFunctions:
   - functionName: TriggerQuest
-    parameters: 07000000
+    parameters: 01000000
+    returnValue: 0
+  - functionName: SetNPCBehaviour
+    parameters: 0200000001000000
+    returnValue: 0
+  - functionName: SwitchConversation
+    parameters: 02000000
     returnValue: 0

@@ -26,6 +26,7 @@ public class Interact : MonoBehaviour
     private Outline currentOutline;
     private string currentHitTag;
     private GameObject selectedObj;
+    private GameObject itemHeld;
 
     private CameraController camController;
     private QuestTrigger questTrigger;
@@ -166,16 +167,20 @@ public class Interact : MonoBehaviour
     {
         Debug.Log("Interacting with NPC");
 
-        // Check if the selected NPC has a Dialogue System Trigger
         DialogueSystemTrigger dialogueTrigger = selectedObj.GetComponent<DialogueSystemTrigger>();
         if (dialogueTrigger)
         {
-            dialogueTrigger.OnUse(); // This triggers the assigned dialogue
+            dialogueTrigger.OnUse();
         }
         else
         {
-            // If no Dialogue System Trigger, manually start a conversation
             DialogueManager.StartConversation("New Conversation 1", selectedObj.transform);
+        }
+
+        NPCBrain npcBrain = selectedObj.GetComponent<NPCBrain>();
+        if (npcBrain != null)
+        {
+            npcBrain.SetBehaviour(NPCBrain.NPCBehaviour.LookAtPlayer);
         }
     }
 
@@ -183,6 +188,7 @@ public class Interact : MonoBehaviour
     {
         if (selectedObj)
         {
+            itemHeld = selectedObj;
             PlayerManager.Instance.PickUpItem(selectedObj);
         }
     }
@@ -202,5 +208,10 @@ public class Interact : MonoBehaviour
     private void HideInteractThing()
     {
         interGameObject.SetActive(false);
+    }
+
+    public GameObject GetCurrentItem()
+    {
+        return itemHeld;
     }
 }

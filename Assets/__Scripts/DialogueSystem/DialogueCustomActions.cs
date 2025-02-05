@@ -1,6 +1,5 @@
 using UnityEngine;
 using PixelCrushers.DialogueSystem;
-using System.Reflection;
 using System.Collections.Generic;
 
 public class DialogueActionsLibrary : MonoBehaviour
@@ -23,6 +22,7 @@ public class DialogueActionsLibrary : MonoBehaviour
     
     private QuestManager questManager;
     private List<ParsedQuestModel> questList;
+    private Interact interact;
     
     private Firebase firebase;
     
@@ -31,16 +31,21 @@ public class DialogueActionsLibrary : MonoBehaviour
         firebase = FindFirstObjectByType<Firebase>();
         
         questManager = FindFirstObjectByType<QuestManager>();
+        interact = FindFirstObjectByType<Interact>();
+
     }
     
     private void RegisterLuaFunctions()
     {
-        Lua.RegisterFunction("SetNPCBehaviour", this, SymbolExtensions.GetMethodInfo(() => SetNPCBehaviour("")));
+        Lua.RegisterFunction("SetNPCBehaviour", this, SymbolExtensions.GetMethodInfo(() => SetNPCBehaviour("", 0)));
         Lua.RegisterFunction("SetNPCEmotion", this, SymbolExtensions.GetMethodInfo(() => SetNPCEmotion("")));
-        Lua.RegisterFunction("TriggerQuest", this, SymbolExtensions.GetMethodInfo(() => TriggerQuest(5)));
+        Lua.RegisterFunction("TriggerQuest", this, SymbolExtensions.GetMethodInfo(() => TriggerQuest(0)));
+        Lua.RegisterFunction("CheckQuestHaving", this, SymbolExtensions.GetMethodInfo(() => CheckQuestHaving(0)));
+        Lua.RegisterFunction("SwitchConversation", this, SymbolExtensions.GetMethodInfo(() => SwitchConversation("")));
+        Lua.RegisterFunction("IsHoldingItem", this, SymbolExtensions.GetMethodInfo(() => IsHoldingItem("")));
     }
 
-    public void SetNPCBehaviour(string behaviourString)
+    public void SetNPCBehaviour(string behaviourString, double overrideTime)
     {
         NPCBrain npcBrain = FindFirstObjectByType<NPCBrain>();
         if (npcBrain == null)
@@ -51,8 +56,7 @@ public class DialogueActionsLibrary : MonoBehaviour
 
         if (System.Enum.TryParse(behaviourString, out NPCBrain.NPCBehaviour behaviour))
         {
-            npcBrain.currentBehaviour = behaviour;
-            Debug.Log("Behaviour set to " + behaviour);
+            npcBrain.SetBehaviour(behaviour, overrideTime);
         }
         else
         {
@@ -95,5 +99,37 @@ public class DialogueActionsLibrary : MonoBehaviour
     {
         // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         return true;
+    }
+
+    public bool CheckQuestHaving(double questID)
+    {
+        questList = questManager.GetQuestList();
+        ParsedQuestModel questData = questList.Find(quest => quest.QuestID == (int)questID);
+
+        bool res = firebase.CheckQuest(questData.GUID).Result;
+
+        return res;
+    }
+
+    private void SwitchConversation(string conversationName)
+    {
+        DialogueManager.StopConversation();
+        DialogueManager.StartConversation(conversationName, transform);
+    }
+
+    public bool IsHoldingItem(string itemName)
+    {
+        var currentItem = interact.GetCurrentItem();
+        if (currentItem == null)
+        {
+            return false;
+        }
+
+        Debug.Log(itemName);
+        if (currentItem.tag == itemName)
+        {
+            return true;
+        }
+        return false;
     }
 }
