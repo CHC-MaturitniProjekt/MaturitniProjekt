@@ -4,81 +4,86 @@ using UnityEngine;
 
 public class NPCBrain : MonoBehaviour
 {
-    public string NPCName;
-    public enum NPCEmotion
+    [SerializeField] private NPCState state;
+    [SerializeField] private NPCMovement movement;
+    [SerializeField] private NPCBehavior currentBehavior;
+
+    private void Awake()
     {
-        Happy,
-        Sad,
-        Angry,
-        Neutral
+        state = GetComponent<NPCState>();
+        movement = GetComponent<NPCMovement>(); 
     }
-    public NPCEmotion currentEmotion;
-    
-    public enum NPCBehaviour
+
+    private void Update()
+    {
+        if (state.IsOverriden) return;
+        
+        UpdateBehavior();
+    }
+
+    private void UpdateBehavior()
+    {
+        switch (currentBehavior)
+        {
+            case NPCBehavior.Wander:
+                HandleWanderBehavior();
+                break;
+            case NPCBehavior.FollowPlayer:
+                movement.HandleFollowPlayer();
+                break;
+            case NPCBehavior.RunAway:
+                HandleRunAwayBehavior();
+                break;
+            case NPCBehavior.LookAtPlayer:
+                movement.HandleLookAt();
+                break;
+        }
+    }
+
+    private void HandleWanderBehavior()
+    {
+        if (!state.IsLookingAtPlayer) movement.HandleWander();
+    }
+
+    private void HandleRunAwayBehavior()
+    {
+        if (!state.IsRunningAway)
+        {
+            state.IsRunningAway = true;
+            movement.HandleRunAway();
+        }
+    }
+
+    public void SetBehavior(NPCBehavior newBehavior, float duration = 0)
+    {
+        if (duration > 0)
+        {
+            StartCoroutine(OverrideBehaviorRoutine(newBehavior, duration));
+            return;
+        }
+        
+        currentBehavior = newBehavior;
+        if (newBehavior != NPCBehavior.RunAway) state.IsRunningAway = false;
+    }
+
+    private IEnumerator OverrideBehaviorRoutine(NPCBehavior tempBehavior, float duration)
+    {
+        var originalBehavior = currentBehavior;
+        state.IsOverriden = true;
+        currentBehavior = tempBehavior;
+        
+        yield return new WaitForSeconds(duration);
+        
+        currentBehavior = originalBehavior;
+        state.IsOverriden = false;
+    }
+
+    public enum NPCBehavior
     {
         Wander,
         FollowPlayer,
         RunAway,
         Idle,
-        GoToDestination,
         LookAtPlayer
-    }
-    public NPCBehaviour currentBehaviour;
-    public bool isOverriden;
-    
-    private NPCMovement npcMovement;
-
-    private void Start()
-    {
-        npcMovement = GetComponent<NPCMovement>();
-    }
-
-    private void Update()
-    {
-        if (isOverriden) return;
-        
-        switch (currentBehaviour)
-        {
-            case NPCBehaviour.Wander:
-                npcMovement.HandleWander();
-                break;
-            case NPCBehaviour.FollowPlayer:
-                npcMovement.HandleFollowPlayer();
-                break;
-            case NPCBehaviour.RunAway:
-                npcMovement.HandleRunAway();
-                break;
-            case NPCBehaviour.LookAtPlayer:
-                npcMovement.HandleLookAt();
-                break;
-        }
-    }
-
-    public void SetEmotion(NPCEmotion emotion)
-    {
-        currentEmotion = emotion;
-    }
-
-    public void SetBehaviour(NPCBehaviour behaviour)
-    {
-        currentBehaviour = behaviour;
-    }
-    
-    public void SetBehaviour(NPCBehaviour behaviour, double overrideTime)
-    {
-        StartCoroutine(OverrideBehaviour(behaviour, overrideTime));
-    }
-    
-    public IEnumerator OverrideBehaviour(NPCBehaviour behaviour, double time)
-    {
-        isOverriden = true;
-        currentBehaviour = behaviour;
-        
-        Debug.Log("Overriding behaviour for " + time + " seconds");
-        yield return new WaitForSeconds((float) time);
-        
-        npcMovement.isRunningAway = false;
-        
-        isOverriden = false;
     }
 }

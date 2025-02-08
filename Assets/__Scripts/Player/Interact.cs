@@ -180,7 +180,7 @@ public class Interact : MonoBehaviour
         NPCBrain npcBrain = selectedObj.GetComponent<NPCBrain>();
         if (npcBrain != null)
         {
-            npcBrain.SetBehaviour(NPCBrain.NPCBehaviour.LookAtPlayer);
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.LookAtPlayer);
         }
     }
 

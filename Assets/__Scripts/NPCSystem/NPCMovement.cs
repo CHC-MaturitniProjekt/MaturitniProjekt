@@ -5,195 +5,184 @@ using UnityEngine.AI;
 
 public class NPCMovement : MonoBehaviour
 {
+    [Header("Navigation Settings")]
     [SerializeField] private Transform[] waypoints;
-    [SerializeField] private Transform playerPosition;
-    [SerializeField] private float waitTime = 2f;
+    [SerializeField] private float waypointWaitTime = 2f;
+    
+    [Header("Player Interaction")]
+    [SerializeField] private Transform playerTransform;
     [SerializeField] private float detectionRadius = 10f;
     [SerializeField] private float detectionAngle = 80f;
-    [SerializeField] private float stopFollowingRadius = 12f;
     [SerializeField] private float stopDistance = 2f;
-    
-    private bool isLookingAtPlayer;
-    
+
+    [Header("References")]
     [SerializeField] private Transform headBone;
-    [SerializeField] private Animator animator;
     
     private NavMeshAgent agent;
+    private NPCState state;
+    private NPCAnimation animation;
     private int currentWaypointIndex;
     private bool isWaiting;
-    public bool isRunningAway;
 
-    private NPCBrain npcBrain;
+    private void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        state = GetComponent<NPCState>();
+        animation = GetComponent<NPCAnimation>();
+    }
 
     private void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        npcBrain = GetComponent<NPCBrain>();
-
         if (waypoints.Length > 0)
         {
-            npcBrain.SetBehaviour(NPCBrain.NPCBehaviour.Wander);
+            SetNextWaypointDestination();
         }
     }
 
     private void Update()
     {
-        if (isWaiting || !agent.isOnNavMesh)
-        {
-            agent.isStopped = true;
-            return;
-        }
-            
-
-        DetectPlayer();
-        //ScanSurroundings();
+        if (!agent.isOnNavMesh) return;
+        
+        UpdateMovementState();
     }
-    
+
     private void LateUpdate()
     {
-        if (isLookingAtPlayer)
+        if (!playerTransform || state.IsRunningAway) return;
+        
+        DetectPlayer();
+    }
+
+    private void UpdateMovementState()
+    {
+        if (isWaiting || state.IsOverriden)
         {
-            HandleLookAt();
+            agent.isStopped = true;
+            animation.SetMovementSpeed(0);
+            return;
         }
+
+        animation.SetMovementSpeed(agent.velocity.magnitude > 0.1f ? 1 : 0);
     }
 
     public void HandleWander()
     {
-        if (agent.isStopped) agent.isStopped = false;
-        
         if (waypoints.Length == 0)
         {
-            npcBrain.SetBehaviour(NPCBrain.NPCBehaviour.Idle);
+            Debug.LogWarning("No waypoints set for wandering!");
             return;
         }
-
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-        {
-            StartCoroutine(WaitAtWaypoint());
-        }
-        else if (!isWaiting)
+        else
         {
             agent.SetDestination(waypoints[currentWaypointIndex].position);
+        }
+
+        if (ShouldWaitAtWaypoint())
+        {
+            StartCoroutine(WaitAtWaypointRoutine());
         }
     }
 
     public void HandleFollowPlayer()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, playerPosition.position);
-
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+        
         if (distanceToPlayer > stopDistance)
         {
-            agent.SetDestination(playerPosition.position);
+            agent.isStopped = false;
+            agent.SetDestination(playerTransform.position);
         }
         else
         {
-            agent.velocity = Vector3.zero;
+            agent.isStopped = true;
             agent.ResetPath();
         }
     }
 
-    public void HandleRunAway()                             //nefaka
+    public void HandleRunAway()
     {
-        if (isRunningAway) return;
-        
-        isRunningAway = true;
+        if (!playerTransform || !agent) return;
         
         agent.isStopped = false;
         
-        Vector3 directionToPlayer = playerPosition.position - transform.position;
-        Vector3 runAwayDirection = -directionToPlayer.normalized;
-        agent.SetDestination(transform.position + runAwayDirection * 20f);
-        Debug.Log("Running away from player");
+        Vector3 runDirection = (transform.position - playerTransform.position).normalized;
+        Vector3 targetPosition = transform.position + runDirection * 20f;
+
+        if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, 20f, NavMesh.AllAreas))
+        {
+            agent.SetDestination(hit.position);
+            StartCoroutine(RunAwayTimerRoutine());
+        }
     }
-    
+
     public void HandleLookAt()
     {
-        Vector3 directionToPlayer = playerPosition.position - headBone.position;
-        float angleToPlayer = Vector3.SignedAngle(-headBone.forward, directionToPlayer, Vector3.up);
+        Vector3 directionToPlayer = playerTransform.position - headBone.position;
+        float angleToPlayer = Vector3.SignedAngle(headBone.forward, directionToPlayer, Vector3.up);
         
-        if (npcBrain.currentBehaviour == NPCBrain.NPCBehaviour.LookAtPlayer && angleToPlayer < -80 || angleToPlayer > 80)
+        agent.isStopped = true;
+
+        if (Mathf.Abs(angleToPlayer) > 80)
         {
-            transform.rotation = Quaternion.LookRotation(directionToPlayer);
-        }
-        else if (angleToPlayer > -80 && angleToPlayer < 80)
-        {
-            headBone.LookAt(playerPosition);
-            headBone.Rotate(-20, 180, 0);
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
         else
         {
-            headBone.rotation = Quaternion.Slerp(headBone.rotation, Quaternion.LookRotation(-transform.forward), Time.deltaTime * 5f);
+            headBone.LookAt(playerTransform);
+            headBone.Rotate(30, 0, 0);
         }
-
-        agent.isStopped = true;
-
     }
 
     private void DetectPlayer()
     {
-        Vector3 directionToPlayer = playerPosition.position - transform.position;
-        float distanceToPlayer = directionToPlayer.magnitude;
-        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
-
-        if (distanceToPlayer < detectionRadius && angleToPlayer < detectionAngle)
-        {
-            isLookingAtPlayer = true;
-        }
-        else if (distanceToPlayer > stopFollowingRadius && npcBrain.currentBehaviour != NPCBrain.NPCBehaviour.RunAway)
+        Vector3 dirToPlayer = playerTransform.position - transform.position;
+        float distance = dirToPlayer.magnitude;
+        float angle = Vector3.Angle(transform.forward, dirToPlayer);
+        
+        state.IsLookingAtPlayer = distance < detectionRadius && angle < detectionAngle;
+        
+        if (distance > detectionRadius)
         {
             agent.isStopped = false;
-            isLookingAtPlayer = false;
+            return;
+        } 
+        
+        if (distance < detectionRadius && angle < detectionAngle)
+        {
+            HandleLookAt();
         }
+        
+        state.IsLookingAtPlayer = false;
 
-        Debug.DrawRay(transform.position, transform.forward * detectionRadius, Color.green);
-        Debug.DrawRay(transform.position, directionToPlayer, Color.red);
     }
 
-    /*private void ScanSurroundings()
+    private bool ShouldWaitAtWaypoint()
     {
-        bool originalAvoidance = agent.obstacleAvoidanceType != ObstacleAvoidanceType.NoObstacleAvoidance;
-        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        return !agent.pathPending && 
+               agent.remainingDistance <= agent.stoppingDistance &&
+               !isWaiting;
+    }
 
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius);
-
-        foreach (var hitCollider in hitColliders)
-        {
-            if (hitCollider.CompareTag("Item"))
-            {
-                npcBrain.SetBehaviour(NPCBrain.NPCBehaviour.RunAway);
-            }
-        }
-
-        agent.obstacleAvoidanceType = originalAvoidance ? ObstacleAvoidanceType.HighQualityObstacleAvoidance : ObstacleAvoidanceType.NoObstacleAvoidance;
-    }*/
-
-    private IEnumerator WaitAtWaypoint()
+    private IEnumerator WaitAtWaypointRoutine()
     {
         isWaiting = true;
-        yield return new WaitForSeconds(waitTime);
-
+        yield return new WaitForSeconds(waypointWaitTime);
+        
         currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-        agent.SetDestination(waypoints[currentWaypointIndex].position);
-
+        SetNextWaypointDestination();
         isWaiting = false;
     }
 
-    private void OnCollisionStay(Collision collision)
+    private IEnumerator RunAwayTimerRoutine()
     {
-        if (!agent.isOnNavMesh) return;
+        yield return new WaitForSeconds(2f);
+        state.IsRunningAway = false;
+        agent.isStopped = true;
+    }
 
-        if (agent.velocity.magnitude < 0.1f)
-        {
-            agent.velocity = Vector3.zero;
-            agent.ResetPath();
-            if (npcBrain.currentBehaviour == NPCBrain.NPCBehaviour.Wander && waypoints.Length > 0)
-            {
-                agent.SetDestination(waypoints[currentWaypointIndex].position);
-            }
-            else if (npcBrain.currentBehaviour == NPCBrain.NPCBehaviour.FollowPlayer)
-            {
-                agent.SetDestination(playerPosition.position); 
-            }
-        }
+    private void SetNextWaypointDestination()
+    {
+        agent.SetDestination(waypoints[currentWaypointIndex].position);
     }
 }
