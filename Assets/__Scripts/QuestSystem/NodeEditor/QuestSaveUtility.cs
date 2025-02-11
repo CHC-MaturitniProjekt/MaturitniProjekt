@@ -151,6 +151,7 @@ public class QuestSaveUtility
                 return new MainQuestNodeModel
                 {
                     GUID = node.GUID,
+                    QuestID = ((MainQuestNode)node).QuestID,
                     QuestType = node.QuestType,
                     position = node.GetPosition().position,
                     QuestName = ((MainQuestNode)node).QuestName,

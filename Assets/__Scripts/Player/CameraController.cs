@@ -1,11 +1,11 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     [Header("Camera Settings")]
     [SerializeField] private Transform playerBody;
-    [SerializeField] private CinemachineVirtualCamera cam;
+    [SerializeField] private CinemachineCamera cam;
     [SerializeField] private InputReader input;
     [SerializeField] private float fov;
     [SerializeField] private float runFovIncrease;
@@ -28,18 +28,19 @@ public class CameraController : MonoBehaviour
     private Vector2 mouseMove = Vector2.zero;
     private float timer = 0.0f;
     private Vector3 initialCameraPosition;
+    private Vector2 currentMouseDelta;
+    private Vector2 currentMouseDeltaVelocity;
     
-    public bool isUsingPC;
+    [HideInInspector] public bool isUsingPC;
     CursorController cursorController;
     
     private void Start()
     {
         cursorController = FindObjectOfType<CursorController>();
-
         
         Cursor.lockState = CursorLockMode.Locked;
         input.LookEvent += Input_LookEvent;
-        cam.m_Lens.FieldOfView = fov;
+        cam.Lens.FieldOfView = fov;
         
         isUsingPC = false;
     }
@@ -52,29 +53,35 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         FovChange();
-        Look();
         HeadBob();
 
         Crouch();
     }
+    
+    private void FixedUpdate()
+    {
+        Look();
+    }
 
     private void Look()
-    {
-        if (!isUsingPC)
-             { 
+    { 
+        if (!isUsingPC) 
+        { 
+            /*
+            currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, mouseMove, ref currentMouseDeltaVelocity, 0.05f);
+            */
+
             float mouseX = mouseMove.x * mouseSensitivity * Time.deltaTime;
             float mouseY = mouseMove.y * mouseSensitivity * Time.deltaTime;
-
         
             xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);                              //fix nefaka :(
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);                             
             
             cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
             playerBody.Rotate(Vector3.up * mouseX);
         }
         else
         {   
-            
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = false;
         }
@@ -104,7 +111,7 @@ public class CameraController : MonoBehaviour
                 targetFov = fov;
                 break;
         }
-        cam.m_Lens.FieldOfView = Mathf.Lerp(cam.m_Lens.FieldOfView, targetFov, Time.deltaTime * 3);
+        cam.Lens.FieldOfView = Mathf.Lerp(cam.Lens.FieldOfView, targetFov, Time.deltaTime * 3);
     }
 
     public void HeadBob()

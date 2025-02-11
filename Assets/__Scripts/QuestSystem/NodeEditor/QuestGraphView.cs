@@ -93,6 +93,7 @@ public class QuestGraphView : GraphView
             case QuestNode.NodeTypes.MainQuestNode:
                 node = new MainQuestNode
                 {
+                    QuestID = 0,
                     title = "Quest Node",
                     QuestName = "New Quest",
                     QuestDescription = "Describe the quest here"
@@ -151,6 +152,7 @@ public class QuestGraphView : GraphView
                 node = new MainQuestNode
                 {
                     title = nodeType.ToString(),
+                    QuestID = (nodeData as MainQuestNodeModel).QuestID,
                     QuestName = (nodeData as MainQuestNodeModel).QuestName,
                     QuestDescription = (nodeData as MainQuestNodeModel).QuestDescription
                 };

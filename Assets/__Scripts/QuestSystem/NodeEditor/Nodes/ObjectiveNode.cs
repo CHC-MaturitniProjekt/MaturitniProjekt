@@ -14,6 +14,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
         public string ObjectiveDescription;
         public string ObjectiveType;
         public bool isOptional;
+        public bool isCompleted;
         public List<ICompletionCriteria> CompletionCriteria = new List<ICompletionCriteria>();
 
         public ObjectiveNode()

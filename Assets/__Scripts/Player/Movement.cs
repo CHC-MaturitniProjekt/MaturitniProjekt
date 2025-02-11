@@ -37,7 +37,7 @@ public class Movement : MonoBehaviour
         input.CrouchEvent += OnCrouchInput;
 
         rb = GetComponent<Rigidbody>();
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.interpolation = RigidbodyInterpolation.None;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         currentSprintTime = sprintTime;
@@ -139,6 +139,7 @@ public class Movement : MonoBehaviour
     {
         if (currentSprintTime < sprintTime)
         {
+            PlayerManager.Instance.SetPlayerRecoveryTime(sprintRecoveryTime);
             currentSprintTime += sprintRecoveryTime * Time.deltaTime;
         }
 
