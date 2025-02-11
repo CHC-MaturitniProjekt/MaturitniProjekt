@@ -1,11 +1,11 @@
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     [Header("Camera Settings")]
     [SerializeField] private Transform playerBody;
-    [SerializeField] private CinemachineVirtualCamera cam;
+    [SerializeField] private CinemachineCamera cam;
     [SerializeField] private InputReader input;
     [SerializeField] private float fov;
     [SerializeField] private float runFovIncrease;
@@ -40,7 +40,7 @@ public class CameraController : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.Locked;
         input.LookEvent += Input_LookEvent;
-        cam.m_Lens.FieldOfView = fov;
+        cam.Lens.FieldOfView = fov;
         
         isUsingPC = false;
     }
@@ -53,10 +53,14 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         FovChange();
-        Look();
         HeadBob();
 
         Crouch();
+    }
+    
+    private void FixedUpdate()
+    {
+        Look();
     }
 
     private void Look()
@@ -69,7 +73,6 @@ public class CameraController : MonoBehaviour
 
             float mouseX = mouseMove.x * mouseSensitivity * Time.deltaTime;
             float mouseY = mouseMove.y * mouseSensitivity * Time.deltaTime;
-
         
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);                             
@@ -108,7 +111,7 @@ public class CameraController : MonoBehaviour
                 targetFov = fov;
                 break;
         }
-        cam.m_Lens.FieldOfView = Mathf.Lerp(cam.m_Lens.FieldOfView, targetFov, Time.deltaTime * 3);
+        cam.Lens.FieldOfView = Mathf.Lerp(cam.Lens.FieldOfView, targetFov, Time.deltaTime * 3);
     }
 
     public void HeadBob()

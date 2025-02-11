@@ -37,8 +37,5 @@ public class DialogueManagerExtension : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
-        //npcBrain.SetBehaviour(NPCBrain.NPCBehaviour.Wander);            //udelat nejak jinak
-        
     }
 }

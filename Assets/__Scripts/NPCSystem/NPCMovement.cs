@@ -148,7 +148,7 @@ public class NPCMovement : MonoBehaviour
             return;
         } 
         
-        if (distance < detectionRadius && angle < detectionAngle)
+        if (distance < detectionRadius && angle < detectionAngle && !state.IsRunningAway)
         {
             HandleLookAt();
         }

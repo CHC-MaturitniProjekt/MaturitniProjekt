@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Cinemachine;
 using PixelCrushers.DialogueSystem;
 using TMPro;
 using UnityEngine;
@@ -8,7 +7,6 @@ public class Interact : MonoBehaviour
 {
     [Header("Interact System")]
     [SerializeField] private InputReader input;
-    [SerializeField] private CinemachineVirtualCamera vcam;
     [SerializeField] private float reachLength;
 
     [Header("Highlight")]
