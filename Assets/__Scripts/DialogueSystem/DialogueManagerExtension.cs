@@ -25,11 +25,12 @@ public class DialogueManagerExtension : MonoBehaviour
         DialogueManager.instance.conversationStarted -= OnConversationStart;
         DialogueManager.instance.conversationEnded -= OnConversationEnd;
     }
-
+    
     private void OnConversationStart(Transform actor)
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        npcBrain.StartConversation();
         
     }
 
@@ -37,5 +38,6 @@ public class DialogueManagerExtension : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        npcBrain.EndConversation();
     }
 }

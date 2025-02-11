@@ -8,6 +8,7 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
 
+    private NPCBehavior tempBehaviour;
     private void Awake()
     {
         state = GetComponent<NPCState>();
@@ -47,11 +48,19 @@ public class NPCBrain : MonoBehaviour
 
     private void HandleRunAwayBehavior()
     {
-        if (!state.IsRunningAway)
-        {
-            state.IsRunningAway = true;
-            movement.HandleRunAway();
-        }
+        if (!state.IsRunningAway) state.IsRunningAway = true;
+        
+        movement.HandleRunAway();
+    }
+    
+    public void StartConversation()
+    {
+         tempBehaviour = currentBehavior;
+         Debug.Log("Start Conversation: " + tempBehaviour);
+    }
+    public void EndConversation()
+    {
+        currentBehavior = tempBehaviour;
     }
 
     public void SetBehavior(NPCBehavior newBehavior, float duration = 0)

@@ -39,7 +39,7 @@ public class NPCMovement : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!agent.isOnNavMesh) return;
         
@@ -72,10 +72,8 @@ public class NPCMovement : MonoBehaviour
             Debug.LogWarning("No waypoints set for wandering!");
             return;
         }
-        else
-        {
-            agent.SetDestination(waypoints[currentWaypointIndex].position);
-        }
+        
+        agent.SetDestination(waypoints[currentWaypointIndex].position);
 
         if (ShouldWaitAtWaypoint())
         {
@@ -117,6 +115,7 @@ public class NPCMovement : MonoBehaviour
 
     public void HandleLookAt()
     {
+        Debug.Log("Looking at player");
         Vector3 directionToPlayer = playerTransform.position - headBone.position;
         float angleToPlayer = Vector3.SignedAngle(headBone.forward, directionToPlayer, Vector3.up);
         
