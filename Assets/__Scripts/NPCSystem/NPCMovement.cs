@@ -115,7 +115,8 @@ public class NPCMovement : MonoBehaviour
 
     public void HandleLookAt()
     {
-        Debug.Log("Looking at player");
+        if (state.IsRunningAway) return;
+        
         Vector3 directionToPlayer = playerTransform.position - headBone.position;
         float angleToPlayer = Vector3.SignedAngle(headBone.forward, directionToPlayer, Vector3.up);
         
@@ -128,7 +129,7 @@ public class NPCMovement : MonoBehaviour
         }
         else
         {
-            headBone.LookAt(playerTransform);
+            headBone.LookAt(playerTransform.position); 
             headBone.Rotate(30, 0, 0);
         }
     }
@@ -180,7 +181,7 @@ public class NPCMovement : MonoBehaviour
         agent.isStopped = true;
     }
 
-    private void SetNextWaypointDestination()
+    private void SetNextWaypointDestination() 
     {
         agent.SetDestination(waypoints[currentWaypointIndex].position);
     }

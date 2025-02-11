@@ -7,6 +7,8 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private NPCState state;
     [SerializeField] private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
+    
+    public NPCBehavior AfterDialogueBehavior {get; set;}
 
     private NPCBehavior tempBehaviour;
     private void Awake()
@@ -43,7 +45,10 @@ public class NPCBrain : MonoBehaviour
 
     private void HandleWanderBehavior()
     {
-        if (!state.IsLookingAtPlayer) movement.HandleWander();
+        if (!state.IsLookingAtPlayer && !state.IsRunningAway) 
+        {
+            movement.HandleWander();
+        }
     }
 
     private void HandleRunAwayBehavior()
@@ -58,9 +63,11 @@ public class NPCBrain : MonoBehaviour
          tempBehaviour = currentBehavior;
          Debug.Log("Start Conversation: " + tempBehaviour);
     }
+    
     public void EndConversation()
     {
-        currentBehavior = tempBehaviour;
+        //SetBehavior(AfterDialogueBehavior, 5f);
+        currentBehavior = AfterDialogueBehavior;        // <-------- nejak ukoncit po urcite dobe
     }
 
     public void SetBehavior(NPCBehavior newBehavior, float duration = 0)
@@ -72,7 +79,14 @@ public class NPCBrain : MonoBehaviour
         }
         
         currentBehavior = newBehavior;
-        if (newBehavior != NPCBehavior.RunAway) state.IsRunningAway = false;
+        if (newBehavior == NPCBehavior.RunAway) 
+        {
+            state.IsRunningAway = true;
+        }
+        else 
+        {
+            state.IsRunningAway = false;
+        }
     }
 
     private IEnumerator OverrideBehaviorRoutine(NPCBehavior tempBehavior, float duration)

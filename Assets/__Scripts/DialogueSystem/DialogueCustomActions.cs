@@ -55,7 +55,7 @@ public class DialogueActionsLibrary : MonoBehaviour
 
         if (System.Enum.TryParse<NPCBrain.NPCBehavior>(behaviourString, out var behaviour))
         {
-            npcBrain.SetBehavior(behaviour, (float)overrideTime);
+            npcBrain.AfterDialogueBehavior = behaviour;
         }
         else
         {
