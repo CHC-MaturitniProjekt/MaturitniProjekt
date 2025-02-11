@@ -243,14 +243,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.41960788, g: 0.41960788, b: 0.41960788, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: a4980ae4a818c8948972e6da342f9a13, type: 2}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -296,6 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1bcbac60bbaa894587456df5e7af8e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pomoc: {fileID: 270624816}
 --- !u!1 &789616583
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,6 +589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1bcbac60bbaa894587456df5e7af8e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pomoc: {fileID: 0}
 --- !u!4 &1563302467
 Transform:
   m_ObjectHideFlags: 0
