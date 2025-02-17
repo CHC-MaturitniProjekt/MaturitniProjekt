@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   bloomShader: {fileID: 4800000, guid: 9370ec9b077cf414da34be8523e1aa52, type: 3}
-  compositShader: {fileID: -6465566751694194690, guid: 5bb0427bd3666164d8bcbda5e7a1909f,
+  compositeShader: {fileID: -6465566751694194690, guid: 5bb0427bd3666164d8bcbda5e7a1909f,
     type: 3}
 --- !u!114 &-1878332245247344467
 MonoBehaviour:
@@ -35,7 +35,7 @@ MonoBehaviour:
     AfterOpaque: 0
     Source: 1
     NormalSamples: 1
-    Intensity: 0.5
+    Intensity: 0.8
     DirectLightingStrength: 0.25
     Radius: 0.25
     Samples: 0
@@ -86,7 +86,7 @@ MonoBehaviour:
   - {fileID: -1878332245247344467}
   - {fileID: -2414712749103435102}
   m_RendererFeatureMap: adc0de57c6d2eee5a23215638c377dde
-  m_UseNativeRenderPass: 0
+  m_UseNativeRenderPass: 1
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
