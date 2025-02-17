@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -31,22 +31,30 @@ public class UltraWeb : IDisposable
     public int width;
     public int height;
     private Texture2D _texture;
-    private static bool _isInitialized = false;
-    private bool _disposed = false;
-    private static bool _appIsQuitting = false; // Pro prevenci volání ShutdownUltralight pøi domain reload v editoru.
+    private static UltraWeb _instance;
+    private static bool _disposed = false;
 
-    public UltraWeb(int height, int width)
+    public bool IsDisposed => _disposed;
+
+
+    public static UltraWeb Instance => _instance ?? throw new InvalidOperationException("UltraWeb not initialized.");
+
+    private static bool _isInitialized = false; // Add initialization flag
+
+    public static void Initialize(int width, int height)
     {
-        this.height = height;
-        this.width = width;
+        if (_isInitialized) return;
 
-        if (!_isInitialized)
-        {
-            if (UltralightInitializer.Initialize() != 1) // Použijeme statickou inicializaci
-                throw new Exception("Failed to initialize Ultralight");
-            _isInitialized = true;
-        }
+        if (InitializeUltralight() != 1)
+            throw new Exception("Ultralight initialization failed.");
 
+        _instance = new UltraWeb(width, height);
+
+
+    }
+
+    private UltraWeb(int width, int height)
+    {
         if (CreateRenderer() != 1 || CreateView(width, height) != 1)
             throw new Exception("Failed to create renderer/view");
     }
@@ -95,82 +103,38 @@ public class UltraWeb : IDisposable
             );
         }
 
+        //texture.LoadRawTextureData(pixels, stride * height); musim zkusit
         texture.LoadRawTextureData(pixelData);
-        texture.Apply();
+        texture.Apply(false);
+    }
+
+    public static void ResetStaticState()
+    {
+        _instance = null;
     }
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (!_isInitialized) return;
 
-        if (!_appIsQuitting) // Nechceme volat ShutdownUltralight pri domain reload v editoru
-        {
-            // ShutdownUltralight se volá globálnì pøi ukonèení aplikace, ne pro každou instanci UltraWeb.
-        }
+        ShutdownUltralight();
+        _isInitialized = false;
+        _instance = null;
 
-        if (_texture != null)
-        {
-            UnityEngine.Object.Destroy(_texture);
-            _texture = null;
-        }
-        _disposed = true;
+        // Add explicit GC cleanup
+        System.GC.Collect();
+        System.GC.WaitForPendingFinalizers();
     }
 
-    ~UltraWeb()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetStatic()
     {
-        Dispose();
-    }
+        _instance = null;
+        _isInitialized = false;
 
-    // Statická tøída pro globální inicializaci a vypnutí Ultralight
-    public static class UltralightInitializer
-    {
-        public static int Initialize()
-        {
-            if (!_isInitialized)
-            {
-                Debug.Log("UltralightInitializer: Initialize() called."); // Log inicializácie v C#
-                if (InitializeUltralight() != 1)
-                    return -1;
-                _isInitialized = true;
-                Debug.Log("UltralightInitializer: Initialize() finished."); // Log dokonèenia inicializácie v C#
-            }
-            return 1;
-        }
-
-        public static void Shutdown()
-        {
-            if (_isInitialized)
-            {
-                Debug.Log("UltralightInitializer: Shutdown() called."); // Log shutdownu v C#
-                ShutdownUltralight();
-                _isInitialized = false;
-                Debug.Log("UltralightInitializer: Shutdown() finished."); // Log dokonèenia shutdownu v C#
-            }
-        }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void OnBeforeSceneLoadRuntimeMethod()
-        {
-            Initialize();
-            Application.quitting += OnApplicationQuitting;
-
+        // Force native cleanup if needed
 #if UNITY_EDITOR
-            AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload; // Pridanie listenera pre domain reload
-#endif
-        }
-
-        static void OnApplicationQuitting()
-        {
-            _appIsQuitting = true;
-            Shutdown();
-        }
-
-#if UNITY_EDITOR
-        static void OnBeforeAssemblyReload()
-        {
-            Debug.Log("UltralightInitializer: OnBeforeAssemblyReload - Editor Domain Reload detected. Forcing Shutdown."); // Log domain reload
-            Shutdown(); // Explicitné volanie shutdown pri domain reload
-        }
+        ShutdownUltralight();
 #endif
     }
 }

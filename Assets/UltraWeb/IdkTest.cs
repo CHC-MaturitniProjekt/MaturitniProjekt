@@ -1,55 +1,92 @@
-using System.Collections;
+﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class IdkTest : MonoBehaviour
 {
-    //private UltraWeb ultraWeb;
-    //public RawImage pomoc;
-    //private Coroutine updateCoroutine;
+    [Header("Settings")]
+    public int width = 1024;
+    public int height = 768;
+    public string url = "https://example.com";
 
-    //void Awake()
-    //{
-    //    ultraWeb = new UltraWeb(1080, 1920);
-    //    ultraWeb.LoadUrl("https://www.google.com");
-    //    updateCoroutine = StartCoroutine(UpdateTexture());
-    //}
+    [Header("References")]
+    [SerializeField] private RawImage _rawImage;
 
-    //IEnumerator UpdateTexture()
-    //{
-    //    while (true)
-    //    {
-    //        yield return new WaitForEndOfFrame();
-    //        Texture2D texture = ultraWeb.getTexture();
-    //        if (texture != null)
-    //        {
-    //            pomoc.texture = texture;
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError("Failed to get texture from UltraWeb!");
-    //        }
-    //    }
-    //}
+    private Coroutine _updateCoroutine;
 
-    //void OnDestroy()
-    //{
-    //    if (updateCoroutine != null)
-    //        StopCoroutine(updateCoroutine);
-
-    //    ultraWeb?.Dispose();
-    //}
-    private UltraWeb ultraWeb;
-
-    void Awake()
+    private void Start()
     {
-        ultraWeb = new UltraWeb(100, 100); // Mal� rozli�en� pro test
-        Debug.Log("MinimalUltralightTest: UltraWeb initialized.");
+        try
+        {
+            // Inicializace UltraWeb
+            UltraWeb.Initialize(width, height);
+
+            // Načtení URL
+            UltraWeb.Instance.LoadUrl(url);
+
+            // Spuštění coroutine pro aktualizaci textury
+            _updateCoroutine = StartCoroutine(UpdateTextureRoutine());
+
+            // Nastavení počáteční velikosti RawImage
+            _rawImage.rectTransform.sizeDelta = new Vector2(width, height);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Initialization failed: {e.Message}");
+            enabled = false;
+        }
     }
 
-    void OnDestroy()
+    private IEnumerator UpdateTextureRoutine()
     {
-        ultraWeb?.Dispose();
-        Debug.Log("MinimalUltralightTest: UltraWeb disposed.");
+        while (!UltraWeb.Instance.IsDisposed)
+        {
+            yield return new WaitForEndOfFrame();
+
+            // Získání textury z UltraWeb
+            var texture = UltraWeb.Instance.getTexture();
+
+            if (texture != null && _rawImage != null)
+            {
+                // Aktualizace RawImage
+                _rawImage.texture = texture;
+
+                // Optimalizace: Přeskočit 1 snímek pro snížení vytížení CPU
+                yield return null;
+            }
+            else
+            {
+                Debug.LogWarning("Texture or RawImage is null");
+            }
+        }
     }
+
+    private void OnDestroy()
+    {
+        // Zastavení coroutine
+        if (_updateCoroutine != null)
+            StopCoroutine(_updateCoroutine);
+
+        // Uvolnění prostředků
+        if (UltraWeb.Instance != null && !UltraWeb.Instance.IsDisposed)
+        {
+            UltraWeb.Instance.Dispose();
+        }
+
+        UltraWeb.ResetStaticState();
+    }
+
+    private void OnApplicationQuit()
+    {
+        // Nastavíme globální flag pro všechny instance
+
+        if (UltraWeb.Instance != null && !UltraWeb.Instance.IsDisposed)
+        {
+            UltraWeb.Instance.Dispose();
+        }
+
+        UltraWeb.ResetStaticState();
+    }
+
 }
