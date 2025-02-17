@@ -43476,7 +43476,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1663759319
 Canvas:
   m_ObjectHideFlags: 0
@@ -49050,7 +49050,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &1926941702
 Canvas:
   m_ObjectHideFlags: 0
@@ -54209,6 +54209,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4076379340802565122, guid: eb78bdc12130df14cac7d9d3e526b650,
+        type: 3}
+      propertyPath: interIconPickup
+      value: 
+      objectReference: {fileID: 21300000, guid: 5c9d736a02c58764e923626aa337f2f7,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

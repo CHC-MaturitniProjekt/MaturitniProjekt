@@ -47,7 +47,7 @@ public class Interact : MonoBehaviour
         cam = Camera.main;
     }
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         Scan();
     }
@@ -96,8 +96,8 @@ public class Interact : MonoBehaviour
             {
                 Outline outline = hit.collider.GetComponent<Outline>();
                 selectedObj = hit.collider.gameObject;
-                interGameObject.transform.position = transform.position + (hit.point - transform.position) * 0.7f;
-                Highlight(outline);
+                interGameObject.transform.position = transform.position + (hit.point - transform.position) * 0.9f + new Vector3(-0.1f, 0, 0);
+                interGameObject.transform.rotation = Quaternion.LookRotation(hit.point - transform.position) * Quaternion.Euler(0, -90, 0);                Highlight(outline);
 
                 switch (currentHitTag)
                 {
@@ -153,13 +153,6 @@ public class Interact : MonoBehaviour
             currentOutline = null;
         }
     }
-
-    /*private void InteractWithNPC()
-    {
-        Debug.Log("Interacting with NPC");
-        questList = questManager.GetQuestList();
-        questTrigger.TriggerQuest(questList[0]);
-    }*/
     
     private void InteractWithNPC()
     {

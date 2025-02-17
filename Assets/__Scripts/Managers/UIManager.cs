@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Michsky.UI.Heat;
+using PixelCrushers.DialogueSystem;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -31,12 +32,12 @@ public class UIManager : MonoBehaviour
     {
         //AddQuest("Promluv si s kamarádem");
         
-        AddNotification("Vítej");
+        //AddNotification("Vítej");
         
         questManager = FindFirstObjectByType<QuestManager>();
         questList = questManager.GetQuestList();
     }
-
+    
     public void AddQuest(string questId)
     {
         string questName = "";

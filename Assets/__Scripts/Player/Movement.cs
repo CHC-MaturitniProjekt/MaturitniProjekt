@@ -22,6 +22,7 @@ public class Movement : MonoBehaviour
 
     private Vector2 movementInput;
     private Rigidbody rb;
+    private CameraController camController;
 
     public void Dl<T>(T var)
     {
@@ -41,6 +42,7 @@ public class Movement : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         currentSprintTime = sprintTime;
+        camController = GetComponent<CameraController>();
     }
 
     private void OnCrouchInput()
@@ -57,7 +59,10 @@ public class Movement : MonoBehaviour
 
     private void OnMoveInput(Vector2 input)
     {
-        movementInput = input;
+        if (!camController.isInConvo)
+        {
+            movementInput = input;
+        }
     }
 
     private void OnJumpInput()
@@ -70,7 +75,7 @@ public class Movement : MonoBehaviour
 
     private void OnSprintInput()
     {
-        if (movementInput != Vector2.zero && currentSprintTime > 0)
+        if (movementInput != Vector2.zero && currentSprintTime > 0 && !camController.isInConvo)
         {
             isSprinting = true;
         }

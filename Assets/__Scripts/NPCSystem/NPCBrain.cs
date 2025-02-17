@@ -7,6 +7,8 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private NPCState state;
     [SerializeField] private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
+
+    private CameraController playerCam;
     
     public NPCBehavior AfterDialogueBehavior {get; set;}
 
@@ -14,7 +16,8 @@ public class NPCBrain : MonoBehaviour
     private void Awake()
     {
         state = GetComponent<NPCState>();
-        movement = GetComponent<NPCMovement>(); 
+        movement = GetComponent<NPCMovement>();
+        playerCam = FindFirstObjectByType<CameraController>();
     }
 
     private void Update()
@@ -62,12 +65,18 @@ public class NPCBrain : MonoBehaviour
     {
          tempBehaviour = currentBehavior;
          Debug.Log("Start Conversation: " + tempBehaviour);
+         
+         playerCam.isInConvo = true;
+
     }
     
     public void EndConversation()
     {
         //SetBehavior(AfterDialogueBehavior, 5f);
         currentBehavior = AfterDialogueBehavior;        // <-------- nejak ukoncit po urcite dobe
+        
+        playerCam.isInConvo = false;
+
     }
 
     public void SetBehavior(NPCBehavior newBehavior, float duration = 0)

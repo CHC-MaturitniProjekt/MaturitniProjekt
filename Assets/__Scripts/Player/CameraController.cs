@@ -30,6 +30,8 @@ public class CameraController : MonoBehaviour
     private Vector3 initialCameraPosition;
     private Vector2 currentMouseDelta;
     private Vector2 currentMouseDeltaVelocity;
+
+    public bool isInConvo = false;
     
     [HideInInspector] public bool isUsingPC;
     CursorController cursorController;
@@ -66,13 +68,9 @@ public class CameraController : MonoBehaviour
     private void Look()
     { 
         if (!isUsingPC) 
-        { 
-            /*
-            currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, mouseMove, ref currentMouseDeltaVelocity, 0.05f);
-            */
-
-            float mouseX = mouseMove.x * mouseSensitivity * Time.deltaTime;
-            float mouseY = mouseMove.y * mouseSensitivity * Time.deltaTime;
+        {
+            float mouseX = mouseMove.x * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
+            float mouseY = mouseMove.y * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
         
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);                             

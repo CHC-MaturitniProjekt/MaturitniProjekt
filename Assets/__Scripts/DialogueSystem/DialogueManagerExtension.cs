@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 using PixelCrushers.DialogueSystem;
+using Unity.VisualScripting;
 
 public class DialogueManagerExtension : MonoBehaviour
 {
     private CameraManager cameraManager;
-    
     private NPCBrain npcBrain;
     
     private void Start()
@@ -12,7 +13,16 @@ public class DialogueManagerExtension : MonoBehaviour
         cameraManager = FindObjectOfType<CameraManager>();
         npcBrain = FindObjectOfType<NPCBrain>();
     }
-    
+
+    private void Update()
+    {
+        if (DialogueManager.instance.isConversationActive)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+    }
+
     private void OnEnable()
     {
         DialogueManager.instance.conversationStarted += OnConversationStart;
@@ -31,7 +41,6 @@ public class DialogueManagerExtension : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         npcBrain.StartConversation();
-        
     }
 
     private void OnConversationEnd(Transform actor)
@@ -40,4 +49,6 @@ public class DialogueManagerExtension : MonoBehaviour
         Cursor.visible = false;
         npcBrain.EndConversation();
     }
+    
+    //DialogueManager.instance.StopConversation();
 }

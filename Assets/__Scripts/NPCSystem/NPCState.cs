@@ -10,6 +10,5 @@ public class NPCState : MonoBehaviour
     public bool IsLookingAtPlayer { get; set; }
     public bool IsRunningAway { get; set; }
     public bool IsOverriden { get; set; }
-
     public void SetEmotion(Emotion newEmotion) => CurrentEmotion = newEmotion;
 }
