@@ -1,4 +1,4 @@
-﻿Shader "Custom/BloomFX 1"
+﻿Shader "Custom/BloomFX"
 {
     HLSLINCLUDE
         #pragma multi_compile_local _ _USE_RGBM

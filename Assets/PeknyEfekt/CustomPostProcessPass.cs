@@ -23,6 +23,7 @@ public class CustomPostProcessPass : ScriptableRenderPass
     private RTHandle[] m_BloomMipUp;
     private RTHandle[] m_BloomMipDown;
     private GraphicsFormat hdrFormat;
+    bool m_UseRGBM;
 
     private BenDayBloomEffectComponent m_Bloom;
 
@@ -47,14 +48,18 @@ public class CustomPostProcessPass : ScriptableRenderPass
             m_BloomMipDown[i] = RTHandles.Alloc(_BloomMipDown[i], name: "_BloomMipDown" + i);
         }
 
-        const GraphicsFormatUsage usage = GraphicsFormatUsage.Linear | GraphicsFormatUsage.Render;
-        if (SystemInfo.IsFormatSupported(GraphicsFormat.B10G11R11_UFloatPack32, usage))
+        const GraphicsFormatUsage usage = GraphicsFormatUsage.Blend;
+        if (SystemInfo.IsFormatSupported(GraphicsFormat.B10G11R11_UFloatPack32, usage)) // HDR fallback
         {
             hdrFormat = GraphicsFormat.B10G11R11_UFloatPack32;
+            m_UseRGBM = false;
         }
         else
         {
-            hdrFormat = QualitySettings.activeColorSpace == ColorSpace.Linear ? GraphicsFormat.R8G8B8A8_SRGB : GraphicsFormat.R8G8B8A8_UNorm;
+            hdrFormat = QualitySettings.activeColorSpace == ColorSpace.Linear
+                ? GraphicsFormat.R8G8B8A8_SRGB
+                : GraphicsFormat.R8G8B8A8_UNorm;
+            m_UseRGBM = true;
         }
     }
 
@@ -74,23 +79,29 @@ public class CustomPostProcessPass : ScriptableRenderPass
         var stack = UnityEngine.Rendering.VolumeManager.instance.stack;
         m_Bloom = stack.GetComponent<BenDayBloomEffectComponent>();
 
-        CommandBuffer cmd = CommandBufferPool.Get(); //nefunguje
+        CommandBuffer cmd = CommandBufferPool.Get(); 
 
         using (new ProfilingScope(cmd, new ProfilingSampler("Custom Post Process Effects")))
         {
-            SetupBloom(cmd, cameraColorTargetHandle);
+            bool bloomActive = m_Bloom.IsActive();
 
-            m_compositeMaterial.SetFloat("_Cutoff", m_Bloom.dotsCutoff.value);
-            m_compositeMaterial.SetFloat("_Density", m_Bloom.dotsDensity.value);
-            m_compositeMaterial.SetVector("_Direction", m_Bloom.scrollDirection.value);
+            if (bloomActive)
+            {
+                using (new ProfilingScope(cmd, new ProfilingSampler("Bloom")))
+                {
+                    SetupBloom(cmd, cameraColorTargetHandle);
 
-            Blitter.BlitCameraTexture(cmd, cameraColorTargetHandle, cameraColorTargetHandle, m_compositeMaterial, 0);
+                    m_compositeMaterial.SetFloat("_Cutoff", m_Bloom.dotsCutoff.value);
+                    m_compositeMaterial.SetFloat("_Density", m_Bloom.dotsDensity.value);
+                    m_compositeMaterial.SetVector("_Direction", m_Bloom.scrollDirection.value);
+                    Blitter.BlitCameraTexture(cmd, cameraColorTargetHandle, cameraColorTargetHandle, m_compositeMaterial, 0);
+                }
+            }
+
+           
         }
-
         context.ExecuteCommandBuffer(cmd);
         cmd.Clear();
-
-
         CommandBufferPool.Release(cmd);
     }
 
@@ -114,7 +125,8 @@ public class CustomPostProcessPass : ScriptableRenderPass
         float scatter = Mathf.Lerp(0.05f, 0.95f, m_Bloom.scatter.value);
         var bloomMaterial = m_bloomMaterial;
         bloomMaterial.SetVector("_Params", new Vector4(scatter, clamp, threshold, thresholdKnee));
-
+        CoreUtils.SetKeyword(bloomMaterial, ShaderKeywordStrings.BloomHQ, m_Bloom.highQualityFiltering.value);
+        CoreUtils.SetKeyword(bloomMaterial, ShaderKeywordStrings.UseRGBM, m_UseRGBM);
 
         // Prefilter
         var desc = GetCompatibleDescriptor(tw, th, hdrFormat);
