@@ -312,15 +312,15 @@
     ],
     "m_VertexContext": {
         "m_Position": {
-            "x": 1007.9998779296875,
-            "y": 151.00003051757813
+            "x": 1425.9998779296875,
+            "y": 178.99996948242188
         },
         "m_Blocks": []
     },
     "m_FragmentContext": {
         "m_Position": {
-            "x": 1005.9998168945313,
-            "y": 443.0
+            "x": 1423.9998779296875,
+            "y": 471.0
         },
         "m_Blocks": [
             {
@@ -464,7 +464,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Texture2DMaterialSlot",
     "m_ObjectId": "13e894e2a18643bcafdb14f9d5b70ce9",
     "m_Id": 0,
-    "m_DisplayName": "BloomTexture2D",
+    "m_DisplayName": "BloomTexture",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -758,10 +758,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 0.0,
-            "height": 0.0
+            "x": 1109.9998779296875,
+            "y": 231.99993896484376,
+            "width": 199.9998779296875,
+            "height": 40.999908447265628
         }
     },
     "m_Slots": [
@@ -1277,7 +1277,7 @@
     "m_RefNameGeneratedByDisplayName": "Cutoff",
     "m_DefaultReferenceName": "_Cutoff",
     "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
+    "m_GeneratePropertyBlock": false,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
@@ -1661,7 +1661,7 @@
     "m_RefNameGeneratedByDisplayName": "Direction",
     "m_DefaultReferenceName": "_Direction",
     "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
+    "m_GeneratePropertyBlock": false,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
@@ -1804,7 +1804,7 @@
     "m_RefNameGeneratedByDisplayName": "BloomIntensity",
     "m_DefaultReferenceName": "_BloomIntensity",
     "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
+    "m_GeneratePropertyBlock": false,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
@@ -2200,7 +2200,7 @@
     "m_RefNameGeneratedByDisplayName": "Density",
     "m_DefaultReferenceName": "_Density",
     "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
+    "m_GeneratePropertyBlock": false,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
@@ -2359,18 +2359,18 @@
     "m_Guid": {
         "m_GuidSerialized": "1fb044d3-0dc3-444f-9224-3ad49aaf6239"
     },
-    "m_Name": "BloomTexture2D",
+    "m_Name": "BloomTexture",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "BloomTexture2D",
-    "m_DefaultReferenceName": "_BloomTexture2D",
+    "m_RefNameGeneratedByDisplayName": "BloomTexture",
+    "m_DefaultReferenceName": "_BloomTexture",
     "m_OverrideReferenceName": "_Bloom_Texture",
-    "m_GeneratePropertyBlock": true,
+    "m_GeneratePropertyBlock": false,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
+    "hlslDeclarationOverride": 2,
     "m_Hidden": false,
     "m_Value": {
         "m_SerializedTexture": "{\"texture\":{\"instanceID\":0}}",
