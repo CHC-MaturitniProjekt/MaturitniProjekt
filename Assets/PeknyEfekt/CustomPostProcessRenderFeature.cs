@@ -17,25 +17,32 @@ public class CustomPostProcessRenderFeature : ScriptableRendererFeature
     private CustomPostProcessPass customPass;
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
-        renderer.EnqueuePass(customPass);
+        if(customPass != null)
+            renderer.EnqueuePass(customPass);
     }
 
     public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
     {
-        if(renderingData.cameraData.cameraType == CameraType.Game)
+        if (customPass != null)
         {
-            customPass.ConfigureInput(ScriptableRenderPassInput.Depth);
-            customPass.ConfigureInput(ScriptableRenderPassInput.Color);
-            customPass.SetTarget(renderer.cameraColorTargetHandle, renderer.cameraDepthTargetHandle);
+            if (renderingData.cameraData.cameraType == CameraType.Game)
+            {
+                customPass.ConfigureInput(ScriptableRenderPassInput.Depth);
+                customPass.ConfigureInput(ScriptableRenderPassInput.Color);
+                customPass.SetTarget(renderer.cameraColorTargetHandle, renderer.cameraDepthTargetHandle);
+            }
         }
     }
 
     public override void Create()
     {
-        bloomMaterial = CoreUtils.CreateEngineMaterial(bloomShader);
-        compositMaterial = CoreUtils.CreateEngineMaterial(compositShader);
+        if (bloomShader != null && compositShader != null)
+        {
+            bloomMaterial = CoreUtils.CreateEngineMaterial(bloomShader);
+            compositMaterial = CoreUtils.CreateEngineMaterial(compositShader);
 
-        customPass = new CustomPostProcessPass(bloomMaterial, compositMaterial);
+            customPass = new CustomPostProcessPass(bloomMaterial, compositMaterial);
+        }
     }
 
     protected override void Dispose(bool disposing)
