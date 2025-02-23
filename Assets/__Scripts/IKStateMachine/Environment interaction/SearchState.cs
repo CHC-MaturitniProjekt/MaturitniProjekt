@@ -11,16 +11,10 @@ public class SearchState : EnvironmentInteractionState
         EnvironmentInteractionContext Context = context;
     }
 
-    public override void EnterState()
-    {
-        Debug.Log("SearchState");
-    }
+    public override void EnterState() {}
     public override void ExitState() {}
 
-    public override void UpdateState()
-    {
-        Debug.Log("SearchState update");
-    }
+    public override void UpdateState() {}
     public override EnvironmentInteractionStateMachine.EEnvironmentInteractionState GetNextState()
     {
         if (CheckShouldReset())

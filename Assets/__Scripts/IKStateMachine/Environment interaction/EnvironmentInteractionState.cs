@@ -27,38 +27,15 @@ public abstract class EnvironmentInteractionState : BaseState<EnvironmentInterac
         }
         
         bool isMovingAway = CheckIsMovingAway();
-        bool isBadAngle = CheckIsBadAngle();
         bool isPlayerJumping = Mathf.Round(Context.Rb.velocity.y) >= 1;
         
-        if (isMovingAway || isBadAngle || isPlayerJumping)
+        if (isMovingAway || isPlayerJumping)
         {
             Context.LowestDistance = Mathf.Infinity;
             return true;
         }
 
         return false;
-    }
-
-    protected bool CheckIsBadAngle()
-    {
-        if (Context.CurrentIntersectingCollider == null)
-        {
-            return false;
-        }
-        
-        Vector3 targetDirection = Context.ClosestPointOnColliderFromShoulder - Context.CurrentShoulderTransform.position;
-        Vector3 shoulderDirection = Context.CurrentBodySide == EnvironmentInteractionContext.EBodySide.RIGHT
-            ? Context.RootTransform.right
-            : -Context.RootTransform.right;
-
-        float dotProduct = Vector3.Dot(shoulderDirection, targetDirection.normalized);
-        
-        float wiggleRoom = Context.CurrentBodySide == EnvironmentInteractionContext.EBodySide.LEFT ? 0.5f : -0.5f;
-        
-        bool isBadAngle = dotProduct < wiggleRoom;
-
-        return isBadAngle;
-
     }
 
     protected bool CheckIsMovingAway()
