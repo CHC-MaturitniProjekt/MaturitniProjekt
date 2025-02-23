@@ -6,9 +6,9 @@ using UnityEngine.InputSystem;
 
 public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
 {
-    Dictionary<EState, BaseState<EState>> States = new Dictionary<EState, BaseState<EState>>();
-
-    private BaseState<EState> CurrentState;
+    protected Dictionary<EState, BaseState<EState>> States = new Dictionary<EState, BaseState<EState>>();
+    protected BaseState<EState> CurrentState;
+    
     private bool IsTransitioningState = false;
     
     private void Start()
@@ -18,23 +18,25 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
 
     private void Update()
     {
-        EState nextStateKey = CurrentState.GetNextState();
+        EState nextState = CurrentState.GetNextState();
 
-        if (nextStateKey.Equals(CurrentState.StateKey) && !IsTransitioningState)
+        if (!IsTransitioningState && nextState.Equals(CurrentState.StateKey))
         {
             CurrentState.UpdateState();
         }
         else if (!IsTransitioningState)
         {
-            TransitionToState(nextStateKey);
+            TransitionToState(nextState);
         }
     }
 
     public void TransitionToState(EState stateKey)
     {
+        IsTransitioningState = true;
         CurrentState.ExitState();
         CurrentState = States[stateKey];
         CurrentState.EnterState();
+        IsTransitioningState = false;
     }
     
     void OnTriggerEnter(Collider other)
