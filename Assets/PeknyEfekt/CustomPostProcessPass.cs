@@ -76,6 +76,9 @@ public class CustomPostProcessPass : ScriptableRenderPass
 
     public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
     {
+        if (cameraColorTargetHandle == null || cameraColorTargetHandle == null)
+            return;
+
         var stack = UnityEngine.Rendering.VolumeManager.instance.stack;
         m_Bloom = stack.GetComponent<BenDayBloomEffectComponent>();
 
