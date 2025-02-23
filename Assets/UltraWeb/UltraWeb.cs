@@ -6,11 +6,12 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 public class UltraWeb : IDisposable
 {
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
-    private static extern int InitializeUltralight();
+    private static extern int InitializeUltralight(string sourcePath);
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
     private static extern int CreateRenderer();
@@ -27,6 +28,34 @@ public class UltraWeb : IDisposable
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
     private static extern void ShutdownUltralight();
 
+    [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int MouseInput(int x, int y, int type, int button);
+
+    [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int KeyInput(int key, int type, string text);
+
+    [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int ScrollInput(int deltaX, int deltaY);
+
+    public enum KeyEventType
+    {
+        RawKeyDown,
+        KeyUp,
+        Char
+    };
+    public enum MouseEventType
+    {
+        Move,
+        Down,
+        Up
+    };
+    public enum MouseButton
+    {
+        None,
+        Left,
+        Middle,
+        Right
+    };
 
     public int width;
     public int height;
@@ -45,7 +74,7 @@ public class UltraWeb : IDisposable
     {
         if (_isInitialized) return;
 
-        if (InitializeUltralight() != 1)
+        if (InitializeUltralight("./Assets/UltraWeb/Plugins/win-x64/") != 1)
             throw new Exception("Ultralight initialization failed.");
 
         _instance = new UltraWeb(width, height);
@@ -106,6 +135,27 @@ public class UltraWeb : IDisposable
         //texture.LoadRawTextureData(pixels, stride * height); musim zkusit
         texture.LoadRawTextureData(pixelData);
         texture.Apply(false);
+    }
+
+    public void SendKeyPress(int keyCode, string text)
+    {
+        KeyInput(keyCode, (int)KeyEventType.RawKeyDown, null);
+        KeyInput(keyCode, (int)KeyEventType.Char, text);
+    }
+
+    public void SendKeyUp(int keyCode)
+    {
+        KeyInput(keyCode, (int)KeyEventType.KeyUp, null);
+    }
+
+    public void SendMouseEvent(int x, int y, MouseEventType type, MouseButton button)
+    {
+        MouseInput(x, y, (int)type, (int)button);
+    }
+
+    public void SendMouseScroll(int deltaY)
+    {
+        ScrollInput(0, deltaY);
     }
 
     public static void ResetStaticState()
