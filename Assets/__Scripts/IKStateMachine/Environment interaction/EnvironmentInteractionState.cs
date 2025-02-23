@@ -72,7 +72,7 @@ public abstract class EnvironmentInteractionState : BaseState<EnvironmentInterac
 
     protected void StartIkTargetPositionTracking(Collider intersectingCollider)
     {
-        if (Context.CurrentIntersectingCollider == null)
+        if (intersectingCollider.gameObject.layer == LayerMask.NameToLayer("Wall") && Context.CurrentIntersectingCollider == null)
         {
             Context.CurrentIntersectingCollider = intersectingCollider;
             Vector3 closestPointFromRoot = GetClosestPointOnCollider(intersectingCollider, Context.RootTransform.position);
