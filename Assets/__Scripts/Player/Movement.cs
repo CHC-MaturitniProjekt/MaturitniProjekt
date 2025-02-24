@@ -20,6 +20,8 @@ public class Movement : MonoBehaviour
     public LayerMask groundLayer;
     private bool isCrouched;
 
+    private Animator animator;
+    
     private Vector2 movementInput;
     private Rigidbody rb;
     private CameraController camController;
@@ -40,6 +42,8 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.None;
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        
+        animator = GetComponent<Animator>();
 
         currentSprintTime = sprintTime;
         camController = GetComponent<CameraController>();
@@ -117,12 +121,14 @@ public class Movement : MonoBehaviour
         {
             SprintRecovery();
         }
+        
+        animator.SetFloat("X", rb.velocity.magnitude);
     }
 
     private Vector3 GetMovementInfo(float moveSpeed)
     {
-        Vector3 forwardMovement = transform.forward * -movementInput.x;
-        Vector3 rightMovement = transform.right * movementInput.y;
+        Vector3 forwardMovement = transform.forward * movementInput.y;
+        Vector3 rightMovement = transform.right * movementInput.x;
         return (forwardMovement + rightMovement).normalized * moveSpeed;
     }
 
