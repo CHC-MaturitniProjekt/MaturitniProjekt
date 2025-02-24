@@ -37,7 +37,7 @@ public abstract class EnvironmentInteractionState : BaseState<EnvironmentInterac
 
         return false;
     }
-
+    
     protected bool CheckIsMovingAway()
     {
         float currentDistanceToTarget = Vector3.Distance(Context.RootTransform.position, Context.ClosestPointOnColliderFromShoulder);
@@ -84,10 +84,32 @@ public abstract class EnvironmentInteractionState : BaseState<EnvironmentInterac
     
     protected void UpdateIkTargetPosition(Collider intersectingCollider)
     {
+        Vector3 targetDirection = Context.ClosestPointOnColliderFromShoulder - Context.CurrentShoulderTransform.position;
+        Vector3 shoulderDirection = Context.CurrentBodySide == EnvironmentInteractionContext.EBodySide.RIGHT
+            ? Context.RootTransform.right
+            : -Context.RootTransform.right;
+
+        float dotProduct = Vector3.Dot(shoulderDirection, targetDirection.normalized);
+
+        float wiggleRoom = 0.1f;
+        float hysteresisBuffer = 0.05f;
+
+        bool currentSide;
+        if (Context.CurrentBodySide == EnvironmentInteractionContext.EBodySide.RIGHT)                                   //upravit
+        {
+            currentSide = dotProduct < -wiggleRoom - hysteresisBuffer;
+        }
+        else
+        {
+            currentSide = dotProduct > wiggleRoom + hysteresisBuffer;
+        }
+        Context.SwitchSides(currentSide);
+        
         if (intersectingCollider == Context.CurrentIntersectingCollider)
         {
             SetIkTargetPosition();
         }
+
     }
     
     protected void ResetIkTargetPositionTracking(Collider intersectingCollider)

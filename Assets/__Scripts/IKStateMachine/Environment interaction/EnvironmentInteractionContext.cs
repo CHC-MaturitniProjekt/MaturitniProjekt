@@ -70,13 +70,19 @@ public class EnvironmentInteractionContext
         Vector3 rightShoulder = _rightIkConstraint.data.root.transform.position;
         
         bool isLeftCloser = Vector3.Distance(posToCheck, leftShoulder) < Vector3.Distance(posToCheck, rightShoulder);
+        
+        SwitchSides(isLeftCloser);
+    }
 
+    public void SwitchSides(bool isLeftCloser)
+    {
         if (isLeftCloser)
         {
             CurrentBodySide = EBodySide.LEFT;
             CurrentIkConstraint = _leftIkConstraint;
             CurrentMultiRotationConstraint = _leftHandRotationConstraint; 
             CurrentOriginalTargetPosition = _leftOriginalTargetPosition;
+            ResetHand(EBodySide.RIGHT);
         }
         else
         {
@@ -84,10 +90,26 @@ public class EnvironmentInteractionContext
             CurrentIkConstraint = _rightIkConstraint;
             CurrentMultiRotationConstraint = _rightHandRotationConstraint;
             CurrentOriginalTargetPosition = _rightOriginalTargetPosition;
+            ResetHand(EBodySide.LEFT);
         }
         
         CurrentShoulderTransform = CurrentIkConstraint.data.root.transform;
         CurrentIkTargetTransform = CurrentIkConstraint.data.target.transform;
     }
+    
+    protected void ResetHand(EBodySide side)
+    {
+        if (side == EBodySide.LEFT)
+        {
+            _leftIkConstraint.weight = Mathf.Lerp(_leftIkConstraint.weight, 0, 0.3f);
+            _leftHandRotationConstraint.weight = Mathf.Lerp(_leftIkConstraint.weight, 0, 0.3f);
+        }
+        else
+        {
+            _rightIkConstraint.weight = Mathf.Lerp(_rightIkConstraint.weight, 0, 0.3f);
+            _rightHandRotationConstraint.weight = Mathf.Lerp(_rightIkConstraint.weight, 0, 0.3f);
+        }
+    }
+    
     
 }

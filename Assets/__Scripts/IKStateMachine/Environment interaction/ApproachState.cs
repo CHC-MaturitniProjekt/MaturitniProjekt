@@ -6,12 +6,11 @@ using UnityEngine;
 public class ApproachState : EnvironmentInteractionState
 {
     float _elapsedTime = 0.0f;
-    float _lerpDuration = 5.0f;
+    float _lerpDuration = 1.0f;
     float _approachWeight = 0.5f;
-    float _approachDuration = 2f;
     float _approachRotationWeight = 0.75f;
     float _rotationSpeed = 500.0f;
-    float _riseDistanceTreashold = 0.5f;
+    float _riseDistanceTreashold = 0.7f;
     
     public ApproachState(EnvironmentInteractionContext context, EnvironmentInteractionStateMachine.EEnvironmentInteractionState estate) : base(context, estate)
     {
@@ -37,8 +36,7 @@ public class ApproachState : EnvironmentInteractionState
     }
     public override EnvironmentInteractionStateMachine.EEnvironmentInteractionState GetNextState()
     {
-        bool isOverStateLifeDuration = _elapsedTime >= _approachDuration;
-        if (isOverStateLifeDuration || CheckShouldReset())
+        if ( CheckShouldReset())
         {
             return EnvironmentInteractionStateMachine.EEnvironmentInteractionState.Reset;
         }

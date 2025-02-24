@@ -6,7 +6,7 @@ public class ResetState : EnvironmentInteractionState
 {
     float _elapsedTime = 0.0f;
     float _resetDuration = 1.0f;
-    float _lerpDuration = 10.0f;
+    float _lerpDuration = 2.0f;
     float _rotationSpeed = 500.0f;
     
     public ResetState(EnvironmentInteractionContext context, EnvironmentInteractionStateMachine.EEnvironmentInteractionState estate) : base(context, estate)

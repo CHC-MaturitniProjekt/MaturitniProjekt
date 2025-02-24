@@ -5,7 +5,7 @@ using UnityEngine;
 public class RiseState : EnvironmentInteractionState
 {
     float _elapsedTime = 0.0f;
-    float _lerpDuration = 5.0f;
+    float _lerpDuration = 1.0f;
     float _riseWeight = 1.0f;
     private Quaternion _expectedHandRotation;
     float _maxDistance = 0.5f;
