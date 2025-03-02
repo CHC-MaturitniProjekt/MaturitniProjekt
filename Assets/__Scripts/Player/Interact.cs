@@ -96,19 +96,18 @@ public class Interact : MonoBehaviour
             {
                 Outline outline = hit.collider.GetComponent<Outline>();
                 selectedObj = hit.collider.gameObject;
-                interGameObject.transform.position = transform.position + (hit.point - transform.position) * 0.9f + new Vector3(-0.1f, 0, 0);
-                interGameObject.transform.rotation = Quaternion.LookRotation(hit.point - transform.position) * Quaternion.Euler(0, -90, 0);                Highlight(outline);
+                Highlight(outline);
 
                 switch (currentHitTag)
                 {
                     case var tag when tag == NPCTag:
-                        DisplayInteractThing("Talk", interIconTalk);
+                        DisplayInteractThing("Talk", interIconTalk, hit);
                         break;
                     case var tag when tag == ItemTag:
-                        DisplayInteractThing("Pick Up", interIconPickup);
+                        DisplayInteractThing("Pick Up", interIconPickup, hit);
                         break;
                     case var tag when tag == PCTag:
-                        DisplayInteractThing("Use PC", interIconTalk);
+                        DisplayInteractThing("Use PC", interIconTalk, hit);
                         break;
                     default:
                         break;
@@ -188,12 +187,15 @@ public class Interact : MonoBehaviour
     {
         camController.isUsingPC = !camController.isUsingPC;
     }
-
-    private void DisplayInteractThing(string text, Sprite icon)
+    
+    private void DisplayInteractThing(string text, Sprite icon, RaycastHit hit)
     {
         interGameObject.SetActive(true);
         interText.text = text;
         interIcon.sprite = icon;
+        
+        interGameObject.transform.position = transform.position + (hit.point - transform.position) * 0.8f + new Vector3(0f, 0, 0);
+        interGameObject.transform.rotation = Quaternion.LookRotation(hit.point - transform.position) * Quaternion.Euler(0, -90, -50);
     }
 
     private void HideInteractThing()
