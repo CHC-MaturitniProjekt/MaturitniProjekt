@@ -51,8 +51,5 @@ public class TimeManager : MonoBehaviour
         worldTime += Time.deltaTime * timeMultiplier;
 
         if (worldTime >= 1440f) worldTime = 0;
-        
-
-        Debug.Log(GetDisplayTime(GetWorldTime()));
     }
 }

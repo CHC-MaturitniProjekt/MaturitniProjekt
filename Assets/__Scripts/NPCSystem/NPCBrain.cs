@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NPCBrain : MonoBehaviour
@@ -7,10 +9,14 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private NPCState state;
     [SerializeField] private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
-    [SerializeField] private ScriptableObject npcInfo;
+    [SerializeField] private NPCScriptableObject npcInfo;
+
+    private List<Transform> waypoints;
 
     private CameraController playerCam;
-    
+    private TimeManager timeManager;
+    private WaypointManager waypointManager;
+    private Transform currentWaypoint;
     public NPCBehavior AfterDialogueBehavior {get; set;}
 
     private NPCBehavior tempBehaviour;
@@ -19,13 +25,23 @@ public class NPCBrain : MonoBehaviour
         state = GetComponent<NPCState>();
         movement = GetComponent<NPCMovement>();
         playerCam = FindFirstObjectByType<CameraController>();
+        timeManager = FindAnyObjectByType<TimeManager>();
+        waypointManager = FindAnyObjectByType<WaypointManager>();
+    }
+
+    private void Start()
+    {
+        waypoints = npcInfo.NPCWayPointNames
+            .Select(name => WaypointManager.Instance.GetWaypoint(name))
+            .Where(transform => transform != null)
+            .ToList();
     }
 
     private void Update()
     {
         if (state.IsOverriden) return;
-        
         UpdateBehavior();
+        NPCCycles();
     }
 
     private void UpdateBehavior()
@@ -44,8 +60,33 @@ public class NPCBrain : MonoBehaviour
             case NPCBehavior.LookAtPlayer:
                 movement.HandleLookAt();
                 break;
+            case NPCBehavior.GoTo:
+                movement.HandleGoTo(currentWaypoint.position);
+                break;
         }
     }
+    
+    private void NPCCycles() 
+    {
+        switch (timeManager.GetWorldTime())
+        {
+            case 480:
+                Debug.Log("Rano");
+                break;
+            case 840:
+                Debug.Log("Odpoledne");
+                SetBehavior(NPCBehavior.GoTo);
+                currentWaypoint = waypointManager.GetWaypoint("DumWaypoint");
+                break;
+            case 1140:
+                Debug.Log("Vecer");
+                break;
+            default:
+                break;
+            
+        }
+    }
+    
 
     private void HandleWanderBehavior()
     {
@@ -72,8 +113,7 @@ public class NPCBrain : MonoBehaviour
     
     public void EndConversation()
     {
-        //SetBehavior(AfterDialogueBehavior, 5f);
-        currentBehavior = AfterDialogueBehavior;        // <-------- nejak ukoncit po urcite dobe
+        currentBehavior = AfterDialogueBehavior;
         
         playerCam.isInConvo = false;
 
@@ -81,7 +121,7 @@ public class NPCBrain : MonoBehaviour
 
     public void SetBehavior(NPCBehavior newBehavior, float duration = 0)
     {
-        if (duration > 0)
+        if (duration > 0 && currentBehavior != NPCBehavior.GoTo)
         {
             StartCoroutine(OverrideBehaviorRoutine(newBehavior, duration));
             return;
@@ -116,6 +156,7 @@ public class NPCBrain : MonoBehaviour
         FollowPlayer,
         RunAway,
         Idle,
-        LookAtPlayer
+        LookAtPlayer,
+        GoTo
     }
 }

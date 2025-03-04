@@ -73,12 +73,18 @@ public class NPCMovement : MonoBehaviour
             return;
         }
         
-        agent.SetDestination(waypoints[currentWaypointIndex].position);
+        HandleGoTo(waypoints[currentWaypointIndex].position);
 
         if (ShouldWaitAtWaypoint())
         {
             StartCoroutine(WaitAtWaypointRoutine());
         }
+    }
+    
+    public void HandleGoTo(Vector3 pos)
+    {
+        agent.SetDestination(pos);
+
     }
 
     public void HandleFollowPlayer()
@@ -88,7 +94,8 @@ public class NPCMovement : MonoBehaviour
         if (distanceToPlayer > stopDistance)
         {
             agent.isStopped = false;
-            agent.SetDestination(playerTransform.position);
+            
+            HandleGoTo(playerTransform.position);
         }
         else
         {
@@ -108,7 +115,7 @@ public class NPCMovement : MonoBehaviour
 
         if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, 20f, NavMesh.AllAreas))
         {
-            agent.SetDestination(hit.position);
+            HandleGoTo(hit.position);
             StartCoroutine(RunAwayTimerRoutine());
         }
     }
@@ -183,6 +190,6 @@ public class NPCMovement : MonoBehaviour
 
     private void SetNextWaypointDestination() 
     {
-        agent.SetDestination(waypoints[currentWaypointIndex].position);
+        HandleGoTo(waypoints[currentWaypointIndex].position);
     }
 }
