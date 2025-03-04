@@ -12,7 +12,7 @@ public class Interact : MonoBehaviour
     [Header("Highlight")]
     [SerializeField] private string NPCTag;
     [SerializeField] private string ItemTag;
-    [SerializeField] private string PCTag;
+    //[SerializeField] private string PCTag;
 
     [Header("Interact Icon")]
     [SerializeField] private GameObject interGameObject;
@@ -54,6 +54,22 @@ public class Interact : MonoBehaviour
 
     public void OnInteract()
     {
+        #region TobankoInteract
+        //Tobanko
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Debug.DrawRay(ray.origin, ray.direction * reachLength, Color.red);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, reachLength))
+        {
+            InteractAction interactable = hit.collider.GetComponent<InteractAction>();
+            if (interactable != null)
+            {
+                interactable.OnInteract();
+            }
+        }
+        #endregion
+
         switch (currentHitTag)
         {
             case var value when value == NPCTag:
@@ -62,9 +78,9 @@ public class Interact : MonoBehaviour
             case var value when value == ItemTag:
                 InteractWithItem();
                 break;
-            case var value when value == PCTag:
-                InteractWithPC();
-                break;
+            //case var value when value == PCTag:
+            //    InteractWithPC();
+            //    break;
             default:
                 break;
         }
@@ -90,10 +106,25 @@ public class Interact : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, reachLength))
         {
-            currentHitTag = hit.collider.tag;
+            bool interacted = false;
 
-            if (currentHitTag == NPCTag || currentHitTag == ItemTag || currentHitTag == PCTag)
+            currentHitTag = hit.collider.tag;
+            #region TobankoInteract
+            //Tobanko Chujovina
+            InteractAction interactable = hit.collider.GetComponent<InteractAction>();
+            if (interactable != null)
             {
+                interacted = true;
+                Outline outline = hit.collider.GetComponent<Outline>();
+                selectedObj = hit.collider.gameObject;
+                Highlight(outline);
+                DisplayInteractThing(interactable.InteractionText, interactable.InteractionIcon, hit);
+            }
+            #endregion
+
+            if (currentHitTag == NPCTag || currentHitTag == ItemTag )//|| currentHitTag == PCTag)
+            {
+                interacted = true;
                 Outline outline = hit.collider.GetComponent<Outline>();
                 selectedObj = hit.collider.gameObject;
                 Highlight(outline);
@@ -106,14 +137,15 @@ public class Interact : MonoBehaviour
                     case var tag when tag == ItemTag:
                         DisplayInteractThing("Pick Up", interIconPickup, hit);
                         break;
-                    case var tag when tag == PCTag:
-                        DisplayInteractThing("Use PC", interIconTalk, hit);
-                        break;
+                    //case var tag when tag == PCTag:
+                    //    DisplayInteractThing("Use PC", interIconTalk, hit);
+                    //    break;
                     default:
                         break;
                 }
             }
-            else
+
+            if(!interacted)
             {
                 currentHitTag = null;
                 ClearHighlight();
@@ -130,8 +162,6 @@ public class Interact : MonoBehaviour
 
     void Highlight(Outline outline)
     {
-        if (currentHitTag == NPCTag || currentHitTag == ItemTag || currentHitTag == PCTag)
-        {
             if (currentOutline != outline)
             {
                 ClearHighlight();
@@ -141,7 +171,6 @@ public class Interact : MonoBehaviour
                     currentOutline.OutlineWidth = 5f;
                 }
             }
-        }
     }
 
     void ClearHighlight()
