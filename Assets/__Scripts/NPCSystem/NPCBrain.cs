@@ -7,6 +7,7 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private NPCState state;
     [SerializeField] private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
+    [SerializeField] private ScriptableObject npcInfo;
 
     private CameraController playerCam;
     
@@ -67,7 +68,6 @@ public class NPCBrain : MonoBehaviour
          Debug.Log("Start Conversation: " + tempBehaviour);
          
          playerCam.isInConvo = true;
-
     }
     
     public void EndConversation()
