@@ -10,7 +10,6 @@ public class PickUp : MonoBehaviour
     [SerializeField] private Transform itemHolster;
     [SerializeField] private float itemScale = 0.5f;
     [SerializeField] private float throwForce = 8f;
-    [SerializeField] private int itemCount = 3;
 
     private bool isHoldingItem = false;
     private GameObject currentItem;
