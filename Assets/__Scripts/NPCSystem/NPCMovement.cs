@@ -21,6 +21,7 @@ public class NPCMovement : MonoBehaviour
     private NavMeshAgent agent;
     private NPCState state;
     private NPCAnimation animation;
+    private NPCBrain npcBrain;
     private int currentWaypointIndex;
     private bool isWaiting;
 
@@ -29,6 +30,7 @@ public class NPCMovement : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         state = GetComponent<NPCState>();
         animation = GetComponent<NPCAnimation>();
+        npcBrain = GetComponent<NPCBrain>();
     }
 
     private void Start()
@@ -57,7 +59,7 @@ public class NPCMovement : MonoBehaviour
     {
         if (isWaiting || state.IsOverriden)
         {
-            agent.isStopped = true;
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
             animation.SetMovementSpeed(0);
             return;
         }
@@ -81,10 +83,18 @@ public class NPCMovement : MonoBehaviour
         }
     }
     
-    public void HandleGoTo(Vector3 pos)
+    public void HandleGoTo(Vector3 pos, bool behaviourGoTo = false)
     {
         agent.SetDestination(pos);
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && behaviourGoTo)
+        {
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
+        }
+    }
 
+    public void HandleIdle()
+    {
+        agent.isStopped = true;
     }
 
     public void HandleFollowPlayer()
@@ -99,7 +109,7 @@ public class NPCMovement : MonoBehaviour
         }
         else
         {
-            agent.isStopped = true;
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
             agent.ResetPath();
         }
     }
@@ -126,9 +136,9 @@ public class NPCMovement : MonoBehaviour
         
         Vector3 directionToPlayer = playerTransform.position - headBone.position;
         float angleToPlayer = Vector3.SignedAngle(headBone.forward, directionToPlayer, Vector3.up);
-        
-        agent.isStopped = true;
 
+        npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
+        
         if (Mathf.Abs(angleToPlayer) > 80)
         {
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
@@ -185,7 +195,8 @@ public class NPCMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         state.IsRunningAway = false;
-        agent.isStopped = true;
+        npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
+        
     }
 
     private void SetNextWaypointDestination() 

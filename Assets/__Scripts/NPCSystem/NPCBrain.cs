@@ -63,6 +63,9 @@ public class NPCBrain : MonoBehaviour
             case NPCBehavior.GoTo:
                 movement.HandleGoTo(currentWaypoint.position);
                 break;
+            case NPCBehavior.Idle:
+                movement.HandleIdle();
+                break;
         }
     }
     
@@ -83,7 +86,6 @@ public class NPCBrain : MonoBehaviour
                 break;
             default:
                 break;
-            
         }
     }
     
