@@ -83,6 +83,7 @@ public class NPCBrain : MonoBehaviour
                 break;
             case 1140:
                 Debug.Log("Vecer");
+                SetBehavior(NPCBehavior.Wander);
                 break;
             default:
                 break;
