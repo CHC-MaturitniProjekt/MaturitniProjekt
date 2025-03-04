@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Michsky.UI.Heat;
 using PixelCrushers.DialogueSystem;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -28,6 +29,9 @@ public class UIManager : MonoBehaviour
     private QuestManager questManager;
     private List<ParsedQuestModel> questList;
 
+    [SerializeField] private TextMeshProUGUI timeDisplay;
+    private TimeManager timeManager;
+
     void Start()
     {
         //AddQuest("Promluv si s kamarádem");
@@ -36,8 +40,16 @@ public class UIManager : MonoBehaviour
         
         questManager = FindFirstObjectByType<QuestManager>();
         questList = questManager.GetQuestList();
+        
+        timeManager = FindFirstObjectByType<TimeManager>();
+        if (timeManager != null) timeDisplay.gameObject.SetActive(true);
     }
-    
+
+    private void Update()
+    {
+        DisplayGameTime();
+    }
+
     public void AddQuest(string questId)
     {
         string questName = "";
@@ -134,5 +146,10 @@ public class UIManager : MonoBehaviour
         }
 
         isRunningNotifs = false;
+    }
+
+    private void DisplayGameTime()
+    {
+        timeDisplay.text = timeManager.GetDisplayTime(timeManager.GetWorldTime());
     }
 }

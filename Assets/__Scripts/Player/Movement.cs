@@ -17,7 +17,6 @@ public class Movement : MonoBehaviour
     [SerializeField] private float jumpForce;
     private bool isJumping = false;
     private bool isGrounded;
-    public LayerMask groundLayer;
     private bool isCrouched;
 
     private Animator animator;
@@ -170,7 +169,7 @@ public class Movement : MonoBehaviour
     private void GroundCheck()
     {
         bool wasGrounded = isGrounded;
-        isGrounded = Physics.Raycast(rb.position, Vector3.down, 1.05f, groundLayer);
+        isGrounded = Physics.Raycast(rb.position, Vector3.down, 0.3f);
 
         if (isGrounded && !wasGrounded)
         {
