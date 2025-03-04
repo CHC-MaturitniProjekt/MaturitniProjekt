@@ -6,6 +6,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private InputReader input;
 
     [SerializeField] private CinemachineCamera playerCam;
+    [SerializeField] private CinemachineCamera pcCam;
     [SerializeField] private CinemachineCamera[] cameras;
 
     private bool isCameraModeActive = false;
@@ -13,9 +14,9 @@ public class CameraManager : MonoBehaviour
     
     void Start()
     {
-        input.CamModeEvent += Input_CamModeEvent;
-        input.CamIndexIncrement += () => SwitchCamera(1);
-        input.CamIndexDecrement += () => SwitchCamera(-1);
+        input.CamModeEvent += Input_SecurityCamModeEvent;
+        input.CamIndexIncrement += () => SwitchSecurityCamera(1);
+        input.CamIndexDecrement += () => SwitchSecurityCamera(-1);
 
         playerCam.Priority = new PrioritySettings { Value = 10 };
         foreach (var cam in cameras)
@@ -24,48 +25,46 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    private void Input_CamModeEvent()
+    private void switchCamera(CinemachineCamera from, CinemachineCamera to)
+    {
+        from.Priority = new PrioritySettings { Value = 0 };
+        to.Priority = new PrioritySettings { Value = 10 };
+    }
+
+    private void Input_SecurityCamModeEvent()
     {
         if (isCameraModeActive)
         {
-            ExitCameraMode();
+            ExitSecurityCameraMode();
         }
         else
         {
-            EnterCameraMode();
+            EnterSecurityCameraMode();
         }
     }
 
-    private void EnterCameraMode()
+    private void EnterSecurityCameraMode()
     {
         isCameraModeActive = true;
-
-        playerCam.Priority = new PrioritySettings { Value = 0 };
         activeCameraIndex = 0;
-        cameras[activeCameraIndex].Priority = new PrioritySettings { Value = 10 };
+        switchCamera(playerCam, cameras[activeCameraIndex]);
     }
 
-    private void ExitCameraMode()
+    private void ExitSecurityCameraMode()
     {
         isCameraModeActive = false;
-
-        foreach (var cam in cameras)
-        {
-            cam.Priority = new PrioritySettings { Value = 0 };
-        }
-        playerCam.Priority = new PrioritySettings { Value = 10 };
+        switchCamera(cameras[activeCameraIndex], playerCam);
     }
 
-    private void SwitchCamera(int direction)
+    private void SwitchSecurityCamera(int direction)
     {
         if (!isCameraModeActive) return;
 
-        cameras[activeCameraIndex].Priority = new PrioritySettings { Value = 0 };
-
+        var old = activeCameraIndex;
         activeCameraIndex += direction;
         if (activeCameraIndex < 0) activeCameraIndex = cameras.Length - 1;
         if (activeCameraIndex >= cameras.Length) activeCameraIndex = 0;
 
-        cameras[activeCameraIndex].Priority = new PrioritySettings { Value = 10 };
+        switchCamera(cameras[old], cameras[activeCameraIndex]);
     }
 }
