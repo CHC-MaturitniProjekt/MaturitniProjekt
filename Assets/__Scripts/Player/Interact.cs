@@ -72,9 +72,9 @@ public class Interact : MonoBehaviour
 
         switch (currentHitTag)
         {
-            case var value when value == NPCTag:
+            /*case var value when value == NPCTag:
                 InteractWithNPC();
-                break;
+                break;*/
             case var value when value == ItemTag:
                 InteractWithItem();
                 break;
@@ -122,7 +122,7 @@ public class Interact : MonoBehaviour
             }
             #endregion
 
-            if (currentHitTag == NPCTag || currentHitTag == ItemTag )//|| currentHitTag == PCTag)
+            if (currentHitTag == ItemTag)
             {
                 interacted = true;
                 Outline outline = hit.collider.GetComponent<Outline>();
@@ -131,9 +131,9 @@ public class Interact : MonoBehaviour
 
                 switch (currentHitTag)
                 {
-                    case var tag when tag == NPCTag:
+                    /*case var tag when tag == NPCTag:
                         DisplayInteractThing("Talk", interIconTalk, hit);
-                        break;
+                        break;*/
                     case var tag when tag == ItemTag:
                         DisplayInteractThing("Pick Up", interIconPickup, hit);
                         break;
@@ -182,7 +182,7 @@ public class Interact : MonoBehaviour
         }
     }
     
-    private void InteractWithNPC()
+    /*private void InteractWithNPC()
     {
         Debug.Log("Interacting with NPC");
 
@@ -201,7 +201,7 @@ public class Interact : MonoBehaviour
         {
             npcBrain.SetBehavior(NPCBrain.NPCBehavior.LookAtPlayer);
         }
-    }
+    }*/
 
     private void InteractWithItem()
     {
@@ -212,10 +212,10 @@ public class Interact : MonoBehaviour
         }
     }
 
-    private void InteractWithPC()
+    /*private void InteractWithPC()
     {
         camController.isUsingPC = !camController.isUsingPC;
-    }
+    }*/
     
     private void DisplayInteractThing(string text, Sprite icon, RaycastHit hit)
     {

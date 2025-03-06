@@ -2152,6 +2152,7 @@ GameObject:
   - component: {fileID: 89252688}
   - component: {fileID: 89252687}
   - component: {fileID: 89252691}
+  - component: {fileID: 89252692}
   m_Layer: 31
   m_Name: pc
   m_TagString: PC
@@ -2248,6 +2249,7 @@ Transform:
   - {fileID: 785356799}
   - {fileID: 1456738916}
   - {fileID: 818844901}
+  - {fileID: 795971284}
   m_Father: {fileID: 1421138121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &89252691
@@ -2268,6 +2270,20 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &89252692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89252686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12419b72e08564149a428106af7be46f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractionIcon: {fileID: 21300000, guid: b43d65ae9eb70004d9616088e7d57b1c, type: 3}
+  InteractionText: Use PC
 --- !u!1 &90253572
 GameObject:
   m_ObjectHideFlags: 0
@@ -28474,7 +28490,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
   playerCam: {fileID: 560364641}
-  pcCam: {fileID: 795971285}
+  pcCam: {fileID: 0}
   cameras:
   - {fileID: 1791909778}
   - {fileID: 1969545914}
@@ -44449,6 +44465,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4315424363584743187, guid: 2a607f6335b3fe342bfd2817797dcea3,
     type: 3}
   m_PrefabInstance: {fileID: 1028200432400599957}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &783668934 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8471518033236843708, guid: 0a28de9c2065ada4591c8991f46f6f15,
+    type: 3}
+  m_PrefabInstance: {fileID: 7079902028757877350}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &785356798
 GameObject:
@@ -93465,6 +93487,23 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7079902028757877350}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1670643791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783668934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32bdb70b43e7dc341a9d5d93b54e2054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractionIcon: {fileID: 21300000, guid: c469889db0eea1a459df9473c96b26fb, type: 3}
+  InteractionText: Talk to NPC
+  dialogueSets:
+  - {fileID: 11400000, guid: c5fd6224bc0e90d40bd2dc241844601c, type: 2}
+  - {fileID: 11400000, guid: e106891af6a8c3140890640d8e92825a, type: 2}
 --- !u!1 &1681833695
 GameObject:
   m_ObjectHideFlags: 0
@@ -107876,7 +107915,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8471518033236843708, guid: 0a28de9c2065ada4591c8991f46f6f15,
+        type: 3}
+      insertIndex: 10
+      addedObject: {fileID: 1670643791}
   m_SourcePrefab: {fileID: 100100000, guid: 0a28de9c2065ada4591c8991f46f6f15, type: 3}
 --- !u!1001 &8869973101886707541
 PrefabInstance:

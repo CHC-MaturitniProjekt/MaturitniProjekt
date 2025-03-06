@@ -44,6 +44,11 @@ public class NPCBrain : MonoBehaviour
         NPCCycles();
     }
 
+    public NPCScriptableObject GetNPCSO()
+    {
+        return npcInfo;
+    }
+
     private void UpdateBehavior()
     {
         switch (currentBehavior)
