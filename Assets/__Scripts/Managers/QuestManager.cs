@@ -1,3 +1,4 @@
+using System;
 using Assets.__Scripts.QuestSystem.NodeEditor;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,6 +49,24 @@ public class QuestManager : MonoBehaviour
             }
             questConnections.Add(connection.ToArray());
         }
+    }
+
+    public int? GetIsQuestActiveId()
+    {
+        foreach (var quest in questList)
+        {
+            if (quest.isActive) return quest.QuestID;
+        }
+        return null;
+    }
+    
+    public int? GetIsQuestCompletedId()
+    {
+        foreach (var quest in questList)
+        {
+            if (quest.isCompleted) return quest.QuestID;
+        }
+        return null;
     }
 
     private void TobankuvParserv()

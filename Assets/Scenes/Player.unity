@@ -93494,7 +93494,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 783668934}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 32bdb70b43e7dc341a9d5d93b54e2054, type: 3}
   m_Name: 
@@ -93504,6 +93504,21 @@ MonoBehaviour:
   dialogueSets:
   - {fileID: 11400000, guid: c5fd6224bc0e90d40bd2dc241844601c, type: 2}
   - {fileID: 11400000, guid: e106891af6a8c3140890640d8e92825a, type: 2}
+--- !u!114 &1670643803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783668934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ed55eb3f33a1e942be2be909acc6a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractionIcon: {fileID: 21300000, guid: c469889db0eea1a459df9473c96b26fb, type: 3}
+  InteractionText: Talk to Nyx
+  NPCSO: {fileID: 11400000, guid: 8d51aee191264c04ca1d1a4f039c887f, type: 2}
 --- !u!1 &1681833695
 GameObject:
   m_ObjectHideFlags: 0
@@ -107919,6 +107934,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8471518033236843708, guid: 0a28de9c2065ada4591c8991f46f6f15,
         type: 3}
       insertIndex: 10
+      addedObject: {fileID: 1670643803}
+    - targetCorrespondingSourceObject: {fileID: 8471518033236843708, guid: 0a28de9c2065ada4591c8991f46f6f15,
+        type: 3}
+      insertIndex: 11
       addedObject: {fileID: 1670643791}
   m_SourcePrefab: {fileID: 100100000, guid: 0a28de9c2065ada4591c8991f46f6f15, type: 3}
 --- !u!1001 &8869973101886707541

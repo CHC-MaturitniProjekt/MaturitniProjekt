@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NPCStuff", menuName = "ScriptableObjects/NPCInfo", order = 1)]
+[CreateAssetMenu(fileName = "NPCStuff", menuName = "ScriptableObjects/StoryNPCInfo", order = 1)]
 [Serializable]
-public class NPCScriptableObject : ScriptableObject
+public class StoryNPCScriptableObject : ScriptableObject
 {
     public enum NPCBehaviourTypes
     {
@@ -18,19 +18,15 @@ public class NPCScriptableObject : ScriptableObject
     {
         Nyx,
         Eliot,
-        Quan,
-        Pharmacy,
-        Bank,
-        Electronics,
-        Market,
-        Homeless,
-        Generic
+        Quan
     }
     public string NPCName;
     public NPCBehaviourTypes NPCBehaviourType;
     public NPCDialogueTypes NPCDialogueType;
     public List<string> NPCWayPointNames = new List<string>();
-    public List<string> NPCCompletedDialogues = new List<string>();
     public int NPCId;
 
+    public List<string> GenericDialogues = new List<string>();
+    public List<string> StoryDialogues = new List<string>();
+    
 }
