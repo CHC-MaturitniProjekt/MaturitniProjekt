@@ -58,35 +58,44 @@ public class Firebase : MonoBehaviour
       
         FirebaseResponse response = client.GetSync("quests");
         Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
-        
-        var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data, settings);
-        if (jsonData != null && jsonData.ContainsKey("data"))
+
+        try
         {
-            var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData["data"].ToString());
-            foreach (var item in dataDict)
+            var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data, settings);
+            if (jsonData != null && jsonData.ContainsKey("data"))
             {
-                string[] parts = item.Key.Split('/');
-                if (parts.Length == 2 && parts[1] == "isActive")
+                var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData["data"].ToString());
+                foreach (var item in dataDict)
                 {
-                    string questId = parts[0];
-                    bool isActive = Convert.ToBoolean(item.Value);
-                    
-                    if (isActive)
+                    string[] parts = item.Key.Split('/');
+                    if (parts.Length == 2 && parts[1] == "isActive")
                     {
-                        uiManager.PinQuest(questId);
+                        Debug.Log("aaaaaaaaaaaaaaaaaaa");
+                        string questId = parts[0];
+                        bool isActive = Convert.ToBoolean(item.Value);
+                        
+                        if (isActive)
+                        {
+                            uiManager.PinQuest(questId);
+                        }
+                        else if (!isActive)
+                        {
+                            uiManager.UnPinQuest();
+                        }
                     }
-                    else if (!isActive)
+                    else
                     {
-                        uiManager.UnPinQuest();
+                        string questId = parts[0];
+                        uiManager.AddQuest(questId);
                     }
-                }
-                else
-                {
-                    string questId = parts[0];
-                    uiManager.AddQuest(questId);
                 }
             }
+        } 
+        catch (JsonReaderException ex)
+        {
+            Debug.LogError("JSON parsing error: " + ex.Message);
         }
+        
     }
     
     public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, bool isActive)
