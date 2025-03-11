@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Assets.__Scripts.QuestSystem.NodeEditor;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,8 @@ using UnityEngine;
 public class QuestManager : MonoBehaviour
 {
     private QuestContainer questContainer;
-   
+    private Firebase firebase;
+    
     [SerializeField]
     private List<ParsedQuestModel> questList = new List<ParsedQuestModel>();
     
@@ -21,7 +23,15 @@ public class QuestManager : MonoBehaviour
     void Awake()
     {
         questContainer = Resources.Load<QuestContainer>("questGraph");
+        firebase = FindFirstObjectByType<Firebase>();
         LoadQuests();
+        StartCoroutine(DelayedPushQuests());
+        
+    }
+    private IEnumerator DelayedPushQuests()
+    {
+        yield return new WaitForSeconds(2.0f);
+        pushQuests();
     }
 
     private void LoadQuests()
@@ -66,7 +76,19 @@ public class QuestManager : MonoBehaviour
         {
             if (quest.isCompleted) return quest.QuestID;
         }
-        return null;
+        return null; 
+    }
+    
+    public async void pushQuests()
+    {
+        foreach (var questData in questList)
+        {
+            bool questExists = await firebase.CheckQuest(questData.GUID);
+            if (!questExists)
+            {
+                firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.isActive);
+            }
+        }
     }
 
     private void TobankuvParserv()

@@ -125,12 +125,16 @@ public class Firebase : MonoBehaviour
     public async Task<bool> CheckQuest(string questGUID)
     {
         bool isAdded = false;
-        FirebaseResponse response = client.GetSync("quests");
-        Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
 
+        FirebaseResponse response = client.GetSync("quests");
+        if (response == null || string.IsNullOrEmpty(response.RawJson))
+        {
+            return isAdded;
+        }
+
+        Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
         if (quests == null)
         {
-            Debug.LogError("Quests dictionary is null.");
             return isAdded;
         }
 
@@ -142,6 +146,7 @@ public class Firebase : MonoBehaviour
                 break;
             }
         }
+
         return isAdded;
     }
     
