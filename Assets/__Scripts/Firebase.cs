@@ -98,7 +98,7 @@ public class Firebase : MonoBehaviour
         
     }
     
-    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, bool isActive)
+    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive)
     {
         var settings = new JsonSerializerSettings
         {
@@ -107,6 +107,7 @@ public class Firebase : MonoBehaviour
         
         string objectivesJson = JsonConvert.SerializeObject(objectives, settings);
         string rewardsJson = JsonConvert.SerializeObject(rewards, settings);
+        string nextQuestsJson = JsonConvert.SerializeObject(nextQuests, settings);
 
         
         string jsonQuest = $@"{{
@@ -114,6 +115,7 @@ public class Firebase : MonoBehaviour
             ""QuestDescription"": ""{description}"",           
             ""Objectives"": {objectivesJson},
             ""Rewards"": {rewardsJson},
+            ""NextQuests"": {nextQuestsJson},
             ""isActive"": {isActive.ToString().ToLower()}
         }}";
         

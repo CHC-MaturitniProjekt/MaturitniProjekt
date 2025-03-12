@@ -9,4 +9,7 @@ public class pcInteract : InteractAction
     {
         Debug.Log("PC");
     }
+    
+    public override void OnObjectiveInteract() {}
+
 }

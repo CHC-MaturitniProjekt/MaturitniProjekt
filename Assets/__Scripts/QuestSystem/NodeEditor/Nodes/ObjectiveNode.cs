@@ -36,7 +36,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             objectiveDescriptionField.RegisterValueChangedCallback(evt => ObjectiveDescription = evt.newValue);
             Add(objectiveDescriptionField);
 
-            var objectiveTypeField = new PopupField<string>("Objective Type", new List<string> { "Collect", "Interact" }, 0) { value = ObjectiveType };
+            var objectiveTypeField = new PopupField<string>("Objective Type", new List<string> { "Collect", "Interact", "PickUp" }, 0) { value = ObjectiveType };
             objectiveTypeField.RegisterValueChangedCallback(evt =>
             {
                 ObjectiveType = evt.newValue;
@@ -51,7 +51,8 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var optional = new Toggle("Is optional") { value = isOptional };
             optional.RegisterValueChangedCallback(evt => isOptional = evt.newValue);
             Add(optional);
-
+            
+            CreateCriteriaFields();
             RefreshExpandedState();
             RefreshPorts();
         }
@@ -91,6 +92,20 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
                         criteria.NpcName = evt.newValue;
                     });
                     criteriaContainer.Add(npcField);
+                    break;
+                case "PickUp":
+                    var pickUpField = new IntegerField("Item ID") { value = 0 };
+                    pickUpField.RegisterValueChangedCallback(evt =>
+                    {
+                        var criteria = CompletionCriteria.OfType<ItemCollectionCriteria>().FirstOrDefault();
+                        if (criteria == null)
+                        {
+                            criteria = new ItemCollectionCriteria();
+                            CompletionCriteria.Add(criteria);
+                        }
+                        criteria.RequiredItemCount = evt.newValue;
+                    });
+                    criteriaContainer.Add(pickUpField);
                     break;
             }
         }

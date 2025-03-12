@@ -42,6 +42,7 @@ public class DialogueActionsLibrary : MonoBehaviour
         Lua.RegisterFunction("CheckQuestHaving", this, SymbolExtensions.GetMethodInfo(() => CheckQuestHaving(0)));
         Lua.RegisterFunction("SwitchConversation", this, SymbolExtensions.GetMethodInfo(() => SwitchConversation("")));
         Lua.RegisterFunction("IsHoldingItem", this, SymbolExtensions.GetMethodInfo(() => IsHoldingItem("")));
+        Lua.RegisterFunction("CompleteQuest", this, SymbolExtensions.GetMethodInfo(() => CompleteQuest(0)));
     }
 
     public void SetNPCBehaviour(string behaviourString, double overrideTime)
@@ -70,7 +71,7 @@ public class DialogueActionsLibrary : MonoBehaviour
         Debug.Log("Quest data: " + questData);
         if (questData != null && CheckConditions())
         {
-            firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.isActive);
+            firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive);
         }
     }
     
@@ -88,6 +89,11 @@ public class DialogueActionsLibrary : MonoBehaviour
         bool res = firebase.CheckQuest(questData.GUID).Result;
 
         return res;
+    }
+
+    public void CompleteQuest(double id)
+    {
+        questManager.SetQuestAsComplete((int)id);
     }
 
     private void SwitchConversation(string conversationName)

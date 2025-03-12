@@ -36,7 +36,8 @@ public class QuestManager : MonoBehaviour
 
     private void LoadQuests()
     {
-        foreach (var node in questContainer.questNodeData) //uklada data o questech
+        questList.Clear();
+        foreach (var node in questContainer.questNodeData)
         {
             var parsedQuest = ParseQuestData(node);
             if (parsedQuest != null)
@@ -44,8 +45,9 @@ public class QuestManager : MonoBehaviour
                 questList.Add(parsedQuest);
             }
         }
-        
-        foreach (var link in questContainer.nodeLinks)  //uklada spojeni mezi questy
+
+        questConnections.Clear();
+        foreach (var link in questContainer.nodeLinks)
         {
             List<string> connection = new List<string>();
             connection.Add(link.baseNodeGUID);
@@ -78,6 +80,31 @@ public class QuestManager : MonoBehaviour
         }
         return null; 
     }
+
+    public List<ObjectiveNodeModel> GetQuestObjectivesByQuestID(int? questID)
+    {
+        foreach (var quest in questList)
+        {
+            if (quest.QuestID == questID && quest.Objectives != null)
+            {
+                return quest.Objectives;
+            }
+        }
+
+        return null;
+    }
+
+    public void SetQuestAsComplete(int questID)
+    {
+        foreach (var quest in questList)
+        {
+            if (quest.QuestID == questID)
+            {
+                quest.isCompleted = true;
+            }
+        }
+        
+    }
     
     public async void pushQuests()
     {
@@ -86,12 +113,12 @@ public class QuestManager : MonoBehaviour
             bool questExists = await firebase.CheckQuest(questData.GUID);
             if (!questExists)
             {
-                firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.isActive);
+                firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive);
             }
         }
     }
 
-    private void TobankuvParserv()
+    /*private void TobankuvParserv()
     {
         var idk = Resources.Load<QuestContainer>("questGraph");
         foreach (var serializableNode in idk.questNodeData)
@@ -138,7 +165,7 @@ public class QuestManager : MonoBehaviour
                  
             }
         }
-    }
+    }*/
 
     private ParsedQuestModel ParseQuestData(SerializableQuestNodeModel node)
     {
@@ -153,6 +180,7 @@ public class QuestManager : MonoBehaviour
                 QuestDescription = (questNodeModel as MainQuestNodeModel).QuestDescription,
                 Objectives = new List<ObjectiveNodeModel>(),
                 Rewards = new List<RewardNodeModel>(),
+                nextQuests = new List<string>(),
                 isOptional = false,
                 isCompleted = false
             };
@@ -174,6 +202,11 @@ public class QuestManager : MonoBehaviour
                             {
                                 parsedQuestModel.Rewards.Add(objectiveModel as RewardNodeModel);
                             }
+                            else if (objectiveModel.QuestType == QuestNode.NodeTypes.MainQuestNode)
+                            {
+                                parsedQuestModel.nextQuests.Add(objectiveModel.GUID);
+                            }
+                            
                         }
                     }
                 }

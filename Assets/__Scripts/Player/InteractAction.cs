@@ -8,4 +8,5 @@ public abstract class InteractAction : MonoBehaviour
     [SerializeField] public Sprite InteractionIcon;
     [SerializeField] public string InteractionText;
     public abstract void OnInteract();
+    public abstract void OnObjectiveInteract();
 }

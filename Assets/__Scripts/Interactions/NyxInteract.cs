@@ -15,7 +15,6 @@ public class NyxInteract : InteractAction
 
     public override void OnInteract()
     {
-        Debug.Log("Interacting with NPC");
         string questName = "";
         
         if (CheckQuestIsActive(questManager.GetIsQuestActiveId()))
@@ -39,6 +38,9 @@ public class NyxInteract : InteractAction
             npcBrain.SetBehavior(NPCBrain.NPCBehavior.LookAtPlayer);
         }
     }
+    
+    public override void OnObjectiveInteract() {}
+
 
     private bool CheckQuestIsCompleted(int? requestedQuestId)
     {

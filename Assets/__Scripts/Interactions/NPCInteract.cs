@@ -27,6 +27,8 @@ public class NPCInteract : InteractAction
         }
     }
 
+    public override void OnObjectiveInteract() {}
+
     private void SelectDialogueType()
     {
         NPCDialogueSO selectedDialogueSet = null;
