@@ -798,7 +798,7 @@ MonoBehaviour:
   m_Name: BenDayBloomEffectComponent
   m_EditorClassIdentifier: 
   active: 1
-  treshold:
+  threshold:
     m_OverrideState: 1
     m_Value: 0.9
   intensity:
@@ -810,13 +810,15 @@ MonoBehaviour:
   clamp:
     m_OverrideState: 1
     m_Value: 65472
-  maxIterations:
-    m_OverrideState: 1
-    m_Value: 6
   tint:
     m_OverrideState: 1
     m_Value: {r: 1, g: 1, b: 1, a: 1}
-    hdr: 0
+  maxIterations:
+    m_OverrideState: 1
+    m_Value: 6
+  highQualityFiltering:
+    m_OverrideState: 1
+    m_Value: 0
   dotsDensity:
     m_OverrideState: 1
     m_Value: 10

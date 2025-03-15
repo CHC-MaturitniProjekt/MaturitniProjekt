@@ -50,19 +50,25 @@ public class Movement : MonoBehaviour
 
     private void OnCrouchInput()
     {
-        Crouch();
+        if (!PlayerManager.Instance.isDisabled)
+        {
+            Crouch();
+        }
     }
 
     void FixedUpdate()
     {
-        Move();
-        GroundCheck();
-        SetMovementStates();
+        if (!PlayerManager.Instance.isDisabled)
+        {
+            Move();
+            GroundCheck();
+            SetMovementStates();
+        }
     }
 
     private void OnMoveInput(Vector2 input)
     {
-        if (!camController.isInConvo)
+        if (!camController.isInConvo && !PlayerManager.Instance.isDisabled)
         {
             movementInput = input;
         }
@@ -70,17 +76,23 @@ public class Movement : MonoBehaviour
 
     private void OnJumpInput()
     {
-        if (isGrounded)
+        if (!PlayerManager.Instance.isDisabled)
         {
-            Jump();
+            if (isGrounded)
+            {
+                Jump();
+            }
         }
     }
 
     private void OnSprintInput()
     {
-        if (movementInput != Vector2.zero && currentSprintTime > 0 && !camController.isInConvo)
+        if (!PlayerManager.Instance.isDisabled)
         {
-            isSprinting = true;
+            if (movementInput != Vector2.zero && currentSprintTime > 0 && !camController.isInConvo)
+            {
+                isSprinting = true;
+            }
         }
     }
 
