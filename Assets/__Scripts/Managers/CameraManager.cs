@@ -3,15 +3,30 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] private InputReader input;
+    public static CameraManager Instance { get; private set; }
 
+    [SerializeField] private InputReader input;
     [SerializeField] private CinemachineCamera playerCam;
     [SerializeField] private CinemachineCamera pcCam;
     [SerializeField] private CinemachineCamera[] cameras;
+    private CinemachineCamera currentCamera;
 
     private bool isCameraModeActive = false;
     private int activeCameraIndex = 0;
-    
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         input.CamModeEvent += Input_SecurityCamModeEvent;
@@ -19,16 +34,19 @@ public class CameraManager : MonoBehaviour
         input.CamIndexDecrement += () => SwitchSecurityCamera(-1);
 
         playerCam.Priority = new PrioritySettings { Value = 10 };
+        currentCamera = playerCam;
+
         foreach (var cam in cameras)
         {
             cam.Priority = new PrioritySettings { Value = 0 };
         }
     }
 
-    private void switchCamera(CinemachineCamera from, CinemachineCamera to)
+    private void switchCamera(CinemachineCamera to)
     {
-        from.Priority = new PrioritySettings { Value = 0 };
+        currentCamera.Priority = new PrioritySettings { Value = 0 };
         to.Priority = new PrioritySettings { Value = 10 };
+        currentCamera = to;
     }
 
     private void Input_SecurityCamModeEvent()
@@ -47,24 +65,39 @@ public class CameraManager : MonoBehaviour
     {
         isCameraModeActive = true;
         activeCameraIndex = 0;
-        switchCamera(playerCam, cameras[activeCameraIndex]);
+        switchCamera(cameras[activeCameraIndex]);
     }
 
     private void ExitSecurityCameraMode()
     {
         isCameraModeActive = false;
-        switchCamera(cameras[activeCameraIndex], playerCam);
+        switchCamera(playerCam);
     }
 
     private void SwitchSecurityCamera(int direction)
     {
         if (!isCameraModeActive) return;
 
-        var old = activeCameraIndex;
         activeCameraIndex += direction;
         if (activeCameraIndex < 0) activeCameraIndex = cameras.Length - 1;
         if (activeCameraIndex >= cameras.Length) activeCameraIndex = 0;
 
-        switchCamera(cameras[old], cameras[activeCameraIndex]);
+        switchCamera(cameras[activeCameraIndex]);
     }
+
+    public void EnterPcCamera()
+    {
+        switchCamera(pcCam);
+    }
+
+    public void EnterPlayerCamera()
+    {
+        switchCamera(playerCam);
+    }
+    public void ShowCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
+    }
+
 }

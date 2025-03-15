@@ -33,18 +33,11 @@ public class CameraController : MonoBehaviour
 
     public bool isInConvo = false;
     
-    [HideInInspector] public bool isUsingPC;
-    CursorController cursorController;
-    
     private void Start()
-    {
-        cursorController = FindObjectOfType<CursorController>();
-        
+    {   
         Cursor.lockState = CursorLockMode.Locked;
         input.LookEvent += Input_LookEvent;
         cam.Lens.FieldOfView = fov;
-        
-        isUsingPC = false;
     }
 
     private void Input_LookEvent(Vector2 obj)
@@ -54,21 +47,26 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        FovChange();
-        HeadBob();
+        if (!PlayerManager.Instance.isDisabled)
+        {
+            FovChange();
+            HeadBob();
 
-        Crouch();
+            Crouch();
+        }
     }
     
     private void FixedUpdate()
     {
-        Look();
+        if (!PlayerManager.Instance.isDisabled)
+        {
+            Look();
+        }
     }
 
     private void Look()
     { 
-        if (!isUsingPC) 
-        {
+
             float mouseX = mouseMove.x * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
             float mouseY = mouseMove.y * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
         
@@ -77,14 +75,7 @@ public class CameraController : MonoBehaviour
             
             cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
             playerBody.Rotate(Vector3.up * mouseX);
-        }
-        else
-        {   
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = false;
-        }
         
-       
     }
 
     public void FovChange()

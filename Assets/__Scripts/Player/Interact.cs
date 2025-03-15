@@ -49,12 +49,21 @@ public class Interact : MonoBehaviour
 
     void FixedUpdate()
     {
-        Scan();
+        if (!PlayerManager.Instance.isDisabled)
+        {
+            Scan();
+        }
     }
 
     public void OnInteract()
     {
-        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        if (PlayerManager.Instance.isDisabled)
+            return;
+
+        
+            #region TobankoInteract
+            //Tobanko
+            Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         Debug.DrawRay(ray.origin, ray.direction * reachLength, Color.red);
         RaycastHit hit;
 
@@ -64,6 +73,7 @@ public class Interact : MonoBehaviour
             if (interactable != null)
             {
                 interactable.OnInteract();
+                HideInteractThing();
             }
         }
     }
@@ -76,11 +86,6 @@ public class Interact : MonoBehaviour
             return;
         }
         
-        if (camController.isUsingPC)
-        {
-            HideInteractThing();
-            return;
-        }
 
         Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         Debug.DrawRay(ray.origin, ray.direction * reachLength, Color.red);
@@ -146,6 +151,36 @@ public class Interact : MonoBehaviour
         }
     }
     
+    private void InteractWithNPC()
+    {
+        Debug.Log("Interacting with NPC");
+
+        DialogueSystemTrigger dialogueTrigger = selectedObj.GetComponent<DialogueSystemTrigger>();
+        if (dialogueTrigger)
+        {
+            dialogueTrigger.OnUse();
+        }
+        else
+        {
+            DialogueManager.StartConversation("New Conversation 1", selectedObj.transform);
+        }
+
+        NPCBrain npcBrain = selectedObj.GetComponent<NPCBrain>();
+        if (npcBrain != null)
+        {
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.LookAtPlayer);
+        }
+    }
+
+    private void InteractWithItem()
+    {
+        if (selectedObj)
+        {
+            itemHeld = selectedObj;
+            PlayerManager.Instance.PickUpItem(selectedObj);
+        }
+    }
+
     private void DisplayInteractThing(string text, Sprite icon, RaycastHit hit)
     {
         interGameObject.SetActive(true);
@@ -159,6 +194,7 @@ public class Interact : MonoBehaviour
     private void HideInteractThing()
     {
         interGameObject.SetActive(false);
+        ClearHighlight();
     }
 
     public GameObject GetCurrentItem()

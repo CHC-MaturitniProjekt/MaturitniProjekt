@@ -125,6 +125,15 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""pcLeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b4a6cb6-f4cc-4617-9861-384994b27eef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -358,6 +367,17 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""action"": ""drop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a3d6bc2-d150-4e4c-9fc2-a456c830a8c8"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""pcLeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -377,6 +397,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Main_camIndexIncrement = m_Main.FindAction("camIndexIncrement", throwIfNotFound: true);
         m_Main_camIndexDecrement = m_Main.FindAction("camIndexDecrement", throwIfNotFound: true);
         m_Main_drop = m_Main.FindAction("drop", throwIfNotFound: true);
+        m_Main_pcLeftClick = m_Main.FindAction("pcLeftClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -449,6 +470,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_camIndexIncrement;
     private readonly InputAction m_Main_camIndexDecrement;
     private readonly InputAction m_Main_drop;
+    private readonly InputAction m_Main_pcLeftClick;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
@@ -464,6 +486,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @camIndexIncrement => m_Wrapper.m_Main_camIndexIncrement;
         public InputAction @camIndexDecrement => m_Wrapper.m_Main_camIndexDecrement;
         public InputAction @drop => m_Wrapper.m_Main_drop;
+        public InputAction @pcLeftClick => m_Wrapper.m_Main_pcLeftClick;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -506,6 +529,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @drop.started += instance.OnDrop;
             @drop.performed += instance.OnDrop;
             @drop.canceled += instance.OnDrop;
+            @pcLeftClick.started += instance.OnPcLeftClick;
+            @pcLeftClick.performed += instance.OnPcLeftClick;
+            @pcLeftClick.canceled += instance.OnPcLeftClick;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -543,6 +569,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @drop.started -= instance.OnDrop;
             @drop.performed -= instance.OnDrop;
             @drop.canceled -= instance.OnDrop;
+            @pcLeftClick.started -= instance.OnPcLeftClick;
+            @pcLeftClick.performed -= instance.OnPcLeftClick;
+            @pcLeftClick.canceled -= instance.OnPcLeftClick;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -573,5 +602,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnCamIndexIncrement(InputAction.CallbackContext context);
         void OnCamIndexDecrement(InputAction.CallbackContext context);
         void OnDrop(InputAction.CallbackContext context);
+        void OnPcLeftClick(InputAction.CallbackContext context);
     }
 }

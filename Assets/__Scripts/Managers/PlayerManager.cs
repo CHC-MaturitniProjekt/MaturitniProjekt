@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     private float playerSprintTime;
     private float playerSprintRecoveryT;
     private PickUp pickUpScript;
+    public bool isDisabled = false;
     
     public enum MovementState
     {
@@ -35,6 +36,17 @@ public class PlayerManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void EnablePlayerWithDelay()
+    {
+        StartCoroutine(EnablingPlayerAfterDelay());
+    }
+
+    private IEnumerator EnablingPlayerAfterDelay()
+    {
+        yield return new WaitForSeconds(0.2f);
+        isDisabled = false;
     }
 
     public void SetMovementState(MovementState newState)

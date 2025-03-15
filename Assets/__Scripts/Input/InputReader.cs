@@ -111,4 +111,18 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
             DropEvent?.Invoke();
         }
     }
+
+    public event Action PcLeftClickStart;
+    public event Action PcLeftClickEnd;
+    public void OnPcLeftClick(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            PcLeftClickStart?.Invoke();
+        }
+        if (context.canceled)
+        {
+            PcLeftClickEnd?.Invoke();
+        }
+    }
 }
