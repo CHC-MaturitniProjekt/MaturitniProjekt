@@ -66,48 +66,62 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             {
                 case "Collect":
                     var amountField = new IntegerField("Amount") { value = 0 };
+                    var existingCollectCriteria = CompletionCriteria.OfType<MoneyCollectionCriteria>().FirstOrDefault();
+                    if (existingCollectCriteria != null)
+                    {
+                        amountField.value = existingCollectCriteria.RequiredAmount;
+                    }
                     amountField.RegisterValueChangedCallback(evt =>
                     {
-                        var criteria = CompletionCriteria.OfType<MoneyCollectionCriteria>().FirstOrDefault();
-                        if (criteria == null)
+                        if (existingCollectCriteria == null)
                         {
-                            criteria = new MoneyCollectionCriteria();
-                            CompletionCriteria.Add(criteria);
+                            existingCollectCriteria = new MoneyCollectionCriteria();
+                            CompletionCriteria.Add(existingCollectCriteria);
                         }
-                        criteria.RequiredAmount = evt.newValue;
+                        existingCollectCriteria.RequiredAmount = evt.newValue;
                     });
                     criteriaContainer.Add(amountField);
                     break;
 
                 case "Interact":
                     var npcField = new TextField("NPC Name") { value = "" };
+                    var existingNpcCriteria = CompletionCriteria.OfType<NpcInteractionCriteria>().FirstOrDefault();
+                    if (existingNpcCriteria != null)
+                    {
+                        npcField.value = existingNpcCriteria.NpcName;
+                    }
                     npcField.RegisterValueChangedCallback(evt =>
                     {
-                        var criteria = CompletionCriteria.OfType<NpcInteractionCriteria>().FirstOrDefault();
-                        if (criteria == null)
+                        if (existingNpcCriteria == null)
                         {
-                            criteria = new NpcInteractionCriteria();
-                            CompletionCriteria.Add(criteria);
+                            existingNpcCriteria = new NpcInteractionCriteria();
+                            CompletionCriteria.Add(existingNpcCriteria);
                         }
-                        criteria.NpcName = evt.newValue;
+                        existingNpcCriteria.NpcName = evt.newValue;
                     });
                     criteriaContainer.Add(npcField);
                     break;
+
                 case "PickUp":
                     var pickUpField = new IntegerField("Item ID") { value = 0 };
+                    var existingPickUpCriteria = CompletionCriteria.OfType<ItemCollectionCriteria>().FirstOrDefault();
+                    if (existingPickUpCriteria != null)
+                    {
+                        pickUpField.value = existingPickUpCriteria.RequiredItemCount;
+                    }
                     pickUpField.RegisterValueChangedCallback(evt =>
                     {
-                        var criteria = CompletionCriteria.OfType<ItemCollectionCriteria>().FirstOrDefault();
-                        if (criteria == null)
+                        if (existingPickUpCriteria == null)
                         {
-                            criteria = new ItemCollectionCriteria();
-                            CompletionCriteria.Add(criteria);
+                            existingPickUpCriteria = new ItemCollectionCriteria();
+                            CompletionCriteria.Add(existingPickUpCriteria);
                         }
-                        criteria.RequiredItemCount = evt.newValue;
+                        existingPickUpCriteria.RequiredItemCount = evt.newValue;
                     });
                     criteriaContainer.Add(pickUpField);
                     break;
             }
         }
+
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -165,7 +166,7 @@ public class QuestGraphView : GraphView
                     ObjectiveDescription = (nodeData as ObjectiveNodeModel).ObjectiveDescription,
                     ObjectiveType = (nodeData as ObjectiveNodeModel).ObjectiveType,
                     isOptional = (nodeData as ObjectiveNodeModel).isOptional,
-                    CompletionCriteria = (nodeData as ObjectiveNodeModel).CompletionCriteria
+                    CompletionCriteria = CompletionCriteriaSerializer.Deserialize((nodeData as ObjectiveNodeModel).CompletionCriteria)
                 };
                 break;
             case QuestNode.NodeTypes.RewardNode:

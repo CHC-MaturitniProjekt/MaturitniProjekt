@@ -166,7 +166,8 @@ public class QuestSaveUtility
                     ObjectiveType = ((ObjectiveNode)node).ObjectiveType,
                     ObjectiveDescription = ((ObjectiveNode)node).ObjectiveDescription,
                     isOptional = ((ObjectiveNode)node).isOptional,
-                    CompletionCriteria = ((ObjectiveNode)node).CompletionCriteria
+                    CompletionCriteria = CompletionCriteriaSerializer.Serialize(((ObjectiveNode)node).CompletionCriteria)
+
                 };
             case QuestNode.NodeTypes.RewardNode:
                 return new RewardNodeModel
