@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PixelCrushers.DialogueSystem;
 using UnityEngine;
 
@@ -15,6 +16,11 @@ public class NyxInteract : InteractAction
 
     public override void OnInteract()
     {
+        if (questManager.GetIsQuestActiveId() != null)
+        {
+            OnObjectiveInteract();
+        }
+        
         string questName = "";
         
         if (CheckQuestIsActive(questManager.GetIsQuestActiveId()))
@@ -38,8 +44,24 @@ public class NyxInteract : InteractAction
             npcBrain.SetBehavior(NPCBrain.NPCBehavior.LookAtPlayer);
         }
     }
-    
-    public override void OnObjectiveInteract() {}
+
+    public override void OnObjectiveInteract()
+    {
+        var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetIsQuestActiveId());
+
+        foreach (var objective in objectiveList)
+        {
+            if (objective.ObjectiveType == "Interact" && objective.CompletionCriteria[0] != null)
+            {
+                var completionData = CompletionCriteriaSerializer.Deserialize(objective.CompletionCriteria);
+                var itemCompletionData = completionData.OfType<NpcInteractionCriteria>().FirstOrDefault();
+                if (itemCompletionData != null && itemCompletionData.NpcName == NPCSO.NPCName)
+                {
+                    questManager.SetObjectiveAsComplete((int)questManager.GetIsQuestActiveId(), objective.ObjectiveType);
+                }
+            }
+        }
+    }
 
 
     private bool CheckQuestIsCompleted(int? requestedQuestId)

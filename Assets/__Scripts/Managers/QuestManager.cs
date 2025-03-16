@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Assets.__Scripts.QuestSystem.NodeEditor;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class QuestManager : MonoBehaviour
@@ -30,8 +31,8 @@ public class QuestManager : MonoBehaviour
     }
     private IEnumerator DelayedPushQuests()
     {
-        yield return new WaitForSeconds(2.0f);
-        pushQuests();
+        yield return new WaitForSeconds(1.0f); 
+        PushQuests();
     }
 
     private void LoadQuests()
@@ -81,6 +82,14 @@ public class QuestManager : MonoBehaviour
         return null; 
     }
 
+    public void SetQuestAsActive(string QuestGUID)
+    {
+        foreach (var quest in questList)
+        {
+            quest.isActive = quest.GUID == QuestGUID;
+        }
+    }
+
     public List<ObjectiveNodeModel> GetQuestObjectivesByQuestID(int? questID)
     {
         foreach (var quest in questList)
@@ -94,7 +103,7 @@ public class QuestManager : MonoBehaviour
         return null;
     }
 
-    public void SetQuestAsComplete(int questID)
+    public void SetQuestAsComplete(int? questID)
     {
         foreach (var quest in questList)
         {
@@ -105,15 +114,49 @@ public class QuestManager : MonoBehaviour
         }
         
     }
+
+    public void CheckObjectiveCompletion(int questID)
+    {
+        var quest = questList.FirstOrDefault(q => q.QuestID == questID);
+        if (quest != null)
+        {
+            bool allObjectivesCompleted = quest.Objectives.All(obj => obj.isCompleted);
+            if (allObjectivesCompleted)
+            {
+                quest.isCompleted = true;
+            }
+        }
+    }
     
-    public async void pushQuests()
+    
+    public void SetObjectiveAsComplete(int questID, string objectiveType)
+    {
+        var objectives = GetQuestObjectivesByQuestID(questID);
+        if (objectives != null)
+        {
+            foreach (var objective in objectives)
+            {
+                if (objectiveType == objective.ObjectiveType)
+                {
+                    objective.isCompleted = true;
+                    CheckObjectiveCompletion(questID);
+                    firebase.UpdateObjectiveCompletionStatus(objective.GUID, objectiveType, true);
+
+                }   
+            }
+        }
+        
+    }
+    
+    public async void PushQuests()
     {
         foreach (var questData in questList)
         {
             bool questExists = await firebase.CheckQuest(questData.GUID);
             if (!questExists)
             {
-                firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive);
+                Debug.Log(questData.QuestName);
+                firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive, questData.isCompleted);
             }
         }
     }

@@ -71,7 +71,7 @@ public class DialogueActionsLibrary : MonoBehaviour
         Debug.Log("Quest data: " + questData);
         if (questData != null && CheckConditions())
         {
-            firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive);
+            firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive, questData.isCompleted);
         }
     }
     

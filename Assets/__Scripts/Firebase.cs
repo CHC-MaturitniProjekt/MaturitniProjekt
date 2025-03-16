@@ -9,14 +9,20 @@ using UnityEngine;
 
 public class Firebase : MonoBehaviour
 {
-    UIManager uiManager;
+    private UIManager uiManager;
+    private QuestManager questManager;
     FirebaseConfig config;
     private FirebaseClient client;
 
     void Awake()
     {
         uiManager = FindAnyObjectByType<UIManager>();
+        questManager = FindFirstObjectByType<QuestManager>();
         if (uiManager == null)
+        {
+            Debug.LogError("UIManager not found. Please ensure it is added to the scene.");
+        }
+        if (questManager == null)
         {
             Debug.LogError("UIManager not found. Please ensure it is added to the scene.");
         }
@@ -74,6 +80,8 @@ public class Firebase : MonoBehaviour
                         string questId = parts[0];
                         bool isActive = Convert.ToBoolean(item.Value);
                         
+                        questManager.SetQuestAsActive(questId);
+                        
                         if (isActive)
                         {
                             uiManager.PinQuest(questId);
@@ -98,7 +106,7 @@ public class Firebase : MonoBehaviour
         
     }
     
-    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive)
+    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted)
     {
         var settings = new JsonSerializerSettings
         {
@@ -116,12 +124,34 @@ public class Firebase : MonoBehaviour
             ""Objectives"": {objectivesJson},
             ""Rewards"": {rewardsJson},
             ""NextQuests"": {nextQuestsJson},
-            ""isActive"": {isActive.ToString().ToLower()}
+            ""isActive"": {isActive.ToString().ToLower()},
+            ""isCompleted"": {isCompleted.ToString().ToLower()}
         }}";
         
         
         FirebaseResponse response = client.PutSync($"quests/{guid}", jsonQuest);
-        Debug.Log(response); 
+        Debug.Log(jsonQuest); 
+        Debug.Log(response);
+    }
+    
+    public async void UpdateObjectiveCompletionStatus(string questGUID, string objectiveType, bool isCompleted)
+    {
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+        string jsonUpdate = $@"{{
+        ""Objectives"": {{
+            ""{objectiveType}"": {{
+                ""isCompleted"": {isCompleted.ToString().ToLower()}
+                }}
+            }}
+        }}";
+
+        FirebaseResponse response = client.PatchSync($"quests/{questGUID}", jsonUpdate);        //TODO: patch nefaka
+        Debug.Log(jsonUpdate);
+        Debug.Log(response);
     }
 
     public async Task<bool> CheckQuest(string questGUID)

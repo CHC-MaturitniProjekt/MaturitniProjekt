@@ -47,10 +47,11 @@ MonoBehaviour:
       Quest","QuestDescription":"Describe the quest here","QuestID":5}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"617a00b9-35c2-4dae-9f3e-55ca8f00c443","position":{"x":702.6666870117188,"y":226.6666717529297},"ObjectiveDescription":"eeeeee","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false}'
+    JsonData: '{"QuestType":2,"GUID":"617a00b9-35c2-4dae-9f3e-55ca8f00c443","position":{"x":702.6666870117188,"y":226.6666717529297},"ObjectiveDescription":"eeeeee","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":69}"}]}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"62586641-c258-42ab-bcfd-428b4bde6791","position":{"x":1162.0,"y":-29.33333396911621},"ObjectiveDescription":"fdsafdas","ObjectiveType":"Interact","isOptional":true,"isCompleted":false}'
+    JsonData: '{"QuestType":2,"GUID":"62586641-c258-42ab-bcfd-428b4bde6791","position":{"x":1162.0,"y":-29.33333396911621},"ObjectiveDescription":"fdsafdas","ObjectiveType":"Interact","isOptional":true,"isCompleted":false,"CompletionCriteria":[]}'
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":3,"GUID":"3adb5c94-15cd-4a0e-ba4f-d09d70e39fee","position":{"x":1162.0,"y":390.6666564941406},"RewardType":"PerkPoints","RewardValue":100}'
@@ -67,13 +68,14 @@ MonoBehaviour:
       1","QuestDescription":"Describe the quest here","QuestID":1}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"9a7b7df4-485d-455b-ac3b-a35b95a83772","position":{"x":1116.0,"y":-330.66668701171877},"ObjectiveDescription":"fffffffffffffffffffffff","ObjectiveType":"Fetch","isOptional":true,"isCompleted":false}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"d13bca12-9d6c-4a37-ac45-6b97a50f911b","position":{"x":572.6666870117188,"y":417.33331298828127},"ObjectiveDescription":"fds","ObjectiveType":"Interact","isOptional":true,"isCompleted":false}'
+    JsonData: '{"QuestType":2,"GUID":"9a7b7df4-485d-455b-ac3b-a35b95a83772","position":{"x":1116.0,"y":-330.66668701171877},"ObjectiveDescription":"fffffffffffffffffffffff","ObjectiveType":"Fetch","isOptional":true,"isCompleted":false,"CompletionCriteria":[]}'
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":3,"GUID":"030120ee-17e9-4f82-a583-f4c2151f35ae","position":{"x":467.33331298828127,"y":620.6666870117188},"RewardType":"PerkPoints","RewardValue":100}'
   - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":0,"GUID":"e14d9cb5-d925-48e1-9280-545d8c4d909a","position":{"x":0.0,"y":0.0}}'
+    JsonData: '{"QuestType":0,"GUID":"f7f03041-d647-49e8-8cc5-8c1f1da0dd41","position":{"x":0.0,"y":0.0}}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"d13bca12-9d6c-4a37-ac45-6b97a50f911b","position":{"x":572.6666870117188,"y":417.33331298828127},"ObjectiveDescription":"fds","ObjectiveType":"Interact","isOptional":true,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"NpcInteractionCriteria,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"NpcName\":\"Nyx\"}"}]}'

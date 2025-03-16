@@ -61,9 +61,7 @@ public class Interact : MonoBehaviour
             return;
 
         
-            #region TobankoInteract
-            //Tobanko
-            Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         Debug.DrawRay(ray.origin, ray.direction * reachLength, Color.red);
         RaycastHit hit;
 
@@ -151,7 +149,7 @@ public class Interact : MonoBehaviour
         }
     }
     
-    private void InteractWithNPC()
+    /*private void InteractWithNPC()
     {
         Debug.Log("Interacting with NPC");
 
@@ -179,7 +177,7 @@ public class Interact : MonoBehaviour
             itemHeld = selectedObj;
             PlayerManager.Instance.PickUpItem(selectedObj);
         }
-    }
+    }*/
 
     private void DisplayInteractThing(string text, Sprite icon, RaycastHit hit)
     {

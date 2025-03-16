@@ -65429,6 +65429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52078ac2dddad84995791421e28088b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDisabled: 0
 --- !u!1001 &1057131946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72973,6 +72974,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InteractionIcon: {fileID: 21300000, guid: 36ba444b2a409a147ad4b2322fb92d39, type: 3}
   InteractionText: Pick Up Item
+  itemID: 50
 --- !u!1 &1328129058
 GameObject:
   m_ObjectHideFlags: 0
@@ -75384,6 +75386,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InteractionIcon: {fileID: 21300000, guid: 36ba444b2a409a147ad4b2322fb92d39, type: 3}
   InteractionText: Pick Up Item
+  itemID: 0
 --- !u!1 &1420173735
 GameObject:
   m_ObjectHideFlags: 0
@@ -95463,6 +95466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InteractionIcon: {fileID: 21300000, guid: 36ba444b2a409a147ad4b2322fb92d39, type: 3}
   InteractionText: Pick Up Item
+  itemID: 69
 --- !u!1001 &1760713623
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -103520,7 +103524,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
+  mouseMove: {x: 0, y: 0}
   cursorTransform: {fileID: 2056301995}
+  camController: {fileID: 0}
 --- !u!1001 &2059174315
 PrefabInstance:
   m_ObjectHideFlags: 0
