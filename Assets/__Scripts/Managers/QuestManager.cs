@@ -132,20 +132,19 @@ public class QuestManager : MonoBehaviour
     public void SetObjectiveAsComplete(int questID, string objectiveType)
     {
         var objectives = GetQuestObjectivesByQuestID(questID);
-        if (objectives != null)
+        var quest = questList.FirstOrDefault(q => q.QuestID == questID);
+        if (objectives != null && quest != null)
         {
-            foreach (var objective in objectives)
+            for (int i = 0; i < objectives.Count; i++)
             {
-                if (objectiveType == objective.ObjectiveType)
+                if (objectiveType == objectives[i].ObjectiveType)
                 {
-                    objective.isCompleted = true;
+                    objectives[i].isCompleted = true;
                     CheckObjectiveCompletion(questID);
-                    firebase.UpdateObjectiveCompletionStatus(objective.GUID, objectiveType, true);
-
-                }   
+                    firebase.UpdateObjectiveCompletionStatus(quest.GUID, i, true);
+                }
             }
         }
-        
     }
     
     public async void PushQuests()

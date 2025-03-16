@@ -104,7 +104,7 @@ public class Firebase : MonoBehaviour
             Debug.LogError("JSON parsing error: " + ex.Message);
         }
         
-    }
+    }       //TODO: pridat check jestli jsou vsechny objectives splnene
     
     public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted)
     {
@@ -134,7 +134,7 @@ public class Firebase : MonoBehaviour
         Debug.Log(response);
     }
     
-    public async void UpdateObjectiveCompletionStatus(string questGUID, string objectiveType, bool isCompleted)
+    public async void UpdateObjectiveCompletionStatus(string questGUID, int objectiveIndex, bool isCompleted)
     {
         var settings = new JsonSerializerSettings
         {
@@ -142,14 +142,11 @@ public class Firebase : MonoBehaviour
         };
 
         string jsonUpdate = $@"{{
-        ""Objectives"": {{
-            ""{objectiveType}"": {{
-                ""isCompleted"": {isCompleted.ToString().ToLower()}
-                }}
-            }}
+        ""isCompleted"": {isCompleted.ToString().ToLower()}
         }}";
 
-        FirebaseResponse response = client.PatchSync($"quests/{questGUID}", jsonUpdate);        //TODO: patch nefaka
+        FirebaseResponse response = client.PatchSync($"quests/{questGUID}/Objectives/{objectiveIndex}/", jsonUpdate);
+
         Debug.Log(jsonUpdate);
         Debug.Log(response);
     }
