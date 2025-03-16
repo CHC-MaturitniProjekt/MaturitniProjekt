@@ -227,7 +227,7 @@ public class FirebaseClient
             using (HttpClient client = new HttpClient())
             {
                 StringContent content = new StringContent(rawJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PatchAsync(url, content);
+                HttpResponseMessage response = await client.PutAsync(url, content);
                 string resRawJson = response.Content.ReadAsStringAsync().Result;
                 return new FirebaseResponse { RawJson = resRawJson };
             }
@@ -258,7 +258,7 @@ public class FirebaseClient
             using (HttpClient client = new HttpClient())
             {
                 StringContent content = new StringContent(rawJson, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = client.PatchAsync(url, content).GetAwaiter().GetResult();
+                HttpResponseMessage response = client.PutAsync(url, content).GetAwaiter().GetResult();
                 string resRawJson = response.Content.ReadAsStringAsync().Result;
                 return new FirebaseResponse { RawJson = resRawJson };
             }
