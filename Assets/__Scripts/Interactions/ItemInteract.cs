@@ -16,7 +16,7 @@ public class ItemInteract : InteractAction
 
     public override void OnInteract()
     {
-        if (questManager.GetIsQuestActiveId() != null)
+        if (questManager.GetActiveQuestID() != null)
         {
             OnObjectiveInteract();
         }
@@ -25,7 +25,7 @@ public class ItemInteract : InteractAction
     }
     public override void OnObjectiveInteract()
     {
-        var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetIsQuestActiveId());
+        var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetActiveQuestID());
 
         foreach (var objective in objectiveList)
         {
@@ -35,7 +35,7 @@ public class ItemInteract : InteractAction
                 var itemCompletionData = completionData.OfType<ItemCollectionCriteria>().FirstOrDefault();
                 if (itemCompletionData != null && itemCompletionData.RequiredItemCount == itemID)
                 {
-                    questManager.SetObjectiveAsComplete((int)questManager.GetIsQuestActiveId(), objective.ObjectiveType);
+                    questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
                 }
             }
         }

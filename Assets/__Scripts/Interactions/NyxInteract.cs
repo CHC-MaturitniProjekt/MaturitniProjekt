@@ -14,22 +14,36 @@ public class NyxInteract : InteractAction
         questManager = FindAnyObjectByType<QuestManager>();
     }
 
-    public override void OnInteract()
+    public override void OnInteract()           //TODO: neco to dela, ted jen zjistit co a proc
     {
-        if (questManager.GetIsQuestActiveId() != null)
+        string questName = "";
+        ParsedQuestModel quest = null;
+        foreach (var tempQuest in questManager.GetQuestList())
         {
-            OnObjectiveInteract();
+            if (tempQuest.isActive && tempQuest.dialogues != null && tempQuest.dialogues.Any())
+            {
+                quest = tempQuest;
+                break;
+            }
         }
         
-        string questName;
-        
-        if (CheckQuestIsActive(questManager.GetIsQuestActiveId()))
+        if (quest != null)
         {
-            questName = SelectStoryDialogue(NPCSO.StoryDialogues, "DHGeneric2");  // TODO: dynamicky doplnit nazev
-        }
-        else if (CheckQuestIsCompleted(questManager.GetIsQuestCompletedId()))
-        {
-            questName = SelectStoryDialogue(NPCSO.StoryDialogues, "test");
+            var availableDialogues = quest.dialogues;
+            foreach (var dialogue in availableDialogues.OrderBy<DialogueNodeModel, int>(d => d.order))
+            {
+                if (!dialogue.isCompleted)
+                {
+                    questName = dialogue.DialogueName;
+                    dialogue.isCompleted = true;
+                    break;
+                }
+            }
+            
+            if (string.IsNullOrEmpty(questName) && questManager.GetActiveQuestID() != null)
+            {
+                OnObjectiveInteract();
+            }
         }
         else
         {
@@ -47,7 +61,7 @@ public class NyxInteract : InteractAction
 
     public override void OnObjectiveInteract()
     {
-        var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetIsQuestActiveId());
+        var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetActiveQuestID());
 
         foreach (var objective in objectiveList)
         {
@@ -57,24 +71,10 @@ public class NyxInteract : InteractAction
                 var itemCompletionData = completionData.OfType<NpcInteractionCriteria>().FirstOrDefault();
                 if (itemCompletionData != null && itemCompletionData.NpcName == NPCSO.NPCName)
                 {
-                    questManager.SetObjectiveAsComplete((int)questManager.GetIsQuestActiveId(), objective.ObjectiveType);
+                    questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
                 }
             }
         }
-    }
-
-
-    private bool CheckQuestIsCompleted(int? requestedQuestId)
-    {
-        var quests = questManager.GetQuestList();
-        foreach (var quest in quests)
-        {
-            if (quest.QuestID == requestedQuestId)
-            {
-                if (quest.isCompleted) return true;
-            }
-        }
-        return false;
     }
     
     private bool CheckQuestIsActive(int? requestedQuestId)

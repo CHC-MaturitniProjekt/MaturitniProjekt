@@ -13,7 +13,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
     {
         public string DialogueName;
         public int NPCID;
-        public bool isOptional;
+        public int order;
         public bool isCompleted;
 
         public DialogueNode()
@@ -37,10 +37,10 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var npcIDField = new IntegerField("NPC ID") { value = NPCID };
             npcIDField.RegisterValueChangedCallback(evt => NPCID = evt.newValue);
             Add(npcIDField);
-
-            var optional = new Toggle("Is optional") { value = isOptional };
-            optional.RegisterValueChangedCallback(evt => isOptional = evt.newValue);
-            Add(optional);
+            
+            var orderField = new IntegerField("Order") { value = order };
+            orderField.RegisterValueChangedCallback(evt => order = evt.newValue);
+            Add(orderField);
             
             RefreshExpandedState();
             RefreshPorts();

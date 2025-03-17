@@ -104,10 +104,7 @@ public class Firebase : MonoBehaviour
             Debug.LogError("JSON parsing error: " + ex.Message);
         }
         
-    }       //TODO: pridat check jestli jsou vsechny objectives splnene
-    // TODO: pridat parametr isObtained, podle toho se bude zobrazovat na UI
-    //TODO: v custom funkcich zmenit z pridani questu na nastaveni isObtained
-    //TODO: predelat updateObjective at je dynamicky - pokusit se
+    }
     
     public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted, bool isObtained)
     {

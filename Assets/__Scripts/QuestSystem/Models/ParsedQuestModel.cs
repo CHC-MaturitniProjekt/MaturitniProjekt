@@ -17,4 +17,6 @@ public class ParsedQuestModel
     public bool isCompleted;
     public bool isActive;
     public bool isObtained;
+
+    public List<DialogueNodeModel> dialogues = new List<DialogueNodeModel>();
 }

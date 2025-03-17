@@ -164,7 +164,8 @@ public class QuestGraphView : GraphView
                 {
                     DialogueName = "Dialogue",
                     NPCID = 0,
-                    isOptional = false
+                    order = 0,
+                    isCompleted = false
                 };
                 break;
             case QuestNode.NodeTypes.Start:
@@ -231,7 +232,9 @@ public class QuestGraphView : GraphView
                 {
                     title = nodeType.ToString(),
                     DialogueName = (nodeData as DialogueNodeModel).DialogueName,
-                    NPCID = (nodeData as DialogueNodeModel).NPCID
+                    NPCID = (nodeData as DialogueNodeModel).NPCID,
+                    order = (nodeData as DialogueNodeModel).order,
+                    isCompleted = (nodeData as DialogueNodeModel).isCompleted
                 };
                 break;
 

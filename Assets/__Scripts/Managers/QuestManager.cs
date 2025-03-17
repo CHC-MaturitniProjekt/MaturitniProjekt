@@ -64,6 +64,13 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    public List<DialogueNodeModel> GetQuestsDialogues(int questID)
+    {
+        var quest = questList.FirstOrDefault(q => q.QuestID == questID);
+
+        return quest?.dialogues;
+    } 
+
     public void ObtainQuest(int questID)
     {
         var quest = questList.FirstOrDefault(q => q.QuestID == questID);
@@ -91,7 +98,7 @@ public class QuestManager : MonoBehaviour
         return true;
     }
 
-    public int? GetIsQuestActiveId()
+    public int? GetActiveQuestID()
     {
         foreach (var quest in questList)
         {
@@ -220,6 +227,9 @@ public class QuestManager : MonoBehaviour
                                     break;
                                 case QuestNode.NodeTypes.MainQuestNode:
                                     parsedQuestModel.nextQuests.Add(objectiveModel.GUID);
+                                    break;
+                                case QuestNode.NodeTypes.DialogueNode:
+                                    parsedQuestModel.dialogues.Add(objectiveModel as DialogueNodeModel);
                                     break;
                                 default:
                                     Debug.LogError("Error parsing quests: Quest type mismatch");
