@@ -161,6 +161,34 @@ public class Firebase : MonoBehaviour
         client.PutSync($"quests/{questGUID}/Objectives/{objectiveIndex}", jsonUpdate);
         CheckQuestsObjectivesCompletion(questGUID);
     }
+    
+    public async void QuestObtain(string questGUID)
+    {
+        FirebaseResponse response = client.GetSync($"quests/{questGUID}/");
+        if (response == null || string.IsNullOrEmpty(response.RawJson))
+        {
+            Debug.LogError("Failed to retrieve existing objective data.");
+            return;
+        }
+
+        var objective = JsonConvert.DeserializeObject<ParsedQuestModel>(response.RawJson);
+        if (objective == null)
+        {
+            Debug.LogError("Failed to deserialize existing objective data.");
+            return;
+        }
+
+        objective.isObtained = true;
+
+        var settings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+        string jsonUpdate = JsonConvert.SerializeObject(objective, settings);
+
+        client.PutSync($"quests/{questGUID}/", jsonUpdate);
+        CheckQuestsObjectivesCompletion(questGUID);
+    }
 
     public async void CheckQuestsObjectivesCompletion(string questGUID)
     {

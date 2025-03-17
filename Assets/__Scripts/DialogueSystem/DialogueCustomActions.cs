@@ -68,7 +68,6 @@ public class DialogueActionsLibrary : MonoBehaviour
     {
         questList = questManager.GetQuestList();
         ParsedQuestModel questData = questList.Find(quest => quest.QuestID == (int)questID);
-        Debug.Log("Quest data: " + questData);
         if (questData != null)
         {
             questManager.ObtainQuest((int)questID);

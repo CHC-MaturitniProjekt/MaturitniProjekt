@@ -21,7 +21,7 @@ public class NyxInteract : InteractAction
             OnObjectiveInteract();
         }
         
-        string questName = "";
+        string questName;
         
         if (CheckQuestIsActive(questManager.GetIsQuestActiveId()))
         {
@@ -36,7 +36,7 @@ public class NyxInteract : InteractAction
             questName = SelectGenericDialogue(NPCSO.GenericDialogues);
         }
 
-        DialogueManager.StartConversation(questName, this.gameObject.transform);
+        DialogueManager.StartConversation(questName, gameObject.transform);
         
         NPCBrain npcBrain = this.GetComponent<NPCBrain>();
         if (npcBrain != null)

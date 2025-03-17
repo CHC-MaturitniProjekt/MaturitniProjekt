@@ -79,6 +79,7 @@ public class QuestManager : MonoBehaviour
             return;
         }
         quest.isObtained = true;
+        firebase.QuestObtain(quest.GUID);
 
     }
 
