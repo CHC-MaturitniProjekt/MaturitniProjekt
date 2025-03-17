@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
+using Language.Lua;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -35,6 +36,31 @@ public class QuestGraphView : GraphView
         grid.StretchToParentSize();
 
         EditorApplication.delayCall += afterGraphInicialization;
+        
+        this.AddManipulator(new ContextualMenuManipulator(evt => ShowNodeCreationDropdown(evt.menu, evt.mousePosition / this.scale)));
+    }
+
+    public void ShowNodeCreationDropdown(DropdownMenu menu, Vector2 mousePosition)
+    {
+        menu.AppendAction("Quest Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.MainQuestNode, mousePosition);
+        });
+
+        menu.AppendAction("Objective Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.ObjectiveNode, mousePosition);
+        });
+
+        menu.AppendAction("Reward Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.RewardNode, mousePosition);
+        });
+
+        menu.AppendAction("Dialogue Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.DialogueNode, mousePosition);
+        });
     }
 
     public void afterGraphInicialization()
@@ -81,7 +107,22 @@ public class QuestGraphView : GraphView
             AssetDatabase.SaveAssets();
         }
 
-        CreateNode(NodeTypes.Start);
+        if (!NodeExists(QuestNode.NodeTypes.Start))
+        {
+            CreateNode(QuestNode.NodeTypes.Start);
+        }    
+    }
+    
+    private bool NodeExists(QuestNode.NodeTypes nodeType)
+    {
+        foreach (var node in nodes.ToList())
+        {
+            if (node is QuestNode questNode && questNode.QuestType == nodeType)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -118,6 +159,14 @@ public class QuestGraphView : GraphView
                     RewardValue = 100
                 };
                 break;
+            case QuestNode.NodeTypes.DialogueNode:
+                node = new DialogueNode
+                {
+                    DialogueName = "Dialogue",
+                    NPCID = 0,
+                    isOptional = false
+                };
+                break;
             case QuestNode.NodeTypes.Start:
                 node = new StartQuestNode
                 {
@@ -133,7 +182,7 @@ public class QuestGraphView : GraphView
         node.style.backgroundColor = UnityEngine.Color.black;
 
         node.GUID = Guid.NewGuid().ToString();
-        node.SetPosition(new Rect(Vector2.zero, new Vector2(500, 450)));
+        node.SetPosition(new Rect(position, new Vector2(500, 450)));
         AddElement(node);
     }
     
@@ -175,6 +224,14 @@ public class QuestGraphView : GraphView
                     title = nodeType.ToString(),
                     RewardType = (nodeData as RewardNodeModel).RewardType,
                     RewardValue = (nodeData as RewardNodeModel).RewardValue
+                };
+                break;
+            case NodeTypes.DialogueNode:
+                node = new DialogueNode
+                {
+                    title = nodeType.ToString(),
+                    DialogueName = (nodeData as DialogueNodeModel).DialogueName,
+                    NPCID = (nodeData as DialogueNodeModel).NPCID
                 };
                 break;
 

@@ -178,6 +178,15 @@ public class QuestSaveUtility
                     RewardType = ((RewardNode)node).RewardType,
                     RewardValue = ((RewardNode)node).RewardValue
                 };
+            case QuestNode.NodeTypes.DialogueNode:
+                return new DialogueNodeModel()
+                {
+                    GUID = node.GUID,
+                    QuestType = node.QuestType,
+                    position = node.GetPosition().position,
+                    DialogueName = ((DialogueNode)node).DialogueName,
+                    NPCID = ((DialogueNode)node).NPCID
+                };
             default:
                 Debug.LogError($"Unsupported node type: {node.QuestType}");
                 return null;
