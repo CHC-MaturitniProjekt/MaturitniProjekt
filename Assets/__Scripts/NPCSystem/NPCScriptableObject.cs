@@ -16,4 +16,6 @@ public class NPCScriptableObject : ScriptableObject
     }
     public string NPCName;
     public NPCTypes NPCType;
+    public List<string> NPCWayPointNames = new List<string>();
+    
 }

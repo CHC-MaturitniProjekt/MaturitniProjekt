@@ -23,6 +23,11 @@ public class CustomPostProcessRenderFeature : ScriptableRendererFeature
 
     public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
     {
+        Camera camera = renderingData.cameraData.camera;
+
+        if (camera.targetTexture != null)
+            return;
+
         if (customPass != null)
         {
             if (renderingData.cameraData.cameraType == CameraType.Game)

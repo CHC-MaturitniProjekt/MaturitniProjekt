@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class pcInteract : InteractAction
-{
-    public override void OnInteract()
+public class PcInteract : InteractAction
+{    public override void OnInteract()
     {
-        Debug.Log("PC");
+        Debug.Log("Start");
+        CameraManager.Instance.EnterPcCamera();
+        PlayerManager.Instance.isDisabled = true;
+        Cursor.lockState = CursorLockMode.None;
+        GetComponent<Pc>().StartInteracting();
+      
     }
 }
