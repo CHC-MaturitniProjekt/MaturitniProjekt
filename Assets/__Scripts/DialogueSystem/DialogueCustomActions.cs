@@ -69,16 +69,10 @@ public class DialogueActionsLibrary : MonoBehaviour
         questList = questManager.GetQuestList();
         ParsedQuestModel questData = questList.Find(quest => quest.QuestID == (int)questID);
         Debug.Log("Quest data: " + questData);
-        if (questData != null && CheckConditions())
+        if (questData != null)
         {
-            firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive, questData.isCompleted);
+            questManager.ObtainQuest((int)questID);
         }
-    }
-    
-    private bool CheckConditions()
-    {
-        // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        return true;
     }
 
     public bool CheckQuestHaving(double questID)
@@ -86,7 +80,7 @@ public class DialogueActionsLibrary : MonoBehaviour
         questList = questManager.GetQuestList();
         ParsedQuestModel questData = questList.Find(quest => quest.QuestID == (int)questID);
 
-        bool res = firebase.CheckQuest(questData.GUID).Result;
+        bool res = questManager.IsQuestObtained((int)questID);
 
         return res;
     }

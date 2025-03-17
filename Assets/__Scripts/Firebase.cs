@@ -105,8 +105,11 @@ public class Firebase : MonoBehaviour
         }
         
     }       //TODO: pridat check jestli jsou vsechny objectives splnene
+    // TODO: pridat parametr isObtained, podle toho se bude zobrazovat na UI
+    //TODO: v custom funkcich zmenit z pridani questu na nastaveni isObtained
+    //TODO: predelat updateObjective at je dynamicky - pokusit se
     
-    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted)
+    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted, bool isObtained)
     {
         var settings = new JsonSerializerSettings
         {
@@ -116,7 +119,6 @@ public class Firebase : MonoBehaviour
         string objectivesJson = JsonConvert.SerializeObject(objectives, settings);
         string rewardsJson = JsonConvert.SerializeObject(rewards, settings);
         string nextQuestsJson = JsonConvert.SerializeObject(nextQuests, settings);
-
         
         string jsonQuest = $@"{{
             ""QuestName"": ""{title}"",
@@ -125,30 +127,70 @@ public class Firebase : MonoBehaviour
             ""Rewards"": {rewardsJson},
             ""NextQuests"": {nextQuestsJson},
             ""isActive"": {isActive.ToString().ToLower()},
-            ""isCompleted"": {isCompleted.ToString().ToLower()}
+            ""isCompleted"": {isCompleted.ToString().ToLower()},
+            ""isObtained"": {isObtained.ToString().ToLower()}
         }}";
         
-        
-        FirebaseResponse response = client.PutSync($"quests/{guid}", jsonQuest);
-        Debug.Log(jsonQuest); 
-        Debug.Log(response);
+        client.PutSync($"quests/{guid}", jsonQuest);
     }
     
     public async void UpdateObjectiveCompletionStatus(string questGUID, int objectiveIndex, bool isCompleted)
     {
+        FirebaseResponse response = client.GetSync($"quests/{questGUID}/Objectives/{objectiveIndex}");
+        if (response == null || string.IsNullOrEmpty(response.RawJson))
+        {
+            Debug.LogError("Failed to retrieve existing objective data.");
+            return;
+        }
+
+        var objective = JsonConvert.DeserializeObject<ObjectiveNodeModel>(response.RawJson);
+        if (objective == null)
+        {
+            Debug.LogError("Failed to deserialize existing objective data.");
+            return;
+        }
+
+        objective.isCompleted = isCompleted;
+
         var settings = new JsonSerializerSettings
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
+        string jsonUpdate = JsonConvert.SerializeObject(objective, settings);
 
-        string jsonUpdate = $@"{{
-        ""isCompleted"": {isCompleted.ToString().ToLower()}
-        }}";
+        client.PutSync($"quests/{questGUID}/Objectives/{objectiveIndex}", jsonUpdate);
+        CheckQuestsObjectivesCompletion(questGUID);
+    }
 
-        FirebaseResponse response = client.PatchSync($"quests/{questGUID}/Objectives/{objectiveIndex}/", jsonUpdate);
+    public async void CheckQuestsObjectivesCompletion(string questGUID)
+    {
+        FirebaseResponse response = client.GetSync($"quests/{questGUID}");
+        if (response == null || string.IsNullOrEmpty(response.RawJson))
+        {
+            Debug.LogError("Failed to retrieve existing quest data.");
+            return;
+        }
 
-        Debug.Log(jsonUpdate);
-        Debug.Log(response);
+        var quest = JsonConvert.DeserializeObject<ParsedQuestModel>(response.RawJson);
+        if (quest == null)
+        {
+            Debug.LogError("Failed to deserialize existing quest data.");
+            return;
+        }
+
+        if (quest.Objectives.All(obj => obj.isCompleted))
+        {
+            quest.isCompleted = true;
+            quest.isActive = false;
+
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+            string jsonUpdate = JsonConvert.SerializeObject(quest, settings);
+
+            client.PutSync($"quests/{questGUID}", jsonUpdate);
+        }
     }
 
     public async Task<bool> CheckQuest(string questGUID)
@@ -178,11 +220,4 @@ public class Firebase : MonoBehaviour
 
         return isAdded;
     }
-    
-    /*public async Task<bool> CheckQuest(string questGUID)
-    {
-        FirebaseResponse response = client.GetSync($"quests/{questGUID}");
-        Debug.Log(response);
-        return false;
-    }*/
 }

@@ -14,7 +14,7 @@ public class ParsedQuestModel
     public List<ObjectiveNodeModel> Objectives = new List<ObjectiveNodeModel>();
     public List<RewardNodeModel> Rewards = new List<RewardNodeModel>();
     public List<string> nextQuests = new List<string>();
-    public bool isOptional;
     public bool isCompleted;
     public bool isActive;
+    public bool isObtained;
 }

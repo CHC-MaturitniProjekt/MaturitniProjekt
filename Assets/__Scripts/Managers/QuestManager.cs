@@ -64,6 +64,32 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    public void ObtainQuest(int questID)
+    {
+        var quest = questList.FirstOrDefault(q => q.QuestID == questID);
+        if (quest == null)
+        {
+            Debug.LogError("Quest ID is incorrect.");
+            return;
+        }
+
+        if (quest.isObtained)
+        {
+            Debug.LogWarning("Quest is already obtained.");
+            return;
+        }
+        quest.isObtained = true;
+
+    }
+
+    public bool IsQuestObtained(int questID)
+    {
+        var quest = questList.FirstOrDefault(q => q.QuestID == questID);
+        if (quest == null || !quest.isObtained) return false;
+
+        return true;
+    }
+
     public int? GetIsQuestActiveId()
     {
         foreach (var quest in questList)
@@ -94,12 +120,8 @@ public class QuestManager : MonoBehaviour
     {
         foreach (var quest in questList)
         {
-            if (quest.QuestID == questID && quest.Objectives != null)
-            {
-                return quest.Objectives;
-            }
+            if (quest.QuestID == questID && quest.Objectives != null) return quest.Objectives;
         }
-
         return null;
     }
 
@@ -112,7 +134,6 @@ public class QuestManager : MonoBehaviour
                 quest.isCompleted = true;
             }
         }
-        
     }
 
     public void CheckObjectiveCompletion(int questID)
@@ -155,59 +176,10 @@ public class QuestManager : MonoBehaviour
             if (!questExists)
             {
                 Debug.Log(questData.QuestName);
-                firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive, questData.isCompleted);
+                firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive, questData.isCompleted, questData.isObtained);
             }
         }
     }
-
-    /*private void TobankuvParserv()
-    {
-        var idk = Resources.Load<QuestContainer>("questGraph");
-        foreach (var serializableNode in idk.questNodeData)
-        {
-            var nodeModel = SerializableQuestNodeModel.DeserializeNodeModel(serializableNode);
-            QuestNode node;
-
-            switch (nodeModel.QuestType)
-            {
-                case QuestNode.NodeTypes.Start:
-                    node = new StartQuestNode
-                    {
-                        title = nodeModel.QuestType.ToString(),
-                    };
-                    break;
-                case QuestNode.NodeTypes.MainQuestNode:
-                    node = new MainQuestNode
-                    {
-                        title = nodeModel.QuestType.ToString(),
-                        QuestName = (nodeModel as MainQuestNodeModel).QuestName,
-                        QuestDescription = (nodeModel as MainQuestNodeModel).QuestDescription
-                    };
-                    break;
-
-                case QuestNode.NodeTypes.ObjectiveNode:
-                    node = new ObjectiveNode
-                    {
-                        title = nodeModel.QuestType.ToString(),
-                        ObjectiveDescription = (nodeModel as ObjectiveNodeModel).ObjectiveDescription,
-                        ObjectiveType = (nodeModel as ObjectiveNodeModel).ObjectiveType,
-                        isOptional = (nodeModel as ObjectiveNodeModel).isOptional,
-                        isCompleted = (nodeModel as ObjectiveNodeModel).isCompleted,
-                        CompletionCriteria = (nodeModel as ObjectiveNodeModel).CompletionCriteria
-                    };
-                    break;
-                case QuestNode.NodeTypes.RewardNode:
-                    node = new RewardNode
-                    {
-                        title = nodeModel.QuestType.ToString(),
-                        RewardType = (nodeModel as RewardNodeModel).RewardType,
-                        RewardValue = (nodeModel as RewardNodeModel).RewardValue
-                    };
-                    break;
-                 
-            }
-        }
-    }*/
 
     private ParsedQuestModel ParseQuestData(SerializableQuestNodeModel node)
     {
@@ -223,8 +195,9 @@ public class QuestManager : MonoBehaviour
                 Objectives = new List<ObjectiveNodeModel>(),
                 Rewards = new List<RewardNodeModel>(),
                 nextQuests = new List<string>(),
-                isOptional = false,
-                isCompleted = false
+                isCompleted = false,
+                isActive = false,
+                isObtained = false
             };
 
             foreach (var link in questContainer.nodeLinks)
@@ -236,19 +209,21 @@ public class QuestManager : MonoBehaviour
                         var objectiveModel = SerializableQuestNodeModel.DeserializeNodeModel(objectiveNode);
                         if (objectiveModel.GUID == link.targetNodeGUID)
                         {
-                            if (objectiveModel.QuestType == QuestNode.NodeTypes.ObjectiveNode)
+                            switch (objectiveModel.QuestType)
                             {
-                                parsedQuestModel.Objectives.Add(objectiveModel as ObjectiveNodeModel);
+                                case QuestNode.NodeTypes.ObjectiveNode: 
+                                    parsedQuestModel.Objectives.Add(objectiveModel as ObjectiveNodeModel);
+                                    break;
+                                case QuestNode.NodeTypes.RewardNode:
+                                    parsedQuestModel.Rewards.Add(objectiveModel as RewardNodeModel);
+                                    break;
+                                case QuestNode.NodeTypes.MainQuestNode:
+                                    parsedQuestModel.nextQuests.Add(objectiveModel.GUID);
+                                    break;
+                                default:
+                                    Debug.LogError("Error parsing quests: Quest type mismatch");
+                                    break;
                             }
-                            else if (objectiveModel.QuestType == QuestNode.NodeTypes.RewardNode)
-                            {
-                                parsedQuestModel.Rewards.Add(objectiveModel as RewardNodeModel);
-                            }
-                            else if (objectiveModel.QuestType == QuestNode.NodeTypes.MainQuestNode)
-                            {
-                                parsedQuestModel.nextQuests.Add(objectiveModel.GUID);
-                            }
-                            
                         }
                     }
                 }
