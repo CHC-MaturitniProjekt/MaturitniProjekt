@@ -9,6 +9,7 @@ public class QuestManager : MonoBehaviour
 {
     private QuestContainer questContainer;
     private Firebase firebase;
+    private UIManager uiManager;
     
     [SerializeField]
     private List<ParsedQuestModel> questList = new List<ParsedQuestModel>();
@@ -25,9 +26,9 @@ public class QuestManager : MonoBehaviour
     {
         questContainer = Resources.Load<QuestContainer>("questGraph");
         firebase = FindFirstObjectByType<Firebase>();
-        LoadQuests();
-        StartCoroutine(DelayedPushQuests());
+        uiManager = FindFirstObjectByType<UIManager>();
         
+        StartCoroutine(DelayedPushQuests());
     }
     private IEnumerator DelayedPushQuests()
     {
@@ -38,12 +39,23 @@ public class QuestManager : MonoBehaviour
     private void LoadQuests()
     {
         questList.Clear();
+
+        var quests = firebase.GetQuests();
+        foreach (var quest in quests)
+        {
+            quest.Value.GUID = quest.Key;
+            questList.Add(quest.Value);
+        }
+
         foreach (var node in questContainer.questNodeData)
         {
             var parsedQuest = ParseQuestData(node);
             if (parsedQuest != null)
             {
-                questList.Add(parsedQuest);
+                var existingQuest = questList.FirstOrDefault(q => q.GUID == parsedQuest.GUID);
+                if (existingQuest == null) continue;
+                existingQuest.QuestID = parsedQuest.QuestID;
+                existingQuest.dialogues = parsedQuest.dialogues;
             }
         }
 
@@ -63,14 +75,7 @@ public class QuestManager : MonoBehaviour
             questConnections.Add(connection.ToArray());
         }
     }
-
-    public List<DialogueNodeModel> GetQuestsDialogues(int questID)
-    {
-        var quest = questList.FirstOrDefault(q => q.QuestID == questID);
-
-        return quest?.dialogues;
-    } 
-
+    
     public void ObtainQuest(int questID)
     {
         var quest = questList.FirstOrDefault(q => q.QuestID == questID);
@@ -86,6 +91,7 @@ public class QuestManager : MonoBehaviour
             return;
         }
         quest.isObtained = true;
+        uiManager.AddQuest("New Quest: " + quest.QuestName);
         firebase.QuestObtain(quest.GUID);
 
     }
@@ -106,21 +112,34 @@ public class QuestManager : MonoBehaviour
         }
         return null;
     }
-    
-    public int? GetIsQuestCompletedId()
-    {
-        foreach (var quest in questList)
-        {
-            if (quest.isCompleted) return quest.QuestID;
-        }
-        return null; 
-    }
 
     public void SetQuestAsActive(string QuestGUID)
     {
         foreach (var quest in questList)
         {
-            quest.isActive = quest.GUID == QuestGUID;
+            if (quest.GUID == QuestGUID)
+            {
+                quest.isActive = !quest.isActive;
+            }
+            else
+            {
+                quest.isActive = false;
+            }
+        }
+    }
+    
+    public void SetQuestAsCompleted(string QuestGUID)
+    {
+        foreach (var quest in questList)
+        {
+            quest.isCompleted = quest.GUID == QuestGUID;
+        }
+    }
+    public void SetQuestAsObtained(string QuestGUID)
+    {
+        foreach (var quest in questList)
+        {
+            quest.isObtained = quest.GUID == QuestGUID;
         }
     }
 
@@ -178,6 +197,18 @@ public class QuestManager : MonoBehaviour
     
     public async void PushQuests()
     {
+        if (questList.Count == 0)
+        {
+            foreach (var node in questContainer.questNodeData)
+            {
+                var parsedQuest = ParseQuestData(node);
+                if (parsedQuest != null)
+                {
+                    questList.Add(parsedQuest);
+                }
+            }
+        }
+        
         foreach (var questData in questList)
         {
             bool questExists = await firebase.CheckQuest(questData.GUID);
@@ -187,6 +218,8 @@ public class QuestManager : MonoBehaviour
                 firebase.AddQuest(questData.GUID, questData.QuestName, questData.QuestDescription, questData.Objectives, questData.Rewards, questData.nextQuests, questData.isActive, questData.isCompleted, questData.isObtained);
             }
         }
+        
+        LoadQuests();
     }
 
     private ParsedQuestModel ParseQuestData(SerializableQuestNodeModel node)
@@ -194,18 +227,20 @@ public class QuestManager : MonoBehaviour
         var questNodeModel = SerializableQuestNodeModel.DeserializeNodeModel(node);
         if (questNodeModel.QuestType == QuestNode.NodeTypes.MainQuestNode)
         {
+            var mainQuestNodeModel = questNodeModel as MainQuestNodeModel;
             var parsedQuestModel = new ParsedQuestModel
             {
-                GUID = questNodeModel.GUID,
-                QuestID = (questNodeModel as MainQuestNodeModel).QuestID,
-                QuestName = (questNodeModel as MainQuestNodeModel).QuestName,
-                QuestDescription = (questNodeModel as MainQuestNodeModel).QuestDescription,
+                GUID = mainQuestNodeModel.GUID,
+                QuestID = mainQuestNodeModel.QuestID,
+                QuestName = mainQuestNodeModel.QuestName,
+                QuestDescription = mainQuestNodeModel.QuestDescription,
                 Objectives = new List<ObjectiveNodeModel>(),
                 Rewards = new List<RewardNodeModel>(),
                 nextQuests = new List<string>(),
-                isCompleted = false,
-                isActive = false,
-                isObtained = false
+                isCompleted = mainQuestNodeModel.isCompleted,
+                isActive = mainQuestNodeModel.isActive,
+                isObtained = mainQuestNodeModel.isObtained,
+                dialogues = new List<DialogueNodeModel>()
             };
 
             foreach (var link in questContainer.nodeLinks)
@@ -219,7 +254,7 @@ public class QuestManager : MonoBehaviour
                         {
                             switch (objectiveModel.QuestType)
                             {
-                                case QuestNode.NodeTypes.ObjectiveNode: 
+                                case QuestNode.NodeTypes.ObjectiveNode:
                                     parsedQuestModel.Objectives.Add(objectiveModel as ObjectiveNodeModel);
                                     break;
                                 case QuestNode.NodeTypes.RewardNode:

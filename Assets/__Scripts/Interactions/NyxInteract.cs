@@ -14,7 +14,7 @@ public class NyxInteract : InteractAction
         questManager = FindAnyObjectByType<QuestManager>();
     }
 
-    public override void OnInteract()           //TODO: neco to dela, ted jen zjistit co a proc
+    public override void OnInteract()
     {
         string questName = "";
         ParsedQuestModel quest = null;
@@ -30,8 +30,9 @@ public class NyxInteract : InteractAction
         if (quest != null)
         {
             var availableDialogues = quest.dialogues;
-            foreach (var dialogue in availableDialogues.OrderBy<DialogueNodeModel, int>(d => d.order))
+            foreach (var dialogue in availableDialogues.OrderBy(d => d.order))
             {
+                Debug.Log(dialogue.DialogueName + " " + dialogue.isCompleted + " " + dialogue.order);
                 if (!dialogue.isCompleted)
                 {
                     questName = dialogue.DialogueName;
@@ -75,34 +76,6 @@ public class NyxInteract : InteractAction
                 }
             }
         }
-    }
-    
-    private bool CheckQuestIsActive(int? requestedQuestId)
-    {
-        var quests = questManager.GetQuestList();
-        foreach (var quest in quests)
-        {
-            if (quest.QuestID == requestedQuestId)
-            {
-                if (quest.isActive) return true;
-            }
-        }
-        return false;
-    }
-
-    private string SelectStoryDialogue(List<string> dialogues, string storyConvoName)
-    {
-        string conversation = "";
-        foreach (var dial in dialogues)
-        {
-            if (dial == storyConvoName)
-            {
-                conversation = dial;
-                break;
-            }
-        }
-        
-        return conversation;
     }
 
     private string SelectGenericDialogue(List<string> dialogues)

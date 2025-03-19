@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -32,13 +33,16 @@ public class Firebase : MonoBehaviour
     {
         config = new FirebaseConfig("https://augumentum-default-rtdb.europe-west1.firebasedatabase.app/");
         client = new FirebaseClient(config);
-
-        FirebaseResponse response = client.GetSync("quests");
-
-        Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
         
         client.StartListening("upgrades", OnStatsChange);
         client.StartListening("quests", OnQuestsChange);
+    }
+
+    public Dictionary<string, ParsedQuestModel> GetQuests()
+    {
+        FirebaseResponse response = client.GetSync("quests");
+        
+        return response.ResultAs<Dictionary<string, ParsedQuestModel>>();
     }
 
     void OnDataChanged(string eventType, string data)
@@ -49,61 +53,88 @@ public class Firebase : MonoBehaviour
     void OnStatsChange(string eventType, string data)
     {
         Debug.Log($"Event: {eventType}, Data: {data}");
-        uiManager.AddNotification("Stats changed");
-       
     }
     
     void OnQuestsChange(string eventType, string data)
     {
         Debug.Log($"Event: {eventType}, Data: {data}");
 
-        var settings = new JsonSerializerSettings
-        {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        };
-      
-        FirebaseResponse response = client.GetSync("quests");
-        Dictionary<string, ParsedQuestModel> quests = response.ResultAs<Dictionary<string, ParsedQuestModel>>();
-
         try
         {
-            var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data, settings);
+            var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
+
             if (jsonData != null && jsonData.ContainsKey("data"))
             {
-                var dataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData["data"].ToString());
-                foreach (var item in dataDict)
+                object rawData = jsonData["data"];
+                if (rawData is JObject dataObject)
                 {
-                    string[] parts = item.Key.Split('/');
-                    if (parts.Length == 2 && parts[1] == "isActive")
-                    {
-                        Debug.Log("aaaaaaaaaaaaaaaaaaa");
-                        string questId = parts[0];
-                        bool isActive = Convert.ToBoolean(item.Value);
-                        
-                        questManager.SetQuestAsActive(questId);
-                        
-                        if (isActive)
-                        {
-                            uiManager.PinQuest(questId);
-                        }
-                        else if (!isActive)
-                        {
-                            uiManager.UnPinQuest();
-                        }
-                    }
-                    else
-                    {
-                        string questId = parts[0];
-                        uiManager.AddQuest(questId);
-                    }
+                    var dataDict = dataObject.ToObject<Dictionary<string, object>>();
+                    ProcessQuestData(dataDict);
+                }
+                else if (rawData is JValue dataValue && dataValue.Type == JTokenType.Boolean)
+                {
+                    string path = jsonData.ContainsKey("path") ? jsonData["path"].ToString() : "";
+                    ProcessBooleanData(path, dataValue.ToObject<bool>());
+                }
+                else
+                {
+                    Debug.LogError("Unexpected data type in JSON.");
                 }
             }
-        } 
+            else
+            {
+                Debug.LogError("Key missing or null in JSON data");
+            }
+        }
         catch (JsonReaderException ex)
         {
             Debug.LogError("JSON parsing error: " + ex.Message);
         }
-        
+        catch (Exception ex)
+        {
+            Debug.LogError("Unexpected error: " + ex.Message);
+        }
+    }
+
+    void ProcessQuestData(Dictionary<string, object> dataDict)
+    {
+        foreach (var item in dataDict)
+        {
+            string[] parts = item.Key.Split('/');
+            if (parts.Length == 2 && parts[1] == "isActive")
+            {
+                string questId = parts[0];
+                questManager.SetQuestAsActive(questId);
+                Debug.Log($"Quest {questId} set as active.");
+            }
+        }
+    }
+
+    void ProcessBooleanData(string path, bool value)
+    {
+        string[] parts = path.Split('/');
+        if (parts.Length == 3)
+        {
+            string questId = parts[1];
+            switch (parts[2])
+            {
+                case "isActive":
+                    questManager.SetQuestAsActive(questId);
+                    Debug.Log($"Quest {questId} set as active.");
+                    break;
+                case "isCompleted":
+                    questManager.SetQuestAsCompleted(questId);
+                    Debug.Log($"Quest {questId} set as completed.");
+                    break;
+                case "isObtained":
+                    questManager.SetQuestAsObtained(questId);
+                    Debug.Log($"Quest {questId} set as obtained.");
+                    break;
+                default:
+                    Debug.LogError("Invalid DB query.");
+                    break;
+            }
+        }
     }
     
     public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted, bool isObtained)
@@ -148,6 +179,8 @@ public class Firebase : MonoBehaviour
         }
 
         objective.isCompleted = isCompleted;
+        uiManager.AddNotification("Objective completed: " + objective.ObjectiveDescription);
+
 
         var settings = new JsonSerializerSettings
         {
@@ -168,20 +201,21 @@ public class Firebase : MonoBehaviour
             return;
         }
 
-        var objective = JsonConvert.DeserializeObject<ParsedQuestModel>(response.RawJson);
-        if (objective == null)
+        var quest = JsonConvert.DeserializeObject<ParsedQuestModel>(response.RawJson);
+        if (quest == null)
         {
             Debug.LogError("Failed to deserialize existing objective data.");
             return;
         }
 
-        objective.isObtained = true;
+        quest.isObtained = true;
+        uiManager.AddQuest("New quest: " + quest.QuestName);
 
         var settings = new JsonSerializerSettings
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
-        string jsonUpdate = JsonConvert.SerializeObject(objective, settings);
+        string jsonUpdate = JsonConvert.SerializeObject(quest, settings);
 
         client.PutSync($"quests/{questGUID}/", jsonUpdate);
         CheckQuestsObjectivesCompletion(questGUID);
@@ -207,6 +241,8 @@ public class Firebase : MonoBehaviour
         {
             quest.isCompleted = true;
             quest.isActive = false;
+            
+            uiManager.AddNotification("Quest completed: " + quest.QuestName);
 
             var settings = new JsonSerializerSettings
             {

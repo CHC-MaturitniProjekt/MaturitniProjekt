@@ -72975,6 +72975,20 @@ MonoBehaviour:
   InteractionIcon: {fileID: 21300000, guid: 36ba444b2a409a147ad4b2322fb92d39, type: 3}
   InteractionText: Pick Up Item
   itemID: 50
+--- !u!114 &1320984587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11275683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e7c7280e4f332a4eb876a1726edeb18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  questID: 5
+  isTriggerEnabled: 0
 --- !u!1 &1328129058
 GameObject:
   m_ObjectHideFlags: 0
@@ -93518,23 +93532,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7079902028757877350}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1670643791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 783668934}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32bdb70b43e7dc341a9d5d93b54e2054, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InteractionIcon: {fileID: 21300000, guid: c469889db0eea1a459df9473c96b26fb, type: 3}
-  InteractionText: Talk to NPC
-  dialogueSets:
-  - {fileID: 11400000, guid: c5fd6224bc0e90d40bd2dc241844601c, type: 2}
-  - {fileID: 11400000, guid: e106891af6a8c3140890640d8e92825a, type: 2}
 --- !u!114 &1670643803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103523,10 +103520,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0eb8e6afaaf2734b80d6cfbc1bfee10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
-  mouseMove: {x: 0, y: 0}
-  cursorTransform: {fileID: 2056301995}
-  camController: {fileID: 0}
 --- !u!1001 &2059174315
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -106754,6 +106747,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1320984581}
+    - targetCorrespondingSourceObject: {fileID: 5976762614227239178, guid: 9c6a6f83364a5fe4487ecf31ce66e103,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1320984587}
   m_SourcePrefab: {fileID: 100100000, guid: 9c6a6f83364a5fe4487ecf31ce66e103, type: 3}
 --- !u!1001 &1325182620672948505
 PrefabInstance:
@@ -107996,10 +107993,6 @@ PrefabInstance:
         type: 3}
       insertIndex: 10
       addedObject: {fileID: 1670643803}
-    - targetCorrespondingSourceObject: {fileID: 8471518033236843708, guid: 0a28de9c2065ada4591c8991f46f6f15,
-        type: 3}
-      insertIndex: 11
-      addedObject: {fileID: 1670643791}
   m_SourcePrefab: {fileID: 100100000, guid: 0a28de9c2065ada4591c8991f46f6f15, type: 3}
 --- !u!1001 &8869973101886707541
 PrefabInstance:

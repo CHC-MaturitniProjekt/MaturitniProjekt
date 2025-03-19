@@ -21,6 +21,12 @@ public class ItemInteract : InteractAction
             OnObjectiveInteract();
         }
         
+        var questObtainHandler = GetComponent<QuestObtainHandlerer>();
+        if (questObtainHandler != null)
+        {
+            questObtainHandler.SetQuestAsObtained();
+        }
+        
         PlayerManager.Instance.PickUpItem(this.gameObject);
     }
     public override void OnObjectiveInteract()

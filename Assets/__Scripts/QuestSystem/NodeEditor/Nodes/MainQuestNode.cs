@@ -16,6 +16,9 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
         public string QuestName;
         public string QuestDescription;
         public int QuestID;
+        public bool isObtained;
+        public bool isActive;
+        public bool isCompleted;
         
         public MainQuestNode()
         {

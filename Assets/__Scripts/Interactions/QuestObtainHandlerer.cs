@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using PixelCrushers.DialogueSystem;
 using UnityEngine;
 
 public class QuestObtainHandlerer : MonoBehaviour
@@ -25,7 +26,7 @@ public class QuestObtainHandlerer : MonoBehaviour
         }
     }
 
-    private void SetQuestAsObtained()
+    public void SetQuestAsObtained()
     {
         if (questManager != null)
         {

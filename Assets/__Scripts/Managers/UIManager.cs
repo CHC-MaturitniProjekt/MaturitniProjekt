@@ -19,30 +19,23 @@ public class UIManager : MonoBehaviour
     private NotificationManager notificationManager;
 
     private List<string> notifList = new List<string>();
+    private List<string> questList = new List<string>();
     private int lastProcessedQuestIndex = 0;
     private int lastProcessedNotifIndex = 0;
 
     private bool isRunningQuests = false;
-    private bool isPinned = false;
     private bool isRunningNotifs = false;
     
-    private QuestManager questManager;
-    private List<ParsedQuestModel> questList;
-
     [SerializeField] private TextMeshProUGUI timeDisplay;
     private TimeManager timeManager;
 
     void Start()
     {
-        //AddQuest("Promluv si s kamarádem");
-        
-        //AddNotification("Vítej");
-        
-        questManager = FindFirstObjectByType<QuestManager>();
-        questList = questManager.GetQuestList();
-        
         timeManager = FindFirstObjectByType<TimeManager>();
         if (timeManager != null) timeDisplay.gameObject.SetActive(true);
+
+        lastProcessedNotifIndex = 0;
+        lastProcessedQuestIndex = 0;
     }
 
     private void Update()
@@ -50,79 +43,44 @@ public class UIManager : MonoBehaviour
         DisplayGameTime();
     }
 
-    public void AddQuest(string questId)
+    public void AddQuest(string questText)
     {
-        string questName = "";
-        foreach (var quest in questList)
+        if (!isRunningQuests && questText != null)
         {
-            if(quest.GUID == questId)
-            {
-                questName = quest.QuestName;
-            }
-        }
-        
-        if (!isRunningQuests && !isPinned)
-        {
-            StartCoroutine(RunQuests(questName));
+            questList.Add(questText);
+            StartCoroutine(RunQuests());
         }
     }
 
-    private IEnumerator RunQuests(string questName)
+    private IEnumerator RunQuests()
     {
         isRunningQuests = true;
-    
         while (lastProcessedQuestIndex < questList.Count)
         {
+            string questName = questList[lastProcessedQuestIndex];
             lastProcessedQuestIndex++;
             
             questPrefab.defaultState = QuestItem.DefaultState.Expanded;
             questPrefab.questText = questName;
             questPrefab.UpdateUI();
-            
+
             questPrefab.AnimateQuest();
             questPrefab.ExpandQuest();
             yield return new WaitForSeconds(3);
-
+            
             questPrefab.MinimizeQuest();
             yield return new WaitForSeconds(1);
         }
-
-        isRunningQuests = false;
-    }
-    
-    public void PinQuest(string questId)
-    {
-        isPinned = true;
-        string questName = "";
-        foreach (var quest in questList)
-        {
-            if(quest.GUID == questId)
-            {
-                questName = quest.QuestName;
-                break;
-            }
-        }
         
-        questPrefab.defaultState = QuestItem.DefaultState.Expanded;
-        questPrefab.questText = questName;
-        questPrefab.UpdateUI();
-        questPrefab.AnimateQuest();
-        questPrefab.ExpandQuest();
-    }
-
-    public void UnPinQuest()
-    {
-        questPrefab.MinimizeQuest();
-        isPinned = false;
+        isRunningQuests = false;
     }
     
     public void AddNotification(string notifText)
     {
+        if (notifText == null) return;
+        
         notifList.Add(notifText);
-        //if (!isRunningNotifs)
-        //{
-            StartCoroutine(RunNotifications());
-        //}
+        StartCoroutine(RunNotifications());
     }
 
     private IEnumerator RunNotifications()
@@ -144,7 +102,7 @@ public class UIManager : MonoBehaviour
             notificationManager.MinimizeNotification();
             yield return new WaitForSeconds(1);
         }
-
+        
         isRunningNotifs = false;
     }
 

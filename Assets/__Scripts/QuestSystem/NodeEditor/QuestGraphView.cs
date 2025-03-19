@@ -138,7 +138,10 @@ public class QuestGraphView : GraphView
                     QuestID = 0,
                     title = "Quest Node",
                     QuestName = "New Quest",
-                    QuestDescription = "Describe the quest here"
+                    QuestDescription = "Describe the quest here",
+                    isActive = false,
+                    isCompleted = false,
+                    isObtained = false
                 };
                 break;
 
@@ -205,7 +208,11 @@ public class QuestGraphView : GraphView
                     title = nodeType.ToString(),
                     QuestID = (nodeData as MainQuestNodeModel).QuestID,
                     QuestName = (nodeData as MainQuestNodeModel).QuestName,
-                    QuestDescription = (nodeData as MainQuestNodeModel).QuestDescription
+                    QuestDescription = (nodeData as MainQuestNodeModel).QuestDescription,
+                    isActive = (nodeData as MainQuestNodeModel).isActive,
+                    isObtained = (nodeData as MainQuestNodeModel).isObtained,
+                    isCompleted = (nodeData as MainQuestNodeModel).isCompleted,
+                    
                 };
                 break;
 
