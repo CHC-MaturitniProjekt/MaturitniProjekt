@@ -48,7 +48,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             outputContainer.Add(rewardPort);
             
             var dialoguePort = new CustomPort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, ConnectionType.Dialogue);
-            rewardPort.portName = "Dialogues";
+            dialoguePort.portName = "Dialogues";
             outputContainer.Add(dialoguePort);
 
             var questIDField = new IntegerField("Quest ID") { value = QuestID };
