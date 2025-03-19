@@ -12,7 +12,6 @@ public class RenderTextureClick : MonoBehaviour
 
     [Header("Params")]
     [SerializeField] private float maxDistance;
-    [SerializeField] private int PcScreenLayer;
 
     [Header("Objects")]
     [SerializeField] private Camera uiCamera;
@@ -20,27 +19,40 @@ public class RenderTextureClick : MonoBehaviour
     [SerializeField] private RenderTexture renderTexture;
     [SerializeField] private RectTransform uiCanvas;
     [SerializeField] private RectTransform cursorImage;
-    private GraphicRaycaster graphicRaycaster;
 
 
-
-    private bool leftClick = false;
-
+    private GameObject _currentTarget;
     void Start()
     {
+        var eventSystem = EventSystem.current;
+        if (eventSystem != null)
+        {
+            var inputModule = eventSystem.GetComponent<StandaloneInputModule>();
+            if (inputModule != null)
+            {
+                inputModule.enabled = false;
+            }
+        }
+
         input.PcLeftClickStart += OnPcleftClickStart;
         input.PcLeftClickEnd += OnPcleftClickEnd;
-        graphicRaycaster = uiCanvas.GetComponent<GraphicRaycaster>();
     }
 
     private void OnPcleftClickEnd()
     {
-        leftClick = false;
+        Vector2 uv = GetScreenPos();
+        Vector2 mousePoint = GetCanvasPos(uv);
+
+        HandleCanvasClick(mousePoint, PointerEventData.InputButton.Left, ExecuteEvents.pointerUpHandler);
     }
 
     private void OnPcleftClickStart()
     {
-        leftClick = true;
+        Vector2 uv = GetScreenPos();
+        Vector2 mousePoint = GetCanvasPos(uv);
+
+        HandleCanvasClick(mousePoint, PointerEventData.InputButton.Left , ExecuteEvents.pointerDownHandler);
+        HandleCanvasClick(mousePoint, PointerEventData.InputButton.Left, ExecuteEvents.pointerClickHandler);
     }
 
     void Update()
@@ -49,21 +61,28 @@ public class RenderTextureClick : MonoBehaviour
         Vector2 mousePoint = GetCanvasPos(uv);
 
         cursorImage.anchoredPosition = mousePoint;
+    }
 
-        if (leftClick)
+    private void HandleCanvasClick<T>(Vector2 mousePoint, PointerEventData.InputButton inputButton , ExecuteEvents.EventFunction<T> eventFunction) where T : IEventSystemHandler
+    {
+        Vector2 screenPosition = RectTransformUtility.WorldToScreenPoint(uiCamera, cursorImage.position);
+
+        PointerEventData eventData = new PointerEventData(EventSystem.current)
         {
-            HandleCanvasClick(mousePoint);
+            position = screenPosition,
+            button = inputButton
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        if (results.Count > 0)
+        {
+            GameObject clickedObject = results[0].gameObject;
+            ExecuteEvents.Execute(clickedObject, eventData, eventFunction);
         }
     }
 
-    private void HandleCanvasClick(Vector2 screenPosition)
-    {
-        PointerEventData eventData = new PointerEventData(EventSystem.current)
-        {
-            pressPosition = screenPosition
-        };
-        ExecuteEvents.Execute(uiCanvas.gameObject, eventData, ExecuteEvents.pointerClickHandler);
-    }
 
     private Vector2 GetScreenPos()
     {

@@ -2327,7 +2327,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
   maxDistance: 2
-  PcScreenLayer: 0
   uiCamera: {fileID: 2086252580}
   Screen: {fileID: 785356798}
   renderTexture: {fileID: 8400000, guid: 770670436993c264c869c66c84599485, type: 2}
@@ -44568,7 +44567,6 @@ GameObject:
   - component: {fileID: 785356802}
   - component: {fileID: 785356801}
   - component: {fileID: 785356800}
-  - component: {fileID: 785356803}
   m_Layer: 0
   m_Name: Screen
   m_TagString: PC
@@ -44665,26 +44663,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 785356798}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &785356803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 785356798}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1e6da2cb9fb34948ac2c69b98105d90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
-  maxDistance: 200
-  PcScreenLayer: 30
-  uiCamera: {fileID: 2086252580}
-  Screen: {fileID: 0}
-  renderTexture: {fileID: 8400000, guid: 770670436993c264c869c66c84599485, type: 2}
-  uiCanvas: {fileID: 139867189}
-  cursorImage: {fileID: 2056301995}
 --- !u!1 &795971283
 GameObject:
   m_ObjectHideFlags: 0
@@ -104947,7 +104925,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!1 &2086252575
 GameObject:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -104965,7 +104943,7 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &2086252579
 Transform:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -104980,7 +104958,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &2086252580
 Camera:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -105031,7 +105009,7 @@ Camera:
   m_StereoSeparation: 0.022
 --- !u!114 &2086252581
 MonoBehaviour:
-  m_ObjectHideFlags: 8
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
