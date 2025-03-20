@@ -1,63 +1,76 @@
-﻿//using UnityEngine;
-//using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-//public class CursorController : MonoBehaviour
-//{
-//    public Camera renderTextureCamera;
-//    public RectTransform cursorImage;
-//    public RectTransform renderTextureUI; // UI element zobrazující RenderTexture
+public class FollowMouseUI : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField]
+    public RectTransform cursorImageTransform;
+    [SerializeField]
+    public RectTransform canvasRect;
+    [SerializeField]
+    public Camera pcCamera;
 
-//    private RectTransform canvasRect;
+    [Header("Settings")]
+    [SerializeField]
+    [Tooltip("Base movement speed")]
+    private float baseSpeed = 1000f;
 
-//    void Start()
-//    {
-//        canvasRect = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
-//    }
+    [SerializeField]
+    [Tooltip("Smoothing factor (lower = smoother)")]
+    [Range(0.01f, 1f)]
+    private float smoothingFactor = 0.1f;
 
-//    void Update()
-//    {
-//        if (GetComponent<pc>().isInteracting)
-//        {
-//            Vector2 uv = GetRenderTextureUV();
-//            if (uv != Vector2.zero)
-//            {
-//                PlaceCursor(uv);
-//            }
-//        }
-//    }
+    [SerializeField]
+    [Tooltip("Enable dynamic speed based on distance")]
+    private bool useDynamicSpeed = true;
 
-//    Vector2 GetRenderTextureUV()
-//    {
-//        Vector2 localMousePos;
-//        // Převod pozice myši do lokálních souřadnic UI elementu
-//        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-//            renderTextureUI,
-//            Input.mousePosition,
-//            null,
-//            out localMousePos
-//        )) return Vector2.zero;
+    [SerializeField]
+    [Tooltip("Max movement speed")]
+    private float maxSpeed = 2000f;
 
-//        // Výpočet UV souřadnic (0-1) uvnitř UI elementu
-//        Rect rect = renderTextureUI.rect;
-//        Vector2 uv = new Vector2(
-//            (localMousePos.x + rect.width * 0.5f) / rect.width,
-//            (localMousePos.y + rect.height * 0.5f) / rect.height
-//        );
+    private Vector2 targetPosition;
+    private Vector2 currentVelocity;
 
-//        // Raycast z RenderTexture kamery
-//        Ray ray = renderTextureCamera.ViewportPointToRay(uv);
-//        return Physics.Raycast(ray, out RaycastHit hit) ? uv : Vector2.zero;
-//    }
+    private void Update()
+    {
+        if (Pc.Instance.isInteracting)
+            MoveCursor();
+    }
 
-//    void PlaceCursor(Vector2 uv)
-//    {
-//        // Převod UV na pozici v Canvasu
-//        Vector2 renderTexturePos = renderTextureUI.anchoredPosition;
-//        Vector2 renderTextureSize = renderTextureUI.rect.size;
+    private void MoveCursor()
+    {
+        // Get target mouse position
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            Input.mousePosition,
+            pcCamera,
+            out targetPosition
+        );
 
-//        cursorImage.anchoredPosition = new Vector2(
-//            renderTexturePos.x + (uv.x - 0.5f) * renderTextureSize.x,
-//            renderTexturePos.y + (uv.y - 0.5f) * renderTextureSize.y
-//        );
-//    }
-//}
+        // Calculate movement
+        if (useDynamicSpeed)
+        {
+            // Dynamická rychlost podle vzdálenosti
+            float distance = Vector2.Distance(cursorImageTransform.anchoredPosition, targetPosition);
+            float dynamicSpeed = Mathf.Clamp(distance * baseSpeed, 0, maxSpeed);
+
+            cursorImageTransform.anchoredPosition = Vector2.SmoothDamp(
+                cursorImageTransform.anchoredPosition,
+                targetPosition,
+                ref currentVelocity,
+                smoothingFactor,
+                dynamicSpeed
+            );
+        }
+        else
+        {
+            // Lineární interpolace s plynulým dojezdem
+            cursorImageTransform.anchoredPosition = Vector2.Lerp(
+                cursorImageTransform.anchoredPosition,
+                targetPosition,
+                Time.deltaTime * baseSpeed
+            );
+        }
+    }
+}

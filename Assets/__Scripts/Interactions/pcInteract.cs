@@ -10,6 +10,7 @@ public class PcInteract : InteractAction
         CameraManager.Instance.EnterPcCamera();
         PlayerManager.Instance.isDisabled = true;
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = false;
         GetComponent<Pc>().StartInteracting();
       
     }
