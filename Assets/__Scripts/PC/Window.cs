@@ -20,7 +20,7 @@ public class Window : MonoBehaviour
     [SerializeField] private float resizeMargin = 10f;
     [SerializeField] private Vector2 minWindowSize = new Vector2(100, 100);
 
-
+    private enum cursorSprite {Default, Resize };
     private enum ResizeDirection { None, Left, Right, Top, Bottom, TopLeft, TopRight, BottomLeft, BottomRight }
     private ResizeDirection currentDirection;
     private bool isDragging;
@@ -28,6 +28,7 @@ public class Window : MonoBehaviour
     private Vector3 dragOffset;
     private Vector2 initialSize;
     private Vector2 initialMousePosition;
+    private cursorSprite currentCursorSprite = cursorSprite.Default;
 
     void Start()
     {
@@ -38,18 +39,52 @@ public class Window : MonoBehaviour
 
     void Update()
     {
-
         if (isDragging)
         {
             windowTransform.position = cursorTransform.position + dragOffset;
         }
-        else if(isResizing)
+        else
+        {
+            Vector2 localMousePosition;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                windowTransform,
+                Input.mousePosition,
+                canvas.worldCamera,
+                out localMousePosition
+            );
+
+            ResizeDirection direction = GetResizeDirection(localMousePosition, windowTransform.rect);
+
+            if (direction != ResizeDirection.None && currentCursorSprite != cursorSprite.Resize)
+            {
+                SetCursorSprite(cursorSprite.Resize);
+            }
+            else if (direction == ResizeDirection.None && currentCursorSprite != cursorSprite.Default)
+            {
+                SetCursorSprite(cursorSprite.Default);
+            }
+        }
+
+        if (isResizing)
         {
             HandleResize();
         }
     }
 
 
+    private void SetCursorSprite(cursorSprite state)
+    {
+        currentCursorSprite = state;
+        switch(state)
+        {
+            case cursorSprite.Default:
+                cursorImage.sprite = defaultCursors;
+                    break;
+            case cursorSprite.Resize:
+                cursorImage.sprite = resizeCursors;
+                break;
+        }
+    }
 
     private void OnPcLeftClickStart()
     {
