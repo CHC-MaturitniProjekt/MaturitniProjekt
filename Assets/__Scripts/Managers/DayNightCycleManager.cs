@@ -1,14 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DayNightCycleManager : MonoBehaviour
 {
     private TimeManager timeManager;
-    [SerializeField] private Light sun; // Main directional light (sun)
-    [SerializeField] private Material[] skyboxes; // Array of skybox materials
-    [SerializeField] private float skyboxTransitionTime = 2f; // Time to transition between skyboxes
+    [SerializeField] private Light sun;
+    [SerializeField] private Light moon;
+    [SerializeField] private float maxSunIntensity;
+    [SerializeField] private float maxMoonIntensity;
+    [SerializeField] private Material[] skyboxes; // 0: Sunrise, 1: Morning, 2: Day, 3: Sunset, 4: Night
+    [SerializeField] private float skyboxTransitionTime = 2f;
 
     private int currentSkyboxIndex = 0;
     private float skyboxTransitionTimer = 0f;
@@ -20,87 +21,76 @@ public class DayNightCycleManager : MonoBehaviour
 
     private void Start()
     {
-        if (sun == null)
+        if (sun == null || moon == null)
         {
-            Debug.LogError("Sun (Directional Light) is not assigned!");
+            Debug.LogError("Sun or Moon (Directional Light) is not assigned!");
             return;
         }
-
-        if (skyboxes.Length == 0)
+        if (skyboxes.Length != 5)
         {
-            Debug.LogError("No skyboxes assigned!");
+            Debug.LogError("Five skyboxes required: Sunrise, Morning, Day, Sunset, Night!");
             return;
         }
-
-        // Set the initial skybox based on the current time
-        float timeOfDay = timeManager.GetWorldTime();
-        currentSkyboxIndex = GetSkyboxIndexForTime(timeOfDay);
-        RenderSettings.skybox = skyboxes[currentSkyboxIndex];
-
-        // Initialize sun rotation based on the current time
-        UpdateSunRotation(timeOfDay);
+        
+        UpdateSkyboxAndLights(timeManager.GetWorldTime(), true);
     }
 
     private void Update()
     {
-        if (timeManager == null || sun == null || skyboxes.Length == 0) return;
-
-        // Update sun rotation based on the time of day
-        UpdateSunRotation(timeManager.GetWorldTime());
-
-        // Update skybox based on the time of day
-        UpdateSkybox();
+        if (timeManager == null || sun == null || moon == null || skyboxes.Length != 5) return;
+        UpdateSkyboxAndLights(timeManager.GetWorldTime(), false);
     }
 
-    private void UpdateSunRotation(float timeOfDay)
+    private void UpdateSkyboxAndLights(float timeOfDay, bool instantSet)
     {
-        float sunRotation;
+        UpdateSunAndMoonRotation(timeOfDay, instantSet);
+        UpdateSkybox(timeOfDay);
+        UpdateLightIntensity(timeOfDay);
+    }
 
-        if (timeOfDay >= 300 && timeOfDay < 480) // Morning (5:00 AM - 8:00 AM)
-        {
-            // Rotate from 0 to 50 degrees
-            sunRotation = Mathf.Lerp(0, 50, (timeOfDay - 300) / 180f);
-        }
-        else if (timeOfDay >= 480 && timeOfDay < 1080) // Day (8:00 AM - 6:00 PM)
-        {
-            // Rotate from 50 to 160 degrees
-            sunRotation = Mathf.Lerp(50, 160, (timeOfDay - 480) / 600f);
-        }
-        else if (timeOfDay >= 1080 && timeOfDay < 1260) // Evening (6:00 PM - 9:00 PM)
-        {
-            // Rotate from 160 to 180 degrees
-            sunRotation = Mathf.Lerp(160, 180, (timeOfDay - 1080) / 180f);
-        }
-        else // Night (9:00 PM - 5:00 AM)
-        {
-            // Instantly reset the sun's rotation to 0 degrees at the start of the night
-            sunRotation = 0;
-        }
+    private void UpdateSunAndMoonRotation(float timeOfDay, bool instantSet)
+    {
+        float normalizedTime = timeOfDay / 1440f; // Normalize time to 0-1 range
+        float sunRotation = normalizedTime * 360f - 90f; // -90 to 270 degrees
+        float moonRotation = sunRotation + 180f; // Moon opposite to sun
 
-        // Smoothly rotate the sun (except during the reset at night)
-        if (timeOfDay < 1260 || timeOfDay >= 300) // Avoid smoothing during the reset
+        Quaternion targetSunRotation = Quaternion.Euler(sunRotation, 0, 0);
+        Quaternion targetMoonRotation = Quaternion.Euler(moonRotation, 0, 0);
+
+        if (instantSet)
         {
-            Quaternion targetRotation = Quaternion.Euler(sunRotation, 0, 0);
-            sun.transform.rotation = Quaternion.Slerp(sun.transform.rotation, targetRotation, Time.deltaTime * 0.5f); // Adjust the multiplier for smoother rotation
+            sun.transform.rotation = targetSunRotation;
+            moon.transform.rotation = targetMoonRotation;
         }
         else
         {
-            // Instantly set the sun's rotation at the start of the night
-            sun.transform.rotation = Quaternion.Euler(sunRotation, 0, 0);
+            sun.transform.rotation = Quaternion.Slerp(sun.transform.rotation, targetSunRotation, Time.deltaTime * 0.5f);
+            moon.transform.rotation = Quaternion.Slerp(moon.transform.rotation, targetMoonRotation, Time.deltaTime * 0.5f);
         }
     }
 
-    private void UpdateSkybox()
+    private void UpdateLightIntensity(float timeOfDay)
     {
-        float timeOfDay = timeManager.GetWorldTime();
-        int newSkyboxIndex = GetSkyboxIndexForTime(timeOfDay);
+        if (timeOfDay >= 300 && timeOfDay < 1080) // Daytime (5 AM - 6 PM)
+        {
+            sun.intensity = Mathf.Lerp(0f, maxSunIntensity, (timeOfDay - 300) / 780f);
+            moon.intensity = 0f;
+        }
+        else // Nighttime (6 PM - 5 AM)
+        {
+            sun.intensity = 0f;
+            moon.intensity = Mathf.Lerp(0f, maxMoonIntensity, (timeOfDay >= 1080) ? (timeOfDay - 1080) / 360f : (1440 - timeOfDay) / 300f);
+        }
+    }
 
+    private void UpdateSkybox(float timeOfDay)
+    {
+        int newSkyboxIndex = GetSkyboxIndexForTime(timeOfDay);
         if (newSkyboxIndex != currentSkyboxIndex)
         {
             skyboxTransitionTimer += Time.deltaTime;
             float t = Mathf.Clamp01(skyboxTransitionTimer / skyboxTransitionTime);
 
-            // Lerp between the current skybox and the new skybox
             RenderSettings.skybox.Lerp(skyboxes[currentSkyboxIndex], skyboxes[newSkyboxIndex], t);
 
             if (t >= 1f)
@@ -109,14 +99,18 @@ public class DayNightCycleManager : MonoBehaviour
                 skyboxTransitionTimer = 0f;
             }
         }
+        else
+        {
+            skyboxTransitionTimer = 0f;
+        }
     }
 
     private int GetSkyboxIndexForTime(float timeOfDay)
     {
-        // Example: Divide the day into 4 parts for 4 different skyboxes
-        if (timeOfDay >= 300 && timeOfDay < 480) return 0; // Morning (5:00 AM - 8:00 AM)
-        if (timeOfDay >= 480 && timeOfDay < 1080) return 1; // Day (8:00 AM - 6:00 PM)
-        if (timeOfDay >= 1080 && timeOfDay < 1260) return 2; // Evening (6:00 PM - 9:00 PM)
-        return 3; // Night (9:00 PM - 5:00 AM)
+        if (timeOfDay >= 240 && timeOfDay < 300) return 0; // Sunrise (4:00 AM - 5:00 AM)
+        if (timeOfDay >= 300 && timeOfDay < 480) return 1; // Morning (5:00 AM - 8:00 AM)
+        if (timeOfDay >= 480 && timeOfDay < 1080) return 2; // Day (8:00 AM - 6:00 PM)
+        if (timeOfDay >= 1080 && timeOfDay < 1260) return 3; // Sunset (6:00 PM - 9:00 PM)
+        return 4; // Night (9:00 PM - 4:00 AM)
     }
 }
