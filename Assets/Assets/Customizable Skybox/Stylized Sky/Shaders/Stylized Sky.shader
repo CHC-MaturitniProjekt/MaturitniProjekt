@@ -4,8 +4,8 @@
     {
         [Header(Sun Disc)]
         _SunDiscColor ("Sun Color", Color) = (1, 1, 1, 1)
-        _SunDiscMultiplier ("Sun Multiplier", float) = 25
-        _SunDiscExponent ("Sun Exponent", float) = 125000
+        _SunDiscMultiplier ("Sun Multiplier", float) = 50
+        _SunDiscExponent ("Sun Exponent", float) = 1000
 
         [Header(Sun Halo)]
         _SunHaloColor ("Sun Halo Color", Color) = (0.8970588, 0.7760561, 0.6661981, 1)
@@ -14,8 +14,8 @@
 
         [Header(Moon Disc)]
         _MoonDiscColor ("Moon Color", Color) = (0.8, 0.8, 1, 1)
-        _MoonDiscMultiplier ("Moon Multiplier", float) = 25
-        _MoonDiscExponent ("Moon Exponent", float) = 125000
+        _MoonDiscMultiplier ("Moon Multiplier", float) = 50
+        _MoonDiscExponent ("Moon Exponent", float) = 1000 
 
         [Header(Moon Halo)]
         _MoonHaloColor ("Moon Halo Color", Color) = (0.7, 0.7, 0.9, 1)
@@ -49,7 +49,6 @@
 
             #include "UnityCG.cginc"
             
-            // Sun properties
             float3 _SunDiscColor;
             float _SunDiscExponent;
             float _SunDiscMultiplier;
@@ -58,7 +57,6 @@
             float _SunHaloExponent;
             float _SunHaloContribution;
 
-            // Moon properties
             float3 _MoonDiscColor;
             float _MoonDiscExponent;
             float _MoonDiscMultiplier;
@@ -67,17 +65,14 @@
             float _MoonHaloExponent;
             float _MoonHaloContribution;
 
-            // Horizon line properties
             float3 _HorizonLineColor;
             float _HorizonLineExponent;
             float _HorizonLineContribution;
 
-            // Sky gradient properties
             float3 _SkyGradientTop;
             float3 _SkyGradientBottom;
             float _SkyGradientExponent;
 
-            // Light directions (set from script)
             float3 _SunDirection;
             float3 _MoonDirection;
 
@@ -105,10 +100,8 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // Masks.
                 float maskHorizon = dot(normalize(i.worldPosition), float3(0, 1, 0));
 
-                // Sun calculations.
                 float maskSunDir = dot(normalize(i.worldPosition), _SunDirection);
                 float maskSun = pow(saturate(maskSunDir), _SunDiscExponent);
                 maskSun = saturate(maskSun * _SunDiscMultiplier);
@@ -118,7 +111,6 @@
                 float sunHorizonSoften = 1 - pow(1 - saturate(maskHorizon), 50);
                 sunHaloColor *= saturate(sunBellCurve * sunHorizonSoften);
 
-                // Moon calculations.
                 float maskMoonDir = dot(normalize(i.worldPosition), _MoonDirection);
                 float maskMoon = pow(saturate(maskMoonDir), _MoonDiscExponent);
                 maskMoon = saturate(maskMoon * _MoonDiscMultiplier);
@@ -128,14 +120,11 @@
                 float moonHorizonSoften = 1 - pow(1 - saturate(maskHorizon), 50);
                 moonHaloColor *= saturate(moonBellCurve * moonHorizonSoften);
 
-                // Horizon line.
                 float3 horizonLineColor = _HorizonLineColor * saturate(pow(1 - abs(maskHorizon), _HorizonLineExponent));
                 horizonLineColor = lerp(0, horizonLineColor, _HorizonLineContribution);
 
-                // Sky gradient.
                 float3 skyGradientColor = lerp(_SkyGradientTop, _SkyGradientBottom, pow(1 - saturate(maskHorizon), _SkyGradientExponent));
 
-                // Combine all contributions.
                 float3 finalColor = saturate(sunHaloColor + moonHaloColor + horizonLineColor + skyGradientColor);
                 finalColor = lerp(finalColor, _SunDiscColor, maskSun);
                 finalColor = lerp(finalColor, _MoonDiscColor, maskMoon);

@@ -90,15 +90,9 @@ public class DayNightCycleManager : MonoBehaviour
     
     private void UpdateShaderLightDirections()
     {
-        // Calculate the sun and moon directions based on their rotations
-        Vector3 sunDirection = -sun.transform.forward; // Sun direction is opposite to the sun's forward vector
-        Vector3 moonDirection = -moon.transform.forward; // Moon direction is opposite to the moon's forward vector
-
-        // Debug logs to verify the directions
-        Debug.Log("Sun Direction: " + sunDirection);
-        Debug.Log("Moon Direction: " + moonDirection);
-
-        // Pass the directions to the shader
+        Vector3 sunDirection = -sun.transform.forward;
+        Vector3 moonDirection = -moon.transform.forward; 
+        
         Shader.SetGlobalVector("_SunDirection", sunDirection);
         Shader.SetGlobalVector("_MoonDirection", moonDirection);
     }
