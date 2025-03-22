@@ -41,6 +41,7 @@ public class DayNightCycleManager : MonoBehaviour
     {
         if (timeManager == null || sun == null || moon == null) return;
         UpdateSkyboxAndLights(timeManager.GetWorldTime(), false);
+        UpdateShaderLightDirections();
     }
 
     private void UpdateSkyboxAndLights(float timeOfDay, bool instantSet)
@@ -75,16 +76,33 @@ public class DayNightCycleManager : MonoBehaviour
     {
         if (timeOfDay >= 300 && timeOfDay < 1080)
         {
-            sun.intensity = Mathf.Lerp(0f, maxSunIntensity, (timeOfDay - 300) / 780f);
+            float normalizedTime = (timeOfDay - 300) / 780f;
+            sun.intensity = Mathf.Sin(normalizedTime * Mathf.PI) * maxSunIntensity;
             moon.intensity = 0f;
         }
         else
         {
+            float normalizedTime = (timeOfDay >= 1080) ? (timeOfDay - 1080) / 360f : (1440 - timeOfDay + 360) / 360f;
             sun.intensity = 0f;
-            moon.intensity = Mathf.Lerp(0f, maxMoonIntensity, (timeOfDay >= 1080) ? (timeOfDay - 1080) / 360f : (1440 - timeOfDay) / 300f);
+            moon.intensity = Mathf.Sin(normalizedTime * Mathf.PI) * maxMoonIntensity;
         }
     }
+    
+    private void UpdateShaderLightDirections()
+    {
+        // Calculate the sun and moon directions based on their rotations
+        Vector3 sunDirection = -sun.transform.forward; // Sun direction is opposite to the sun's forward vector
+        Vector3 moonDirection = -moon.transform.forward; // Moon direction is opposite to the moon's forward vector
 
+        // Debug logs to verify the directions
+        Debug.Log("Sun Direction: " + sunDirection);
+        Debug.Log("Moon Direction: " + moonDirection);
+
+        // Pass the directions to the shader
+        Shader.SetGlobalVector("_SunDirection", sunDirection);
+        Shader.SetGlobalVector("_MoonDirection", moonDirection);
+    }
+    
     private void UpdateSkybox(float timeOfDay)
     {
         Material newSkybox = GetSkyboxForTime(timeOfDay);
