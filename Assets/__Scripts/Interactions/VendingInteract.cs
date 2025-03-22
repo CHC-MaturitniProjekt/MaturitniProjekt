@@ -15,7 +15,6 @@ public class VendingInteract : InteractAction
     public override void OnInteract()
     {
         vendingMachine.SpawnObject();
-        Debug.Log("spawn");
     }
     
     public override void OnObjectiveInteract() {}

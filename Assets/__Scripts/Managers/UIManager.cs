@@ -28,11 +28,20 @@ public class UIManager : MonoBehaviour
     
     [SerializeField] private TextMeshProUGUI timeDisplay;
     private TimeManager timeManager;
+    [SerializeField] private TextMeshProUGUI moneyDisplay;
+    private Firebase firebase;
 
     void Start()
     {
         timeManager = FindFirstObjectByType<TimeManager>();
         if (timeManager != null) timeDisplay.gameObject.SetActive(true);
+        
+        firebase = FindFirstObjectByType<Firebase>();
+        if (firebase != null)
+        {
+            moneyDisplay.gameObject.SetActive(true);
+            DisplayGameMoney();
+        }
 
         lastProcessedNotifIndex = 0;
         lastProcessedQuestIndex = 0;
@@ -109,5 +118,16 @@ public class UIManager : MonoBehaviour
     private void DisplayGameTime()
     {
         timeDisplay.text = timeManager.GetDisplayTime(timeManager.GetWorldTime());
+    }
+
+    private async void DisplayGameMoney()
+    {
+        int playerMoney = await firebase.GetPlayerMoney();
+        moneyDisplay.text = string.Format("{0:N0} Ħ", playerMoney);
+    }
+
+    public void UpdateGameMoney(int amount)
+    {
+        moneyDisplay.text = string.Format("{0:N0} Ħ", amount);
     }
 }

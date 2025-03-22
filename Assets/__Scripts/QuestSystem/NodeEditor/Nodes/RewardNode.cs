@@ -30,43 +30,25 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var titleElement = this.titleContainer;
             titleElement.style.backgroundColor = new StyleColor(TitleColor);
 
-            var dynamicFieldCont = new VisualElement();
-            Add(dynamicFieldCont);
+            var rewardTypeContainer = new VisualElement();
+            rewardTypeContainer.name = "RewardType";
+            Add(rewardTypeContainer);
 
             IntegerField rewardValueField = new IntegerField("Reward value") { value = RewardValue };
-
-            dynamicFieldCont.Add(rewardValueField);
+            rewardValueField.RegisterValueChangedCallback(evt =>
+            {
+                RewardValue = evt.newValue;
+            });
+            rewardTypeContainer.Add(rewardValueField);
 
             var rewardType = new PopupField<string>("Reward type", RewardTypes, RewardTypes.IndexOf(RewardType));
             rewardType.RegisterValueChangedCallback(evt => {
                 RewardType = evt.newValue;
-                dynamicFieldCont.Clear();
-
-                switch (evt.newValue)
-                {
-                    case "PerkPoints":
-                        rewardValueField.label = "Perk point amount";
-                        break;
-
-                    case "Money":
-                        rewardValueField.label = "Money amount";
-                        break;
-                }
+                rewardValueField.label = evt.newValue == "PerkPoints" ? "Perk point amount" : "Money amount";
             });
             rewardType.label = "Reward Type";
             Add(rewardType);
             rewardType.value = RewardType;
-
-            switch (RewardType)
-            {
-                case "PerkPoints":
-                    dynamicFieldCont.Add(new IntegerField("Perk point amount") { value = RewardValue });
-                    break;
-
-                case "Money":
-                    dynamicFieldCont.Add(new IntegerField("Money amount") { value = RewardValue });
-                    break;
-            }
 
             RefreshExpandedState();
             RefreshPorts();

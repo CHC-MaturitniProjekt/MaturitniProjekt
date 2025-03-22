@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class Firebase : MonoBehaviour
 {
     private UIManager uiManager;
     private QuestManager questManager;
+    private PlayerManager playerManager;
+    
     FirebaseConfig config;
     private FirebaseClient client;
 
@@ -19,6 +22,8 @@ public class Firebase : MonoBehaviour
     {
         uiManager = FindAnyObjectByType<UIManager>();
         questManager = FindFirstObjectByType<QuestManager>();
+        playerManager = FindFirstObjectByType<PlayerManager>();
+        
         if (uiManager == null)
         {
             Debug.LogError("UIManager not found. Please ensure it is added to the scene.");
@@ -35,7 +40,7 @@ public class Firebase : MonoBehaviour
         client = new FirebaseClient(config);
         
         client.StartListening("upgrades", OnStatsChange);
-        client.StartListening("quests", OnQuestsChange);
+        client.StartListening("/", OnDataChanged);
     }
 
     public Dictionary<string, ParsedQuestModel> GetQuests()
@@ -48,17 +53,108 @@ public class Firebase : MonoBehaviour
     void OnDataChanged(string eventType, string data)
     {
         Debug.Log($"Event: {eventType}, Data: {data}");
+
+        try
+        {
+            var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
+
+            if (jsonData != null && jsonData.ContainsKey("path"))
+            {
+                string path = jsonData["path"].ToString();
+                Debug.Log(path);
+                if (path.Contains("/quests"))
+                {
+                    ProcessDataChange(data);
+                } 
+                else if (path.Contains("/userMoney"))
+                {
+                    ProcessMoneyChange(data);
+                }
+            }
+            else
+            {
+                Debug.LogError("Key missing or null in JSON data");
+            }
+        }
+        catch (JsonReaderException ex)
+        {
+            Debug.LogError("JSON parsing error: " + ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Unexpected error: " + ex.Message);
+        }    
     }
 
     void OnStatsChange(string eventType, string data)
     {
         Debug.Log($"Event: {eventType}, Data: {data}");
     }
-    
-    void OnQuestsChange(string eventType, string data)
-    {
-        Debug.Log($"Event: {eventType}, Data: {data}");
 
+    void ProcessMoneyChange(string data)
+    {
+        try
+        {
+            var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
+
+            if (jsonData != null && jsonData.ContainsKey("data"))
+            {
+                object rawData = jsonData["data"];
+                int moneyValue = Convert.ToInt32(rawData);
+                Debug.Log(moneyValue);
+                
+            }
+        }
+        catch (JsonReaderException ex)
+        {
+            Debug.LogError("JSON parsing error: " + ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Unexpected error: " + ex.Message);
+        }
+    }
+    
+    public async Task<int> GetPlayerMoney()
+    {
+        FirebaseResponse response = await client.GetAsync("userMoney");
+        if (response == null || string.IsNullOrEmpty(response.RawJson))
+        {
+            Debug.LogError("Failed to retrieve player money.");
+            return 0;
+        }
+
+        return JsonConvert.DeserializeObject<int>(response.RawJson);
+    }
+
+    public async Task AddPlayerMoney(int amount)
+    {
+        int currentMoney = await GetPlayerMoney();
+        int newMoney = currentMoney + amount;
+        
+        uiManager.UpdateGameMoney(newMoney);
+        string jsonUpdate = JsonConvert.SerializeObject(newMoney);
+        await client.PutAsync("userMoney", jsonUpdate);
+    }
+
+    public async Task SubtractPlayerMoney(int amount)
+    {
+        int currentMoney = await GetPlayerMoney();
+        int newMoney = currentMoney - amount;
+
+        if (newMoney < 0)
+        {
+            Debug.LogError("Not enough money.");
+            return;
+        }
+
+        uiManager.UpdateGameMoney(newMoney);
+        string jsonUpdate = JsonConvert.SerializeObject(newMoney);
+        await client.PutAsync("userMoney", jsonUpdate);
+    }
+    
+    void ProcessDataChange(string data)
+    {
         try
         {
             var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
@@ -71,14 +167,10 @@ public class Firebase : MonoBehaviour
                     var dataDict = dataObject.ToObject<Dictionary<string, object>>();
                     ProcessQuestData(dataDict);
                 }
-                else if (rawData is JValue dataValue && dataValue.Type == JTokenType.Boolean)
-                {
-                    string path = jsonData.ContainsKey("path") ? jsonData["path"].ToString() : "";
-                    ProcessBooleanData(path, dataValue.ToObject<bool>());
-                }
                 else
                 {
-                    Debug.LogError("Unexpected data type in JSON.");
+                    string path = jsonData.ContainsKey("path") ? jsonData["path"].ToString() : "";
+                    ProcessBooleanData(path);
                 }
             }
             else
@@ -110,30 +202,27 @@ public class Firebase : MonoBehaviour
         }
     }
 
-    void ProcessBooleanData(string path, bool value)
+    void ProcessBooleanData(string path)
     {
         string[] parts = path.Split('/');
-        if (parts.Length == 3)
+        string questId = parts[2];
+        switch (parts[3])
         {
-            string questId = parts[1];
-            switch (parts[2])
-            {
-                case "isActive":
-                    questManager.SetQuestAsActive(questId);
-                    Debug.Log($"Quest {questId} set as active.");
-                    break;
-                case "isCompleted":
-                    questManager.SetQuestAsCompleted(questId);
-                    Debug.Log($"Quest {questId} set as completed.");
-                    break;
-                case "isObtained":
-                    questManager.SetQuestAsObtained(questId);
-                    Debug.Log($"Quest {questId} set as obtained.");
-                    break;
-                default:
-                    Debug.LogError("Invalid DB query.");
-                    break;
-            }
+            case "isActive":
+                questManager.SetQuestAsActive(questId);
+                Debug.Log($"Quest {questId} set as active.");
+                break;
+            case "isCompleted":
+                questManager.SetQuestAsCompleted(questId);
+                Debug.Log($"Quest {questId} set as completed.");
+                break;
+            case "isObtained":
+                questManager.SetQuestAsObtained(questId);
+                Debug.Log($"Quest {questId} set as obtained.");
+                break;
+            default:
+                Debug.LogError("Invalid DB query.");
+                break;
         }
     }
     

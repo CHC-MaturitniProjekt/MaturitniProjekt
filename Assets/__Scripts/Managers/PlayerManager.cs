@@ -79,21 +79,5 @@ public class PlayerManager : MonoBehaviour
         
         pickUpScript.CarryItem(item);
     }
-
-    public void DropItem(GameObject item)
-    {
-        pickUpScript.DropItem(item);
-    }
+    
 }
-
-
-//ziskat item z raycastu
-//poslat do PickUp prefab
-//smazat objekt ze sceny
-//spawnout objekt na ItemPosition zmenseny
-//pridat input na dropnuti
-//pri dropnuti se dropne item z pozice ruky s nejakym forcem dopredu
-
-//vymyselt system na rozdeleni objektu na pickable
-//dost mozna bude vic itemu ktere muze mit
-//ui pro itemy?

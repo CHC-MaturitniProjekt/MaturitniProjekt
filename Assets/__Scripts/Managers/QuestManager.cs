@@ -113,11 +113,11 @@ public class QuestManager : MonoBehaviour
         return null;
     }
 
-    public void SetQuestAsActive(string QuestGUID)
+    public void SetQuestAsActive(string questGUID)
     {
         foreach (var quest in questList)
         {
-            if (quest.GUID == QuestGUID)
+            if (quest.GUID == questGUID)
             {
                 quest.isActive = !quest.isActive;
             }
@@ -128,18 +128,18 @@ public class QuestManager : MonoBehaviour
         }
     }
     
-    public void SetQuestAsCompleted(string QuestGUID)
+    public void SetQuestAsCompleted(string questGUID)
     {
         foreach (var quest in questList)
         {
-            quest.isCompleted = quest.GUID == QuestGUID;
+            quest.isCompleted = quest.GUID == questGUID;
         }
     }
-    public void SetQuestAsObtained(string QuestGUID)
+    public void SetQuestAsObtained(string questGUID)
     {
         foreach (var quest in questList)
         {
-            quest.isObtained = quest.GUID == QuestGUID;
+            quest.isObtained = quest.GUID == questGUID;
         }
     }
 
@@ -159,11 +159,34 @@ public class QuestManager : MonoBehaviour
             if (quest.QuestID == questID)
             {
                 quest.isCompleted = true;
+                AddQuestRewards(questID);
             }
         }
     }
 
-    public void CheckObjectiveCompletion(int questID)
+    private async void AddQuestRewards(int? questID)
+    {
+        var quest = questList.FirstOrDefault(q => q.QuestID == questID);
+        if (quest?.Rewards[0] == null) return;
+        
+        string rewardType = quest.Rewards[0].RewardType;
+        int rewardValue = quest.Rewards[0].RewardValue;
+
+        switch (rewardType)
+        {
+            case "Money":
+                await firebase.AddPlayerMoney(rewardValue);
+                break;
+            case "PerkPoints":
+                Debug.Log("perk points added");
+                break;
+            default:
+                Debug.LogError("Incorrect reward type on quest" + questID);
+                break;
+        }
+    }
+
+    private void CheckObjectiveCompletion(int questID)
     {
         var quest = questList.FirstOrDefault(q => q.QuestID == questID);
         if (quest != null)
@@ -171,7 +194,7 @@ public class QuestManager : MonoBehaviour
             bool allObjectivesCompleted = quest.Objectives.All(obj => obj.isCompleted);
             if (allObjectivesCompleted)
             {
-                quest.isCompleted = true;
+                SetQuestAsComplete(questID);
             }
         }
     }

@@ -68,7 +68,7 @@ public class QuestSaveUtility
         _containerCache = Resources.Load<QuestContainer>("questGraph");
         if (_containerCache == null)
         {
-            Debug.Log("Incorrect path to data");
+            Debug.LogError("Incorrect path to data");
             return;
         }
 
