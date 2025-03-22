@@ -8,10 +8,15 @@ public class DayNightCycleManager : MonoBehaviour
     [SerializeField] private Light moon;
     [SerializeField] private float maxSunIntensity;
     [SerializeField] private float maxMoonIntensity;
-    [SerializeField] private Material[] skyboxes; // 0: Sunrise, 1: Morning, 2: Day, 3: Sunset, 4: Night
+    [SerializeField] private Material sunrise;
+    [SerializeField] private Material morning;
+    [SerializeField] private Material day;
+    [SerializeField] private Material sunset;
+    [SerializeField] private Material night;
     [SerializeField] private float skyboxTransitionTime = 2f;
 
-    private int currentSkyboxIndex = 0;
+    private Material currentSkybox;
+    private Material targetSkybox;
     private float skyboxTransitionTimer = 0f;
 
     private void Awake()
@@ -26,18 +31,15 @@ public class DayNightCycleManager : MonoBehaviour
             Debug.LogError("Sun or Moon (Directional Light) is not assigned!");
             return;
         }
-        if (skyboxes.Length != 5)
-        {
-            Debug.LogError("Five skyboxes required: Sunrise, Morning, Day, Sunset, Night!");
-            return;
-        }
         
+        currentSkybox = RenderSettings.skybox;
+
         UpdateSkyboxAndLights(timeManager.GetWorldTime(), true);
     }
 
     private void Update()
     {
-        if (timeManager == null || sun == null || moon == null || skyboxes.Length != 5) return;
+        if (timeManager == null || sun == null || moon == null) return;
         UpdateSkyboxAndLights(timeManager.GetWorldTime(), false);
     }
 
@@ -50,12 +52,12 @@ public class DayNightCycleManager : MonoBehaviour
 
     private void UpdateSunAndMoonRotation(float timeOfDay, bool instantSet)
     {
-        float normalizedTime = timeOfDay / 1440f; // Normalize time to 0-1 range
-        float sunRotation = normalizedTime * 360f - 90f; // -90 to 270 degrees
-        float moonRotation = sunRotation + 180f; // Moon opposite to sun
+        float normalizedTime = timeOfDay / 1440f;
+        float sunRotation = normalizedTime * 360f - 90f;
+        float moonRotation = sunRotation + 180f;
 
-        Quaternion targetSunRotation = Quaternion.Euler(sunRotation, 0, 0);
-        Quaternion targetMoonRotation = Quaternion.Euler(moonRotation, 0, 0);
+        Quaternion targetSunRotation = Quaternion.Euler(sunRotation, 6, 0);
+        Quaternion targetMoonRotation = Quaternion.Euler(moonRotation, 6, 0);
 
         if (instantSet)
         {
@@ -71,12 +73,12 @@ public class DayNightCycleManager : MonoBehaviour
 
     private void UpdateLightIntensity(float timeOfDay)
     {
-        if (timeOfDay >= 300 && timeOfDay < 1080) // Daytime (5 AM - 6 PM)
+        if (timeOfDay >= 300 && timeOfDay < 1080)
         {
             sun.intensity = Mathf.Lerp(0f, maxSunIntensity, (timeOfDay - 300) / 780f);
             moon.intensity = 0f;
         }
-        else // Nighttime (6 PM - 5 AM)
+        else
         {
             sun.intensity = 0f;
             moon.intensity = Mathf.Lerp(0f, maxMoonIntensity, (timeOfDay >= 1080) ? (timeOfDay - 1080) / 360f : (1440 - timeOfDay) / 300f);
@@ -85,32 +87,55 @@ public class DayNightCycleManager : MonoBehaviour
 
     private void UpdateSkybox(float timeOfDay)
     {
-        int newSkyboxIndex = GetSkyboxIndexForTime(timeOfDay);
-        if (newSkyboxIndex != currentSkyboxIndex)
+        Material newSkybox = GetSkyboxForTime(timeOfDay);
+        if (newSkybox != targetSkybox)
+        {
+            targetSkybox = newSkybox;
+            skyboxTransitionTimer = 0f;
+        }
+
+        if (currentSkybox != targetSkybox)
         {
             skyboxTransitionTimer += Time.deltaTime;
             float t = Mathf.Clamp01(skyboxTransitionTimer / skyboxTransitionTime);
 
-            RenderSettings.skybox.Lerp(skyboxes[currentSkyboxIndex], skyboxes[newSkyboxIndex], t);
+            LerpSkybox(currentSkybox, targetSkybox, t);
 
             if (t >= 1f)
             {
-                currentSkyboxIndex = newSkyboxIndex;
-                skyboxTransitionTimer = 0f;
+                currentSkybox = targetSkybox;
+                RenderSettings.skybox = currentSkybox;
             }
-        }
-        else
-        {
-            skyboxTransitionTimer = 0f;
         }
     }
 
-    private int GetSkyboxIndexForTime(float timeOfDay)
+    private void LerpSkybox(Material from, Material to, float t)
     {
-        if (timeOfDay >= 240 && timeOfDay < 300) return 0; // Sunrise (4:00 AM - 5:00 AM)
-        if (timeOfDay >= 300 && timeOfDay < 480) return 1; // Morning (5:00 AM - 8:00 AM)
-        if (timeOfDay >= 480 && timeOfDay < 1080) return 2; // Day (8:00 AM - 6:00 PM)
-        if (timeOfDay >= 1080 && timeOfDay < 1260) return 3; // Sunset (6:00 PM - 9:00 PM)
-        return 4; // Night (9:00 PM - 4:00 AM)
+        Material lerpedMaterial = new Material(from);
+        lerpedMaterial.Lerp(from, to, t);
+        RenderSettings.skybox = lerpedMaterial;
+    }
+
+
+    private Material GetSkyboxForTime(float timeOfDay)
+    {
+        Debug.Log("Current timeOfDay: " + timeOfDay);
+
+        switch (timeOfDay)
+        {
+            case >= 300 and < 420:
+                return sunrise;
+            case >= 420 and < 600:
+                return morning;
+            case >= 600 and < 1020:
+                return day;
+            case >= 1020 and < 1140:
+                return sunset;
+            case >= 1140 or < 300:
+                return night;
+            default:
+                Debug.LogWarning("timeOfDay does not fall within any expected range.");
+                return night;
+        }
     }
 }

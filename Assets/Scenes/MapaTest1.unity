@@ -12562,13 +12562,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 465010860}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.77782977, y: -0.36972272, z: -0.021857869, w: 0.5077483}
+  m_LocalRotation: {x: 0.7769078, y: -0.36674199, z: -0.018125802, w: 0.5114549}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 170965676}
-  m_LocalEulerAnglesHint: {x: 129.311, y: 40.264008, z: 70.546}
+  m_LocalEulerAnglesHint: {x: 128.61, y: 40.264008, z: 70.546}
 --- !u!114 &465010862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47768,12 +47768,11 @@ MonoBehaviour:
   moon: {fileID: 1887822769}
   maxSunIntensity: 1
   maxMoonIntensity: 2.7
-  skyboxes:
-  - {fileID: 2100000, guid: 20f6d22d93779de4ea6f62f8ab305593, type: 2}
-  - {fileID: 2100000, guid: 8fc56946a1b593c4d8e3e0e94483338e, type: 2}
-  - {fileID: 2100000, guid: 5c80d49013691df48ac94280337e88ce, type: 2}
-  - {fileID: 2100000, guid: 528363c5c1cf6a7458140c6851c77b68, type: 2}
-  - {fileID: 2100000, guid: 52fcefd712182d743a781fde12426775, type: 2}
+  sunrise: {fileID: 2100000, guid: baef7505b9e48404cb74585601f49ff9, type: 2}
+  morning: {fileID: 2100000, guid: 5464c15ff9c6ca04cb5790c1773e76fa, type: 2}
+  day: {fileID: 2100000, guid: 5c80d49013691df48ac94280337e88ce, type: 2}
+  sunset: {fileID: 2100000, guid: 528363c5c1cf6a7458140c6851c77b68, type: 2}
+  night: {fileID: 2100000, guid: 52fcefd712182d743a781fde12426775, type: 2}
   skyboxTransitionTime: 3
 --- !u!114 &1799574707
 MonoBehaviour:
@@ -51096,13 +51095,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1887822768}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.77782977, y: -0.36972272, z: -0.021857869, w: 0.5077483}
+  m_LocalRotation: {x: 0.74975663, y: -0.50288624, z: 0.20823924, w: 0.37630704}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 170965676}
-  m_LocalEulerAnglesHint: {x: 129.311, y: 40.264008, z: 70.546}
+  m_LocalEulerAnglesHint: {x: 129.311, y: 6, z: 70.546}
 --- !u!114 &1887822771
 MonoBehaviour:
   m_ObjectHideFlags: 0
