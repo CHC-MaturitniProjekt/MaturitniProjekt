@@ -4,15 +4,42 @@ using UnityEngine;
 public class DayNightCycleManager : MonoBehaviour
 {
     private TimeManager timeManager;
+    [Header("Light Objects")]
     [SerializeField] private Light sun;
     [SerializeField] private Light moon;
     [SerializeField] private float maxSunIntensity;
     [SerializeField] private float maxMoonIntensity;
+    
+    [Header("Sunrise settings")]
     [SerializeField] private Material sunrise;
+    [SerializeField] private Color sunriseLightColor;
+    [SerializeField] private Color sunriseFogColor;
+    [SerializeField] private float sunriseFogIntensity;
+    
+    [Header("Morning settings")]
     [SerializeField] private Material morning;
+    [SerializeField] private Color morningLightColor;
+    [SerializeField] private Color morningFogColor;
+    [SerializeField] private float morningFogIntensity;
+    
+    [Header("Day settings")]
     [SerializeField] private Material day;
+    [SerializeField] private Color dayLightColor;
+    [SerializeField] private Color dayFogColor;
+    [SerializeField] private float dayFogIntensity;
+    
+    [Header("Sunset settings")]
     [SerializeField] private Material sunset;
+    [SerializeField] private Color sunsetLightColor;
+    [SerializeField] private Color sunsetFogColor;
+    [SerializeField] private float sunsetFogIntensity;
+    
+    [Header("Night settings")]
     [SerializeField] private Material night;
+    [SerializeField] private Color nightLightColor;
+    [SerializeField] private Color nightFogColor;
+    [SerializeField] private float nightFogIntensity;
+    
     [SerializeField] private float skyboxTransitionTime = 2f;
 
     private Material currentSkybox;
@@ -28,7 +55,7 @@ public class DayNightCycleManager : MonoBehaviour
     {
         if (sun == null || moon == null)
         {
-            Debug.LogError("Sun or Moon (Directional Light) is not assigned!");
+            Debug.LogError("Sun or Moon is not assigned!");
             return;
         }
         
@@ -119,6 +146,9 @@ public class DayNightCycleManager : MonoBehaviour
                 RenderSettings.skybox = currentSkybox;
             }
         }
+        
+        UpdateLightAndFogColors(timeOfDay);
+
     }
 
     private void LerpSkybox(Material from, Material to, float t)
@@ -128,11 +158,57 @@ public class DayNightCycleManager : MonoBehaviour
         RenderSettings.skybox = lerpedMaterial;
     }
 
-
+   private void UpdateLightAndFogColors(float timeOfDay)
+    {
+        float normalizedTime;
+        float targetFogDensity = 0f;
+        Color targetAmbientLight = RenderSettings.ambientLight;
+        Color targetFogColor = RenderSettings.fogColor;
+        
+        if (timeOfDay >= 300 && timeOfDay < 420)
+        {
+            normalizedTime = (timeOfDay - 300) / 120f;
+            targetAmbientLight = sunriseLightColor;
+            targetFogColor = sunriseFogColor;
+            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -sunriseFogIntensity;
+        }
+        else if (timeOfDay >= 420 && timeOfDay < 600)
+        {
+            normalizedTime = (timeOfDay - 420) / 180f;
+            targetAmbientLight = morningLightColor;
+            targetFogColor = morningFogColor;
+            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -morningFogIntensity;
+        }
+        else if (timeOfDay >= 600 && timeOfDay < 1020)
+        {
+            normalizedTime = (timeOfDay - 600) / 420f;
+            targetAmbientLight = dayLightColor;
+            targetFogColor = dayFogColor;
+            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -dayFogIntensity;
+        }
+        else if (timeOfDay >= 1020 && timeOfDay < 1140)
+        {
+            normalizedTime = (timeOfDay - 1020) / 120f;
+            targetAmbientLight = sunsetLightColor;
+            targetFogColor = sunsetFogColor;
+            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -sunsetFogIntensity;
+        }
+        else
+        {
+            normalizedTime = (timeOfDay >= 1140) ? (timeOfDay - 1140) / 300f : (timeOfDay + 300) / 300f;
+            targetAmbientLight = nightLightColor;
+            targetFogColor = nightFogColor;
+            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -nightFogIntensity;
+        }
+        
+        RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, targetAmbientLight, Time.deltaTime * 0.5f);
+        RenderSettings.fogColor = Color.Lerp(RenderSettings.fogColor, targetFogColor, Time.deltaTime * 0.5f);
+        RenderSettings.fogDensity = Mathf.Lerp(RenderSettings.fogDensity, targetFogDensity, Time.deltaTime * 0.5f);
+    }
+    
+    
     private Material GetSkyboxForTime(float timeOfDay)
     {
-        Debug.Log("Current timeOfDay: " + timeOfDay);
-
         switch (timeOfDay)
         {
             case >= 300 and < 420:
@@ -146,7 +222,7 @@ public class DayNightCycleManager : MonoBehaviour
             case >= 1140 or < 300:
                 return night;
             default:
-                Debug.LogWarning("timeOfDay does not fall within any expected range.");
+                Debug.LogError("timeOfDay error");
                 return night;
         }
     }

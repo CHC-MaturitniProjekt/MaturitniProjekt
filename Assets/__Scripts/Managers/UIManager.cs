@@ -10,9 +10,6 @@ using UnityEngine.Playables;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    private Canvas canvas;
-
-    [SerializeField]
     private QuestItem questPrefab;
     
     [SerializeField]
@@ -37,14 +34,21 @@ public class UIManager : MonoBehaviour
         if (timeManager != null) timeDisplay.gameObject.SetActive(true);
         
         firebase = FindFirstObjectByType<Firebase>();
+       
+        
         if (firebase != null)
         {
-            moneyDisplay.gameObject.SetActive(true);
-            DisplayGameMoney();
+            firebase.OnDatabaseInitialized += OnDatabaseInitialized;
         }
 
         lastProcessedNotifIndex = 0;
         lastProcessedQuestIndex = 0;
+    }
+    
+    private void OnDatabaseInitialized()
+    {
+        moneyDisplay.gameObject.SetActive(true);
+        DisplayGameMoney();
     }
 
     private void Update()

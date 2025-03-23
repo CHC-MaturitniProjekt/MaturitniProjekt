@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using Assets.__Scripts.QuestSystem.NodeEditor;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,11 +25,14 @@ public class QuestManager : MonoBehaviour
         firebase = FindFirstObjectByType<Firebase>();
         uiManager = FindFirstObjectByType<UIManager>();
         
-        StartCoroutine(DelayedPushQuests());
+        if (firebase != null)
+        {
+            firebase.OnDatabaseInitialized += OnDatabaseInitialized;
+        }
     }
-    private IEnumerator DelayedPushQuests()
+    
+    private void OnDatabaseInitialized()
     {
-        yield return new WaitForSeconds(1.0f); 
         PushQuests();
     }
 

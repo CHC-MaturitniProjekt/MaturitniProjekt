@@ -13,16 +13,16 @@ public class Firebase : MonoBehaviour
 {
     private UIManager uiManager;
     private QuestManager questManager;
-    private PlayerManager playerManager;
     
     FirebaseConfig config;
     private FirebaseClient client;
 
+    public event Action OnDatabaseInitialized;
+    
     void Awake()
     {
         uiManager = FindAnyObjectByType<UIManager>();
         questManager = FindFirstObjectByType<QuestManager>();
-        playerManager = FindFirstObjectByType<PlayerManager>();
         
         if (uiManager == null)
         {
@@ -41,6 +41,8 @@ public class Firebase : MonoBehaviour
         
         client.StartListening("upgrades", OnStatsChange);
         client.StartListening("/", OnDataChanged);
+        
+        OnDatabaseInitialized?.Invoke();
     }
 
     public Dictionary<string, ParsedQuestModel> GetQuests()

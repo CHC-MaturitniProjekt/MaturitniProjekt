@@ -170,7 +170,11 @@ public class Movement : MonoBehaviour
     private void Jump()
     {
         isJumping = true;
-        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z); 
+
+        Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Vector3 preservedSpeed = horizontalVelocity.normalized * Mathf.Min(horizontalVelocity.magnitude, speed);
+
+        rb.velocity = new Vector3(preservedSpeed.x, jumpForce, preservedSpeed.z);
     }
 
     private void Crouch()
