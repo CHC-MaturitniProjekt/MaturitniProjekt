@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
+using RenderSettings = UnityEngine.RenderSettings;
 
 public class DayNightCycleManager : MonoBehaviour
 {
@@ -148,6 +150,7 @@ public class DayNightCycleManager : MonoBehaviour
         }
         
         UpdateLightAndFogColors(timeOfDay);
+        UpdateSunAndMoonLights(timeOfDay);
 
     }
 
@@ -158,47 +161,53 @@ public class DayNightCycleManager : MonoBehaviour
         RenderSettings.skybox = lerpedMaterial;
     }
 
-   private void UpdateLightAndFogColors(float timeOfDay)
+    private void UpdateSunAndMoonLights(float timeOfDay)
     {
-        float normalizedTime;
+        if (timeOfDay >= 300 && timeOfDay < 1080)
+        {
+            RenderSettings.sun = sun;
+        }
+        else
+        {
+            RenderSettings.sun = moon;
+        }
+    }
+
+    private void UpdateLightAndFogColors(float timeOfDay)
+    {
         float targetFogDensity = 0f;
         Color targetAmbientLight = RenderSettings.ambientLight;
         Color targetFogColor = RenderSettings.fogColor;
         
         if (timeOfDay >= 300 && timeOfDay < 420)
         {
-            normalizedTime = (timeOfDay - 300) / 120f;
             targetAmbientLight = sunriseLightColor;
             targetFogColor = sunriseFogColor;
-            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -sunriseFogIntensity;
+            targetFogDensity = sunriseFogIntensity;
         }
         else if (timeOfDay >= 420 && timeOfDay < 600)
         {
-            normalizedTime = (timeOfDay - 420) / 180f;
             targetAmbientLight = morningLightColor;
             targetFogColor = morningFogColor;
-            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -morningFogIntensity;
+            targetFogDensity = morningFogIntensity;
         }
         else if (timeOfDay >= 600 && timeOfDay < 1020)
         {
-            normalizedTime = (timeOfDay - 600) / 420f;
             targetAmbientLight = dayLightColor;
             targetFogColor = dayFogColor;
-            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -dayFogIntensity;
+            targetFogDensity = dayFogIntensity;
         }
         else if (timeOfDay >= 1020 && timeOfDay < 1140)
         {
-            normalizedTime = (timeOfDay - 1020) / 120f;
             targetAmbientLight = sunsetLightColor;
             targetFogColor = sunsetFogColor;
-            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -sunsetFogIntensity;
+            targetFogDensity = sunsetFogIntensity;
         }
         else
         {
-            normalizedTime = (timeOfDay >= 1140) ? (timeOfDay - 1140) / 300f : (timeOfDay + 300) / 300f;
             targetAmbientLight = nightLightColor;
             targetFogColor = nightFogColor;
-            targetFogDensity = Mathf.Sin(normalizedTime * Mathf.PI) * -nightFogIntensity;
+            targetFogDensity = nightFogIntensity;
         }
         
         RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, targetAmbientLight, Time.deltaTime * 0.5f);

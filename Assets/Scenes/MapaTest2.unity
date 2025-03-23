@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
   m_Fog: 1
-  m_FogColor: {r: 0.071733676, g: 0.15489279, b: 0.24528301, a: 1}
+  m_FogColor: {r: 1, g: 1, b: 1, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -16899,7 +16899,7 @@ Transform:
   m_GameObject: {fileID: 530506281}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 152.42921, y: 2.9877133, z: 2.2665224}
+  m_LocalPosition: {x: 152.42921, y: 2.8787134, z: 1.024559}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56041,7 +56041,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldTime: 0
-  timeMultiplier: 10
+  timeMultiplier: 5
 --- !u!1001 &1805924258
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59762,7 +59762,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 0.21568628, g: 0.3137255, b: 0.39607844, a: 1}
+  m_Color: {r: 0.98427665, g: 0.992822, b: 1, a: 1}
   m_Intensity: 2.7
   m_Range: 10
   m_SpotAngle: 30
@@ -66701,7 +66701,7 @@ PrefabInstance:
     - target: {fileID: 4773734813255233966, guid: 2a607f6335b3fe342bfd2817797dcea3,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.00048725586
+      value: -0.0004886864
       objectReference: {fileID: 0}
     - target: {fileID: 6645033914724891298, guid: 2a607f6335b3fe342bfd2817797dcea3,
         type: 3}
@@ -66716,12 +66716,12 @@ PrefabInstance:
     - target: {fileID: 7883665817807335121, guid: 2a607f6335b3fe342bfd2817797dcea3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.109
       objectReference: {fileID: 0}
     - target: {fileID: 7883665817807335121, guid: 2a607f6335b3fe342bfd2817797dcea3,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.7519648
+      value: 1.51
       objectReference: {fileID: 0}
     - target: {fileID: 7883665817807335121, guid: 2a607f6335b3fe342bfd2817797dcea3,
         type: 3}
