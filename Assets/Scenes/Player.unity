@@ -5167,80 +5167,6 @@ MonoBehaviour:
   OnFolderDestroy:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &172050837
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 172050838}
-  - component: {fileID: 172050839}
-  - component: {fileID: 172050840}
-  m_Layer: 0
-  m_Name: TimeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &172050838
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172050837}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 499694045}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &172050839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172050837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c89b801c3de56843bdf5cd1435451bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldTime: 0
-  timeMultiplier: 5
---- !u!114 &172050840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172050837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34a1fb40605640f48a7bed2ef8e17f6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sun: {fileID: 1887822769}
-  moon: {fileID: 671550005}
-  maxSunIntensity: 1
-  maxMoonIntensity: 2.7
-  sunrise: {fileID: 2100000, guid: baef7505b9e48404cb74585601f49ff9, type: 2}
-  sunriseLightColor: {r: 0, g: 0, b: 0, a: 0}
-  morning: {fileID: 2100000, guid: 5464c15ff9c6ca04cb5790c1773e76fa, type: 2}
-  morningLightColor: {r: 0, g: 0, b: 0, a: 0}
-  day: {fileID: 2100000, guid: 5c80d49013691df48ac94280337e88ce, type: 2}
-  dayLightColor: {r: 0, g: 0, b: 0, a: 0}
-  sunset: {fileID: 2100000, guid: 528363c5c1cf6a7458140c6851c77b68, type: 2}
-  sunsetLightColor: {r: 0, g: 0, b: 0, a: 0}
-  night: {fileID: 2100000, guid: 52fcefd712182d743a781fde12426775, type: 2}
-  nightLightColor: {r: 0, g: 0, b: 0, a: 0}
-  skyboxTransitionTime: 3
 --- !u!1 &191924359
 GameObject:
   m_ObjectHideFlags: 0
@@ -8552,6 +8478,90 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 264191529}
   m_CullTransparentMesh: 1
+--- !u!1 &265740304
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 265740305}
+  - component: {fileID: 265740307}
+  - component: {fileID: 265740306}
+  m_Layer: 0
+  m_Name: TimeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &265740305
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265740304}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 499694045}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &265740306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265740304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34a1fb40605640f48a7bed2ef8e17f6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sun: {fileID: 1887822769}
+  moon: {fileID: 671550005}
+  maxSunIntensity: 1
+  maxMoonIntensity: 2.7
+  sunrise: {fileID: 2100000, guid: baef7505b9e48404cb74585601f49ff9, type: 2}
+  sunriseLightColor: {r: 0.9433962, g: 0.6882558, b: 0.58443093, a: 1}
+  sunriseFogColor: {r: 0.9764706, g: 0.7988965, b: 0.6901961, a: 0.6}
+  sunriseFogIntensity: 0.003
+  morning: {fileID: 2100000, guid: 5464c15ff9c6ca04cb5790c1773e76fa, type: 2}
+  morningLightColor: {r: 0.95686275, g: 0.91493523, b: 0.6745098, a: 1}
+  morningFogColor: {r: 1, g: 0.8785695, b: 0.6392157, a: 0.8392157}
+  morningFogIntensity: 0.003
+  day: {fileID: 2100000, guid: 5c80d49013691df48ac94280337e88ce, type: 2}
+  dayLightColor: {r: 0.9622642, g: 0.8439881, b: 0.7232111, a: 1}
+  dayFogColor: {r: 0.9433962, g: 0.8166393, b: 0.73276365, a: 0.5882353}
+  dayFogIntensity: 0.005
+  sunset: {fileID: 2100000, guid: 528363c5c1cf6a7458140c6851c77b68, type: 2}
+  sunsetLightColor: {r: 0.9245283, g: 0.46807873, b: 0.46807873, a: 1}
+  sunsetFogColor: {r: 0.9496855, g: 0.7086653, b: 0.7077844, a: 0.6}
+  sunsetFogIntensity: 0.003
+  night: {fileID: 2100000, guid: 52fcefd712182d743a781fde12426775, type: 2}
+  nightLightColor: {r: 0.21568628, g: 0.3137255, b: 0.39607844, a: 1}
+  nightFogColor: {r: 0.07058824, g: 0.15294118, b: 0.24705882, a: 1}
+  nightFogIntensity: 0.01
+  skyboxTransitionTime: 3
+--- !u!114 &265740307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 265740304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c89b801c3de56843bdf5cd1435451bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  worldTime: 0
+  timeMultiplier: 5
 --- !u!1 &267464860
 GameObject:
   m_ObjectHideFlags: 0
@@ -14344,9 +14354,9 @@ Transform:
   - {fileID: 1736659336}
   - {fileID: 2081405435}
   - {fileID: 1805924259}
-  - {fileID: 172050838}
   - {fileID: 1502143519}
   - {fileID: 304042395}
+  - {fileID: 265740305}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &499694046
