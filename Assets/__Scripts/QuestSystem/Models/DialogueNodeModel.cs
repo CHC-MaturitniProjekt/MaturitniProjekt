@@ -8,4 +8,5 @@ public class DialogueNodeModel : QuestNodeModel
     public int NPCID;
     public int order;
     public bool isCompleted;
+    public bool isSMS;
 }

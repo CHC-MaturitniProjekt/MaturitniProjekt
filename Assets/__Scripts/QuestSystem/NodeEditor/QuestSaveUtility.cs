@@ -187,7 +187,8 @@ public class QuestSaveUtility
                     DialogueName = ((DialogueNode)node).DialogueName,
                     NPCID = ((DialogueNode)node).NPCID,
                     order = ((DialogueNode)node).order,
-                    isCompleted = ((DialogueNode)node).isCompleted
+                    isCompleted = ((DialogueNode)node).isCompleted,
+                    isSMS = ((DialogueNode)node).isSMS
                 };
             default:
                 Debug.LogError($"Unsupported node type: {node.QuestType}");

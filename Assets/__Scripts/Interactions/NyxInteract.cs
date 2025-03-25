@@ -33,8 +33,7 @@ public class NyxInteract : InteractAction
             var availableDialogues = quest.dialogues;
             foreach (var dialogue in availableDialogues.OrderBy(d => d.order))
             {
-                Debug.Log(dialogue.DialogueName + " " + dialogue.isCompleted + " " + dialogue.order);
-                if (!dialogue.isCompleted)
+                if (!dialogue.isCompleted && !dialogue.isSMS)
                 {
                     questName = dialogue.DialogueName;
                     dialogue.isCompleted = true;

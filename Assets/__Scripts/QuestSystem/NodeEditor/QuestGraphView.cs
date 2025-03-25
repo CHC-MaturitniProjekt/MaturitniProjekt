@@ -168,7 +168,8 @@ public class QuestGraphView : GraphView
                     DialogueName = "Dialogue",
                     NPCID = 0,
                     order = 0,
-                    isCompleted = false
+                    isCompleted = false,
+                    isSMS = false
                 };
                 break;
             case QuestNode.NodeTypes.Start:
@@ -196,13 +197,13 @@ public class QuestGraphView : GraphView
         
         switch (nodeType)
         {
-            case QuestNode.NodeTypes.Start:
+            case NodeTypes.Start:
                 node = new StartQuestNode
                 {
                     title = nodeType.ToString(),
                 };
                 break;
-            case QuestNode.NodeTypes.MainQuestNode:
+            case NodeTypes.MainQuestNode:
                 node = new MainQuestNode
                 {
                     title = nodeType.ToString(),
@@ -216,7 +217,7 @@ public class QuestGraphView : GraphView
                 };
                 break;
 
-            case QuestNode.NodeTypes.ObjectiveNode:
+            case NodeTypes.ObjectiveNode:
                 node = new ObjectiveNode
                 {
                     title = nodeType.ToString(),
@@ -226,7 +227,7 @@ public class QuestGraphView : GraphView
                     CompletionCriteria = CompletionCriteriaSerializer.Deserialize((nodeData as ObjectiveNodeModel).CompletionCriteria)
                 };
                 break;
-            case QuestNode.NodeTypes.RewardNode:
+            case NodeTypes.RewardNode:
                 node = new RewardNode
                 {
                     title = nodeType.ToString(),
@@ -241,7 +242,8 @@ public class QuestGraphView : GraphView
                     DialogueName = (nodeData as DialogueNodeModel).DialogueName,
                     NPCID = (nodeData as DialogueNodeModel).NPCID,
                     order = (nodeData as DialogueNodeModel).order,
-                    isCompleted = (nodeData as DialogueNodeModel).isCompleted
+                    isCompleted = (nodeData as DialogueNodeModel).isCompleted,
+                    isSMS = (nodeData as DialogueNodeModel).isSMS
                 };
                 break;
 

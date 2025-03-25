@@ -15,6 +15,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
         public int NPCID;
         public int order;
         public bool isCompleted;
+        public bool isSMS;
 
         public DialogueNode()
         {
@@ -41,6 +42,10 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var orderField = new IntegerField("Order") { value = order };
             orderField.RegisterValueChangedCallback(evt => order = evt.newValue);
             Add(orderField);
+
+            var smsField = new Toggle("Is SMS") { value = isSMS };
+            smsField.RegisterValueChangedCallback(evt => isSMS = evt.newValue);
+            Add(smsField);
             
             RefreshExpandedState();
             RefreshPorts();

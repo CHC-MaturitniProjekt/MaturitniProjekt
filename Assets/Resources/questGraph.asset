@@ -67,14 +67,7 @@ MonoBehaviour:
       Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":69}"}]}'
   - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":4,"GUID":"9e8d7b4f-4f37-4d53-80c5-5e9e837f6b4e","position":{"x":551.3333740234375,"y":818.0},"DialogueName":"New
-      Conversation 1","NPCID":1,"order":2,"isCompleted":false}'
-  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":4,"GUID":"7c378cfd-2af4-48d2-8fab-337e2fe63d67","position":{"x":513.3333740234375,"y":966.6666870117188},"DialogueName":"DHGeneric1","NPCID":1,"order":1,"isCompleted":false}'
-  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":4,"GUID":"2ef37fa4-2553-40c0-8ea4-099f6bd54b10","position":{"x":999.3333740234375,"y":450.6666564941406},"DialogueName":"test","NPCID":1,"order":0,"isCompleted":false}'
+    JsonData: '{"QuestType":4,"GUID":"2ef37fa4-2553-40c0-8ea4-099f6bd54b10","position":{"x":999.3333740234375,"y":450.6666564941406},"DialogueName":"test","NPCID":1,"order":0,"isCompleted":false,"isSMS":false}'
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":3,"GUID":"3adb5c94-15cd-4a0e-ba4f-d09d70e39fee","position":{"x":1012.0,"y":298.0},"RewardType":"PerkPoints","RewardValue":100}'
@@ -97,3 +90,10 @@ MonoBehaviour:
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":3,"GUID":"030120ee-17e9-4f82-a583-f4c2151f35ae","position":{"x":573.3333740234375,"y":636.0},"RewardType":"Money","RewardValue":500}'
+  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":4,"GUID":"9e8d7b4f-4f37-4d53-80c5-5e9e837f6b4e","position":{"x":550.6666870117188,"y":788.6666870117188},"DialogueName":"New
+      Conversation 1","NPCID":1,"order":2,"isCompleted":false,"isSMS":true}'
+  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":4,"GUID":"7c378cfd-2af4-48d2-8fab-337e2fe63d67","position":{"x":518.0,"y":980.0},"DialogueName":"DHGeneric1","NPCID":1,"order":1,"isCompleted":false,"isSMS":true}'
