@@ -50,7 +50,7 @@ public class NyxInteract : InteractAction
         {
             questName = SelectGenericDialogue(NPCSO.GenericDialogues);
         }
-
+        
         DialogueManager.StartConversation(questName, gameObject.transform);
         
         NPCBrain npcBrain = this.GetComponent<NPCBrain>();

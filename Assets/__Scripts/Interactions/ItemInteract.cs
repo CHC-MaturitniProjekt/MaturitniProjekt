@@ -27,6 +27,12 @@ public class ItemInteract : InteractAction
         {
             questObtainHandler.SetQuestAsObtained();
         }
+
+        var monologueTriggerHandlerer = GetComponent<MonologueStartHandlerer>();
+        if (monologueTriggerHandlerer != null)
+        {
+            monologueTriggerHandlerer.RunMonologue();
+        }
         
         PlayerManager.Instance.PickUpItem(this.gameObject);
     }

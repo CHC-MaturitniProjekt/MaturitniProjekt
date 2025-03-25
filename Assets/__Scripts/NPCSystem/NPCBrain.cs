@@ -111,8 +111,6 @@ public class NPCBrain : MonoBehaviour
     public void StartConversation()
     {
          tempBehaviour = currentBehavior;
-         Debug.Log("Start Conversation: " + tempBehaviour);
-         
          playerCam.isInConvo = true;
     }
     
