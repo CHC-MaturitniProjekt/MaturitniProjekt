@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using PixelCrushers.DialogueSystem;
 using UnityEngine;
 
 public class QuestObtainHandlerer : MonoBehaviour
@@ -26,11 +23,11 @@ public class QuestObtainHandlerer : MonoBehaviour
         }
     }
 
-    public void SetQuestAsObtained()
+    public async void SetQuestAsObtained()
     {
         if (questManager != null)
         {
-            questManager.ObtainQuest(questID);
+            await questManager.ObtainQuest(questID);
             Debug.Log($"Quest {questID} set as obtained.");
         }
     }

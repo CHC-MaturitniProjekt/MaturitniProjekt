@@ -36,7 +36,6 @@ public class Firebase : MonoBehaviour
         config = new FirebaseConfig("https://augumentum-default-rtdb.europe-west1.firebasedatabase.app/");
         client = new FirebaseClient(config);
         
-        client.StartListening("upgrades", OnStatsChange);
         client.StartListening("/", OnDataChanged);
         
         OnDatabaseInitialized?.Invoke();
@@ -82,11 +81,6 @@ public class Firebase : MonoBehaviour
         {
             Debug.LogError("Unexpected error: " + ex.Message);
         }    
-    }
-
-    void OnStatsChange(string eventType, string data)
-    {
-        Debug.Log($"Event: {eventType}, Data: {data}");
     }
 
     void ProcessMoneyChange(string data)
@@ -249,7 +243,7 @@ public class Firebase : MonoBehaviour
         client.PutSync($"quests/{guid}", jsonQuest);
     }
     
-    public void UpdateObjectiveCompletionStatus(string questGUID, int objectiveIndex, bool isCompleted)
+    public async Task UpdateObjectiveCompletionStatus(string questGUID, int objectiveIndex, bool isCompleted)
     {
         FirebaseResponse response = client.GetSync($"quests/{questGUID}/Objectives/{objectiveIndex}");
         if (response == null || string.IsNullOrEmpty(response.RawJson))
@@ -279,9 +273,9 @@ public class Firebase : MonoBehaviour
         CheckQuestsObjectivesCompletion(questGUID);
     }
     
-    public void QuestObtain(string questGUID)
+    public async Task QuestObtain(string questGUID)
     {
-        FirebaseResponse response = client.GetSync($"quests/{questGUID}/");
+        FirebaseResponse response = await client.GetAsync($"quests/{questGUID}/");
         if (response == null || string.IsNullOrEmpty(response.RawJson))
         {
             Debug.LogError("Failed to retrieve existing objective data.");
@@ -304,11 +298,11 @@ public class Firebase : MonoBehaviour
         };
         string jsonUpdate = JsonConvert.SerializeObject(quest, settings);
 
-        client.PutSync($"quests/{questGUID}/", jsonUpdate);
-        CheckQuestsObjectivesCompletion(questGUID);
+        await client.PutAsync($"quests/{questGUID}/", jsonUpdate);
+        await CheckQuestsObjectivesCompletion(questGUID);
     }
-
-    public void CheckQuestsObjectivesCompletion(string questGUID)
+    
+    public async Task CheckQuestsObjectivesCompletion(string questGUID)
     {
         FirebaseResponse response = client.GetSync($"quests/{questGUID}");
         if (response == null || string.IsNullOrEmpty(response.RawJson))
@@ -324,7 +318,7 @@ public class Firebase : MonoBehaviour
             return;
         }
 
-        if (quest.Objectives.All(obj => obj.isCompleted))
+        if (quest.Objectives.All(obj => obj.isCompleted) && !quest.isCompleted)
         {
             quest.isCompleted = true;
             quest.isActive = false;

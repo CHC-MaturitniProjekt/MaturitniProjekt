@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class VendingInteract : InteractAction
@@ -16,7 +17,10 @@ public class VendingInteract : InteractAction
     {
         vendingMachine.SpawnObject();
     }
-    
-    public override void OnObjectiveInteract() {}
+
+    public override Task OnObjectiveInteract()
+    {
+        return null;
+    }
 
 }

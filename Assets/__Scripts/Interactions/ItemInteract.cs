@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NUnit.Framework.Internal.Execution;
 using UnityEngine;
 
@@ -14,11 +15,11 @@ public class ItemInteract : InteractAction
         questManager = FindFirstObjectByType<QuestManager>();
     }
 
-    public override void OnInteract()
+    public override async void OnInteract()
     {
         if (questManager.GetActiveQuestID() != null)
         {
-            OnObjectiveInteract();
+            await OnObjectiveInteract();
         }
         
         var questObtainHandler = GetComponent<QuestObtainHandlerer>();
@@ -29,7 +30,7 @@ public class ItemInteract : InteractAction
         
         PlayerManager.Instance.PickUpItem(this.gameObject);
     }
-    public override void OnObjectiveInteract()
+    public override async Task OnObjectiveInteract()
     {
         var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetActiveQuestID());
 
@@ -41,7 +42,7 @@ public class ItemInteract : InteractAction
                 var itemCompletionData = completionData.OfType<ItemCollectionCriteria>().FirstOrDefault();
                 if (itemCompletionData != null && itemCompletionData.RequiredItemCount == itemID)
                 {
-                    questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
+                    await questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
                 }
             }
         }

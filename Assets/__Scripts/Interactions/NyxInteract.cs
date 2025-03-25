@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PixelCrushers.DialogueSystem;
 using UnityEngine;
 
@@ -60,7 +61,7 @@ public class NyxInteract : InteractAction
         }
     }
 
-    public override void OnObjectiveInteract()
+    public override Task OnObjectiveInteract()
     {
         var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetActiveQuestID());
 
@@ -76,6 +77,8 @@ public class NyxInteract : InteractAction
                 }
             }
         }
+
+        return null;
     }
 
     private string SelectGenericDialogue(List<string> dialogues)

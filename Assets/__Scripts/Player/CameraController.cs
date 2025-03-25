@@ -66,19 +66,17 @@ public class CameraController : MonoBehaviour
 
     private void Look()
     { 
-
-            float mouseX = mouseMove.x * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
-            float mouseY = mouseMove.y * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
+        float mouseX = mouseMove.x * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
+        float mouseY = mouseMove.y * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
+    
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);                             
         
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -80f, 80f);                             
-            
-            cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
-            playerBody.Rotate(Vector3.up * mouseX);
-        
+        cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
+        playerBody.Rotate(Vector3.up * mouseX);
     }
 
-    public void FovChange()
+    private void FovChange()
     {
         float targetFov;
 
@@ -103,7 +101,7 @@ public class CameraController : MonoBehaviour
         cam.Lens.FieldOfView = Mathf.Lerp(cam.Lens.FieldOfView, targetFov, Time.deltaTime * 3);
     }
 
-    public void HeadBob()
+    private void HeadBob()
     {
         float bobbingSpeed;
         float bobbingAmount;

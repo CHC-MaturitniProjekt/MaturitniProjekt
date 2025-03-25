@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class QuestManager : MonoBehaviour
@@ -76,7 +77,7 @@ public class QuestManager : MonoBehaviour
         }
     }
     
-    public void ObtainQuest(int questID)
+    public async Task ObtainQuest(int questID)
     {
         var quest = questList.FirstOrDefault(q => q.QuestID == questID);
         if (quest == null)
@@ -92,7 +93,7 @@ public class QuestManager : MonoBehaviour
         }
         quest.isObtained = true;
         uiManager.AddQuest("New Quest: " + quest.QuestName);
-        firebase.QuestObtain(quest.GUID);
+        await firebase.QuestObtain(quest.GUID);
 
     }
 
@@ -152,19 +153,19 @@ public class QuestManager : MonoBehaviour
         return null;
     }
 
-    public void SetQuestAsComplete(int? questID)
+    public async Task SetQuestAsComplete(int? questID)
     {
         foreach (var quest in questList)
         {
-            if (quest.QuestID == questID)
+            if (quest.QuestID == questID && !quest.isCompleted)
             {
                 quest.isCompleted = true;
-                AddQuestRewards(questID);
+                await AddQuestRewards(questID);
             }
         }
     }
 
-    private async void AddQuestRewards(int? questID)
+    private async Task AddQuestRewards(int? questID)
     {
         var quest = questList.FirstOrDefault(q => q.QuestID == questID);
         if (quest?.Rewards[0] == null) return;
@@ -186,7 +187,7 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    private void CheckObjectiveCompletion(int questID)
+    private async Task CheckObjectiveCompletion(int questID)
     {
         var quest = questList.FirstOrDefault(q => q.QuestID == questID);
         if (quest != null)
@@ -194,13 +195,13 @@ public class QuestManager : MonoBehaviour
             bool allObjectivesCompleted = quest.Objectives.All(obj => obj.isCompleted);
             if (allObjectivesCompleted)
             {
-                SetQuestAsComplete(questID);
+                await SetQuestAsComplete(questID);
             }
         }
     }
     
     
-    public void SetObjectiveAsComplete(int questID, string objectiveType)
+    public async Task SetObjectiveAsComplete(int questID, string objectiveType)
     {
         var objectives = GetQuestObjectivesByQuestID(questID);
         var quest = questList.FirstOrDefault(q => q.QuestID == questID);
@@ -208,11 +209,11 @@ public class QuestManager : MonoBehaviour
         {
             for (int i = 0; i < objectives.Count; i++)
             {
-                if (objectiveType == objectives[i].ObjectiveType)
+                if (objectiveType == objectives[i].ObjectiveType && !objectives[i].isCompleted)
                 {
                     objectives[i].isCompleted = true;
                     CheckObjectiveCompletion(questID);
-                    firebase.UpdateObjectiveCompletionStatus(quest.GUID, i, true);
+                    await firebase.UpdateObjectiveCompletionStatus(quest.GUID, i, true);
                 }
             }
         }
