@@ -20,8 +20,8 @@ public class UIManager : MonoBehaviour
     private int lastProcessedQuestIndex = 0;
     private int lastProcessedNotifIndex = 0;
 
-    private bool isRunningQuests = false;
-    private bool isRunningNotifs = false;
+    private bool isRunningQuests;
+    private bool isRunningNotifs;
     
     [SerializeField] private TextMeshProUGUI timeDisplay;
     private TimeManager timeManager;

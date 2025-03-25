@@ -1,12 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class Firebase : MonoBehaviour
@@ -63,7 +60,6 @@ public class Firebase : MonoBehaviour
             if (jsonData != null && jsonData.ContainsKey("path"))
             {
                 string path = jsonData["path"].ToString();
-                Debug.Log(path);
                 if (path.Contains("/quests"))
                 {
                     ProcessDataChange(data);
@@ -228,7 +224,7 @@ public class Firebase : MonoBehaviour
         }
     }
     
-    public async void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted, bool isObtained)
+    public void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted, bool isObtained)
     {
         var settings = new JsonSerializerSettings
         {
@@ -253,7 +249,7 @@ public class Firebase : MonoBehaviour
         client.PutSync($"quests/{guid}", jsonQuest);
     }
     
-    public async void UpdateObjectiveCompletionStatus(string questGUID, int objectiveIndex, bool isCompleted)
+    public void UpdateObjectiveCompletionStatus(string questGUID, int objectiveIndex, bool isCompleted)
     {
         FirebaseResponse response = client.GetSync($"quests/{questGUID}/Objectives/{objectiveIndex}");
         if (response == null || string.IsNullOrEmpty(response.RawJson))
@@ -283,7 +279,7 @@ public class Firebase : MonoBehaviour
         CheckQuestsObjectivesCompletion(questGUID);
     }
     
-    public async void QuestObtain(string questGUID)
+    public void QuestObtain(string questGUID)
     {
         FirebaseResponse response = client.GetSync($"quests/{questGUID}/");
         if (response == null || string.IsNullOrEmpty(response.RawJson))
@@ -312,7 +308,7 @@ public class Firebase : MonoBehaviour
         CheckQuestsObjectivesCompletion(questGUID);
     }
 
-    public async void CheckQuestsObjectivesCompletion(string questGUID)
+    public void CheckQuestsObjectivesCompletion(string questGUID)
     {
         FirebaseResponse response = client.GetSync($"quests/{questGUID}");
         if (response == null || string.IsNullOrEmpty(response.RawJson))

@@ -203,7 +203,12 @@ public class Movement : MonoBehaviour
 
         if (!isGrounded) return;
 
-        if (movementInput == Vector2.zero)
+        if (movementInput != Vector2.zero)
+        {
+            PlayerManager.Instance.SetMovementState(isSprinting ? PlayerManager.MovementState.Running : PlayerManager.MovementState.Walking);
+        }
+        
+        /*if (movementInput == Vector2.zero)    CROUCH LOGIC REMOVED IN EARLY ACCESS CUZ OF ANIMATIONS
         {
             PlayerManager.Instance.SetMovementState(!isCrouched ? PlayerManager.MovementState.Idle : PlayerManager.MovementState.Crouching);
         }
@@ -214,6 +219,6 @@ public class Movement : MonoBehaviour
         else
         {
             PlayerManager.Instance.SetMovementState(isSprinting ? PlayerManager.MovementState.Running : PlayerManager.MovementState.Walking);
-        }
+        }*/
     }
 }

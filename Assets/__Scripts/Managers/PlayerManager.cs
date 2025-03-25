@@ -16,9 +16,9 @@ public class PlayerManager : MonoBehaviour
         Idle,
         Walking,
         Running,
-        Crouching,
+        //Crouching,
         Jumping,
-        CrouchRun
+        //CrouchRun
     }
 
     public MovementState CurrentState { get; private set; }
