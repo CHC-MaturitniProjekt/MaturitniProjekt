@@ -52,7 +52,7 @@ public class CodeIDE : MonoBehaviour
         cursorPosition++;
         ResetSelection();
         UpdateDisplay();
-    }
+    }   
 
     private void HandleBackspace()
     {
