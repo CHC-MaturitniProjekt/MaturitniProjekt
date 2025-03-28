@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using TransitionsPlus;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,6 +12,9 @@ public class VolumeManager : MonoBehaviour
     [SerializeField] private PlayerManager playerManager;
     [SerializeField] private float maxSprintTime = 5f;
     [SerializeField] private float maxRecoveryTime = 3f;
+    [SerializeField] private TransitionAnimator transitionAnimator;
+    [SerializeField] private TransitionProfile transitionIn;
+    [SerializeField] private TransitionProfile transitionOut;
 
     [SerializeField] private Volume volume;
     private Vignette vignette;
@@ -28,6 +34,8 @@ public class VolumeManager : MonoBehaviour
         {
             vignette.intensity.value = 0f;
         }
+
+        transitionAnimator = FindFirstObjectByType<TransitionAnimator>();
     }
 
     private void Update()
@@ -43,7 +51,7 @@ public class VolumeManager : MonoBehaviour
         {
             RecoverVignetteEffect(sprintRecoveryTime);
         }
-
+        
         vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, targetVignetteIntensity, Time.deltaTime * 5f);
     }
 
@@ -56,6 +64,24 @@ public class VolumeManager : MonoBehaviour
     private void RecoverVignetteEffect(float sprintRecoveryTime)
     {
         float recoveryRatio = 1f - Mathf.Clamp01(sprintRecoveryTime / maxRecoveryTime);
-        targetVignetteIntensity = Mathf.Lerp(0.4f, 0f, recoveryRatio);
+        targetVignetteIntensity = Mathf.Lerp(0.4f, 0f, recoveryRatio); 
+    }
+    
+    public void PlayTeleportTransition()
+    {
+        StartCoroutine(PlayTransitionSequence());
+    }
+
+    private IEnumerator PlayTransitionSequence()
+    {
+        transitionAnimator.SetProgress(0);
+        transitionAnimator.SetProfile(transitionIn);
+        transitionAnimator.Play();
+    
+        yield return new WaitForSeconds(transitionAnimator.profile.duration - 0.9f);
+        
+        transitionAnimator.SetProgress(0.15f);
+        transitionAnimator.SetProfile(transitionOut);
+        transitionAnimator.Play();
     }
 }

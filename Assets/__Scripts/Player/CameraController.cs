@@ -137,8 +137,6 @@ public class CameraController : MonoBehaviour
         float waveslice = Mathf.Sin(timer);
 
         cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * currentBobbingAmount, 0);
-
-        Debug.Log($"Speed: {currentBobbingSpeed}, Amount: {currentBobbingAmount}");
     }
 
     /*private void Crouch()

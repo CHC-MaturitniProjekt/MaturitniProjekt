@@ -6,6 +6,10 @@ using static UnityEditor.Progress;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
+    
+    private VolumeManager volumeManager;
+    private Movement playerMovement;
+    
     private float playerSprintTime;
     private float playerSprintRecoveryT;
     private PickUp pickUpScript;
@@ -37,6 +41,9 @@ public class PlayerManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        volumeManager = FindFirstObjectByType<VolumeManager>();
+        playerMovement = FindFirstObjectByType<Movement>();
     }
 
     public void EnablePlayerWithDelay()
@@ -74,6 +81,13 @@ public class PlayerManager : MonoBehaviour
     {
         
         pickUpScript.CarryItem(item);
+    }
+
+    public IEnumerator TeleportPlayer(Vector3 tpPos)
+    {
+        volumeManager.PlayTeleportTransition();
+        yield return new WaitForSeconds(0.25f);
+        playerMovement.transform.position = tpPos;
     }
     
 }
