@@ -101,39 +101,44 @@ public class CameraController : MonoBehaviour
         cam.Lens.FieldOfView = Mathf.Lerp(cam.Lens.FieldOfView, targetFov, Time.deltaTime * 3);
     }
 
+    private float currentBobbingAmount = 0f;
+    private float currentBobbingSpeed = 0f; 
+
     private void HeadBob()
     {
-        float bobbingSpeed;
-        float bobbingAmount;
+        float targetBobbingSpeed;
+        float targetBobbingAmount;
 
         switch (PlayerManager.Instance.CurrentState)
         {
             case PlayerManager.MovementState.Running:
-                bobbingSpeed = runSpeed;
-                bobbingAmount = runAmount;
+                targetBobbingSpeed = runSpeed;
+                targetBobbingAmount = runAmount;
                 break;
             case PlayerManager.MovementState.Walking:
-                bobbingSpeed = walkSpeed;
-                bobbingAmount = walkAmount;
+                targetBobbingSpeed = walkSpeed;
+                targetBobbingAmount = walkAmount;
                 break;
-            /*case PlayerManager.MovementState.Crouching:
-                bobbingSpeed = crouchSpeed;
-                bobbingAmount = crouchAmount;
-                break;
-            case PlayerManager.MovementState.CrouchRun:
-                bobbingSpeed = (crouchSpeed + runSpeed) / 2;
-                bobbingAmount = (crouchAmount + runAmount) / 2;
-                break;*/
             default:
-                bobbingSpeed = idleSpeed;
-                bobbingAmount = idleAmount;
+                targetBobbingSpeed = idleSpeed;
+                targetBobbingAmount = idleAmount;
                 break;
         }
 
-        timer += Time.deltaTime * bobbingSpeed * 10;
+        currentBobbingSpeed = Mathf.Lerp(currentBobbingSpeed, targetBobbingSpeed, Time.deltaTime * 5f);
+    
+        if (PlayerManager.Instance.isRecovering)
+        {
+            targetBobbingAmount += 0.1f;
+        }
+        currentBobbingAmount = Mathf.Lerp(currentBobbingAmount, targetBobbingAmount, Time.deltaTime * 3f);
+
+        timer += Time.deltaTime * currentBobbingSpeed * 10;
         float waveslice = Mathf.Sin(timer);
-        cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * bobbingAmount, 0);
-        
+
+        cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * currentBobbingAmount, 0);
+
+        Debug.Log($"Speed: {currentBobbingSpeed}, Amount: {currentBobbingAmount}");
     }
 
     /*private void Crouch()
@@ -148,12 +153,5 @@ public class CameraController : MonoBehaviour
         }
         
     }*/
-
-    public void Exhaust()
-    {
-        if(PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Running)
-        {
-            //
-        }
-    }
+    
 }

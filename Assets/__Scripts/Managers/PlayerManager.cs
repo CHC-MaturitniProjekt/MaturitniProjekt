@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
     private float playerSprintRecoveryT;
     private PickUp pickUpScript;
     public bool isDisabled = false;
+    public bool isRecovering;
     
     public enum MovementState
     {
@@ -62,11 +63,6 @@ public class PlayerManager : MonoBehaviour
     public float GetPlayerSprintTime()
     {
         return playerSprintTime;
-    }
-    
-    public void SetPlayerRecoveryTime(float sprintTime)
-    {
-        playerSprintRecoveryT = sprintTime;
     }
     
     public float GetPlayerSprintRecoveryTime()

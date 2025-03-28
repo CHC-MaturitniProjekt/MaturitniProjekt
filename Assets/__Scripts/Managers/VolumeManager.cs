@@ -8,9 +8,12 @@ public class VolumeManager : MonoBehaviour
 
     [SerializeField] private PlayerManager playerManager;
     [SerializeField] private float maxSprintTime = 5f;
+    [SerializeField] private float maxRecoveryTime = 3f;
 
     [SerializeField] private Volume volume;
     private Vignette vignette;
+
+    private float targetVignetteIntensity = 0f; 
 
     private void Awake()
     {
@@ -38,28 +41,21 @@ public class VolumeManager : MonoBehaviour
         }
         else if (sprintRecoveryTime > 0)
         {
-            KeepMaxVignetteEffect();
+            RecoverVignetteEffect(sprintRecoveryTime);
         }
-        else
-        {
-            SmoothResetVignetteEffect();
-        }
+
+        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, targetVignetteIntensity, Time.deltaTime * 5f);
     }
 
     private void UpdateVignetteEffect(float sprintTime)
     {
         float sprintRatio = Mathf.Clamp01(sprintTime / maxSprintTime);
-        float targetIntensity = Mathf.Lerp(0.35f, 0.05f, sprintRatio); 
-        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, targetIntensity, Time.deltaTime * 5f);
+        targetVignetteIntensity = Mathf.Lerp(0.4f, 0.05f, sprintRatio);
     }
 
-    private void KeepMaxVignetteEffect()
+    private void RecoverVignetteEffect(float sprintRecoveryTime)
     {
-        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0.35f, Time.deltaTime * 5f);
-    }
-
-    private void SmoothResetVignetteEffect()
-    {
-        vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0f, Time.deltaTime * 2f);
+        float recoveryRatio = 1f - Mathf.Clamp01(sprintRecoveryTime / maxRecoveryTime);
+        targetVignetteIntensity = Mathf.Lerp(0.4f, 0f, recoveryRatio);
     }
 }
