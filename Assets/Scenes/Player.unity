@@ -14981,7 +14981,7 @@ Transform:
   m_GameObject: {fileID: 530506281}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -11.003632, y: 2.2410002, z: -14.594549}
+  m_LocalPosition: {x: -16.357649, y: 2.2140002, z: -14.594549}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -107699,20 +107699,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerModel
       objectReference: {fileID: 0}
-    - target: {fileID: 4773734813255233966, guid: 2a607f6335b3fe342bfd2817797dcea3,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.014761271
-      objectReference: {fileID: 0}
-    - target: {fileID: 4773734813255233966, guid: 2a607f6335b3fe342bfd2817797dcea3,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0000051697716
-      objectReference: {fileID: 0}
     - target: {fileID: 7883665817807335121, guid: 2a607f6335b3fe342bfd2817797dcea3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.76
+      value: -21.18
       objectReference: {fileID: 0}
     - target: {fileID: 7883665817807335121, guid: 2a607f6335b3fe342bfd2817797dcea3,
         type: 3}
@@ -107758,11 +107748,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7974511219020073628, guid: 2a607f6335b3fe342bfd2817797dcea3,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 1.057663
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -109091,6 +109076,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MirrorObj
       objectReference: {fileID: 0}
+    - target: {fileID: 8100773289108280907, guid: 3ca11be5456b2c24a922af9d51b05432,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8312813454246882341, guid: 3ca11be5456b2c24a922af9d51b05432,
         type: 3}
       propertyPath: m_Mesh
@@ -109099,7 +109089,7 @@ PrefabInstance:
     - target: {fileID: 8312813454246882341, guid: 3ca11be5456b2c24a922af9d51b05432,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 4462
+      value: 4465
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

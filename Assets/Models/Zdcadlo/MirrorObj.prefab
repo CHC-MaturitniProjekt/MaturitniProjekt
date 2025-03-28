@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071054, y: -0, z: -0, w: 0.70710826}
   m_LocalPosition: {x: -0.648, y: 1.057, z: 0.003}
-  m_LocalScale: {x: 0.11379237, y: 0.55511, z: 0.19884379}
+  m_LocalScale: {x: -0.1137924, y: 0.55511, z: 0.19884379}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8502678130303151273}
@@ -160,7 +160,7 @@ Camera:
   m_ShutterSpeed: 0.005
   m_Aperture: 16
   m_FocusDistance: 10
-  m_FocalLength: 17.137774
+  m_FocalLength: 12.999999
   m_BladeCount: 5
   m_Curvature: {x: 2, y: 11}
   m_BarrelClipping: 0.25
@@ -175,7 +175,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 85.418785
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -216,7 +216,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -257,7 +257,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1004730430664475354
 Transform:
   m_ObjectHideFlags: 0
@@ -486,7 +486,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4459
+  m_VersionIndex: 4462
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
