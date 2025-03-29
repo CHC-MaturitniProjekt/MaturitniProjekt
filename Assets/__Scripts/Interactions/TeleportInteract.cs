@@ -15,7 +15,7 @@ public class TeleportInteract : InteractAction
 
     public override void OnInteract()
     {
-        StartCoroutine(playerManager.TeleportPlayer(teleportDestination.position));
+        StartCoroutine(playerManager.TeleportPlayer(teleportDestination.position, InteractionText));
     }
 
     public override Task OnObjectiveInteract()

@@ -1,15 +1,23 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TransitionsPlus;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
+[Serializable]
+public class BuildingGradient
+{
+    public string buildingName;
+    public Gradient gradient;
+}
+
+
 public class VolumeManager : MonoBehaviour
 {
-    public static VolumeManager Instance { get; private set; }
+    private static VolumeManager Instance { get; set; }
 
-    [SerializeField] private PlayerManager playerManager;
     [SerializeField] private float maxSprintTime = 5f;
     [SerializeField] private float maxRecoveryTime = 3f;
     [SerializeField] private TransitionAnimator transitionAnimator;
@@ -19,8 +27,12 @@ public class VolumeManager : MonoBehaviour
     [SerializeField] private Volume volume;
     private Vignette vignette;
 
-    private float targetVignetteIntensity = 0f; 
+    private float targetVignetteIntensity = 0f;
 
+    [SerializeField] private List<BuildingGradient> gradientList = new List<BuildingGradient>();
+    private Dictionary<string, Gradient> gradientDictionary = new Dictionary<string, Gradient>();
+
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -66,10 +78,36 @@ public class VolumeManager : MonoBehaviour
         float recoveryRatio = 1f - Mathf.Clamp01(sprintRecoveryTime / maxRecoveryTime);
         targetVignetteIntensity = Mathf.Lerp(0.4f, 0f, recoveryRatio); 
     }
-    
-    public void PlayTeleportTransition()
+
+    private void Start()
     {
+        foreach (var item in gradientList)
+        {
+            if (!gradientDictionary.ContainsKey(item.buildingName))
+            {
+                gradientDictionary[item.buildingName] = item.gradient;
+            }
+        }
+    }
+   
+    public void PlayTeleportTransition(string buildingName)
+    {
+        if (gradientDictionary.TryGetValue(buildingName, out Gradient gradient))
+        {
+            ApplyGradientToTransition(gradient);
+        }
+        else
+        {
+            Debug.LogWarning($"No gradient found for {buildingName}, using default.");
+        }
+
         StartCoroutine(PlayTransitionSequence());
+    }
+
+    private void ApplyGradientToTransition(Gradient gradient)
+    {
+        transitionIn.gradient = gradient;
+        transitionOut.gradient = gradient;
     }
 
     private IEnumerator PlayTransitionSequence()
@@ -77,9 +115,9 @@ public class VolumeManager : MonoBehaviour
         transitionAnimator.SetProgress(0);
         transitionAnimator.SetProfile(transitionIn);
         transitionAnimator.Play();
-    
+
         yield return new WaitForSeconds(transitionAnimator.profile.duration - 0.9f);
-        
+
         transitionAnimator.SetProgress(0.15f);
         transitionAnimator.SetProfile(transitionOut);
         transitionAnimator.Play();

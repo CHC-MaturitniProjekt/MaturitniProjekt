@@ -83,10 +83,10 @@ public class PlayerManager : MonoBehaviour
         pickUpScript.CarryItem(item);
     }
 
-    public IEnumerator TeleportPlayer(Vector3 tpPos)
+    public IEnumerator TeleportPlayer(Vector3 tpPos, string name)
     {
-        volumeManager.PlayTeleportTransition();
-        yield return new WaitForSeconds(0.25f);
+        volumeManager.PlayTeleportTransition(name);
+        yield return new WaitForSeconds(0.3f);
         playerMovement.transform.position = tpPos;
     }
     
