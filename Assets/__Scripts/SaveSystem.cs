@@ -11,13 +11,13 @@ public static class SaveSystem
     private static readonly string savePath = Application.persistentDataPath + "/savedata.json";
     private static readonly string encryptionKey = "testovaci-klic"; // Toban dej sem potom treba GUID z db
 
-    public static bool SavePlayer(Movement player, PickUp pickUp, TimeManager time)
+    public static bool SavePlayer(Movement player, PickUp pickUp, TimeManager time, CameraController cameraController)
     {
         try
         {
             GameObject[] interactableObjects = GameObject.FindGameObjectsWithTag("Item");
             List<ItemInteract> items = interactableObjects.Select(obj => obj.GetComponent<ItemInteract>()).Where(item => item != null).ToList();
-            PlayerData data = new PlayerData(player, pickUp, time, items);
+            PlayerData data = new PlayerData(player, pickUp, time, items, cameraController);
             string jsonData = JsonUtility.ToJson(data, true);
             string encryptedData = Encrypt(jsonData, encryptionKey);
             File.WriteAllText(savePath, encryptedData);

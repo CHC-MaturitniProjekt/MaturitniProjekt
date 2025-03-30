@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEditor.Progress;
 
 public class SaveManager : MonoBehaviour
@@ -10,14 +11,20 @@ public class SaveManager : MonoBehaviour
     private VolumeManager volumeManager;
     private PlayerManager playerManager;
     private Movement playerMovement;
+    private CameraController camController;
     
     private float playerSprintTime;
     private float playerSprintRecoveryT;
     private PickUp pickUpScript;
     private TimeManager time;
+
+    [Header("Settings")] 
+    [SerializeField] private Slider sensitivitySlider;
+    
     
     private void Awake()
     {
+        camController = FindFirstObjectByType<CameraController>();
         pickUpScript = FindFirstObjectByType<PickUp>();
         playerManager = FindFirstObjectByType<PlayerManager>();
         playerMovement = FindFirstObjectByType<Movement>();
@@ -34,7 +41,7 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame()
     {
-        SaveSystem.SavePlayer(playerMovement, pickUpScript, time);
+        SaveSystem.SavePlayer(playerMovement, pickUpScript, time, camController);
     }
 
     public void LoadGame()
@@ -78,6 +85,11 @@ public class SaveManager : MonoBehaviour
     public void ResetPlayer()
     {
         SaveSystem.ResetPlayer();
+    }
+
+    public void SetMouseSensitivity()
+    {
+        camController.mouseSensitivity = sensitivitySlider.value;
     }
     
 }

@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float runFovIncrease;
     [SerializeField] private float jumpFovIncrease;
     //[SerializeField] private float crouchFovIncrease;
-    [SerializeField] private float mouseSensitivity = 100f;
+    public float mouseSensitivity = 100f;
     //[SerializeField] private float crouchHeight;
 
     [Header("Head Bob Settings")]

@@ -10,8 +10,9 @@ public class PlayerData
     public string heldObjectName;
     public float timeOfDay;
     public List<ItemData> interactableItems;
+    
 
-    public PlayerData(Movement player, PickUp pickUp, TimeManager time, List<ItemInteract> items)
+    public PlayerData(Movement player, PickUp pickUp, TimeManager time, List<ItemInteract> items, CameraController cameraController)
     {
         playerPosition = player.transform.position;
         heldObjectName = pickUp.isHoldingItem ? pickUp.currentItem.name : "";
