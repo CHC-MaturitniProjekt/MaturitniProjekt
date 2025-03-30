@@ -15,6 +15,11 @@ public class ItemInteract : InteractAction
         questManager = FindFirstObjectByType<QuestManager>();
     }
 
+    public int GetItemId()
+    {
+        return itemID;
+    }
+    
     public override async void OnInteract()
     {
         if (questManager.GetActiveQuestID() != null)

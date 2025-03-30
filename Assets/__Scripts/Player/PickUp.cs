@@ -11,8 +11,8 @@ public class PickUp : MonoBehaviour
     [SerializeField] private float itemScale = 0.5f;
     [SerializeField] private float throwForce = 8f;
 
-    private bool isHoldingItem = false;
-    private GameObject currentItem;
+    public bool isHoldingItem = false;
+    public GameObject currentItem;
     private int itemIndex;
     private GameObject[] items;
 
@@ -20,6 +20,8 @@ public class PickUp : MonoBehaviour
     {
         input.DropEvent += OnDrop;
     }
+    
+    
 
     private void OnDrop()
     {
@@ -57,11 +59,6 @@ public class PickUp : MonoBehaviour
         {
             collider.enabled = false;
         }
-    }
-
-    private void SwitchItem()
-    {
-        //todo - pridat lool
     }
 
     public void DropItem(GameObject item)
