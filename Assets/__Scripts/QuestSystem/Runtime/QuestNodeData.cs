@@ -18,9 +18,3 @@ public class QuestNodeData
     public bool isOptional;
 }
 
-[Serializable]
-public class SerializableCompletionCriteria
-{
-    public string CriteriaType;
-    public string JsonData;
-}

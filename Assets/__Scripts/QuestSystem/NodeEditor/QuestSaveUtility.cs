@@ -68,7 +68,7 @@ public class QuestSaveUtility
         _containerCache = Resources.Load<QuestContainer>("questGraph");
         if (_containerCache == null)
         {
-            Debug.Log("Incorrect path to data");
+            Debug.LogError("Incorrect path to data");
             return;
         }
 
@@ -166,7 +166,8 @@ public class QuestSaveUtility
                     ObjectiveType = ((ObjectiveNode)node).ObjectiveType,
                     ObjectiveDescription = ((ObjectiveNode)node).ObjectiveDescription,
                     isOptional = ((ObjectiveNode)node).isOptional,
-                    CompletionCriteria = ((ObjectiveNode)node).CompletionCriteria
+                    CompletionCriteria = CompletionCriteriaSerializer.Serialize(((ObjectiveNode)node).CompletionCriteria)
+
                 };
             case QuestNode.NodeTypes.RewardNode:
                 return new RewardNodeModel
@@ -176,6 +177,18 @@ public class QuestSaveUtility
                     position = node.GetPosition().position,
                     RewardType = ((RewardNode)node).RewardType,
                     RewardValue = ((RewardNode)node).RewardValue
+                };
+            case QuestNode.NodeTypes.DialogueNode:
+                return new DialogueNodeModel()
+                {
+                    GUID = node.GUID,
+                    QuestType = node.QuestType,
+                    position = node.GetPosition().position,
+                    DialogueName = ((DialogueNode)node).DialogueName,
+                    NPCID = ((DialogueNode)node).NPCID,
+                    order = ((DialogueNode)node).order,
+                    isCompleted = ((DialogueNode)node).isCompleted,
+                    isSMS = ((DialogueNode)node).isSMS
                 };
             default:
                 Debug.LogError($"Unsupported node type: {node.QuestType}");

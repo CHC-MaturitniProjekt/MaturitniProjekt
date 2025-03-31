@@ -7,15 +7,30 @@ using UnityEngine;
 [Serializable]
 public class NPCScriptableObject : ScriptableObject
 {
-    public enum NPCTypes
+    public enum NPCBehaviourTypes
     {
         Homeless,
         Fancy,
         Basic,
         Stationary
     }
+    public enum NPCDialogueTypes
+    {
+        Nyx,
+        Eliot,
+        Quan,
+        Pharmacy,
+        Bank,
+        Electronics,
+        Market,
+        Homeless,
+        Generic
+    }
     public string NPCName;
-    public NPCTypes NPCType;
+    public NPCBehaviourTypes NPCBehaviourType;
+    public NPCDialogueTypes NPCDialogueType;
     public List<string> NPCWayPointNames = new List<string>();
-    
+    public List<string> NPCCompletedDialogues = new List<string>();
+    public int NPCId;
+
 }

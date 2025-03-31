@@ -82,6 +82,11 @@ public class QuestGraph : EditorWindow
         {
             questGraphView.CreateNode(QuestNode.NodeTypes.RewardNode);
         });
+        
+        dropdownMenu.AddItem(new GUIContent("Dialogue Node"), false, () =>
+        {
+            questGraphView.CreateNode(QuestNode.NodeTypes.DialogueNode);
+        });
 
         dropdownMenu.ShowAsContext();
     }

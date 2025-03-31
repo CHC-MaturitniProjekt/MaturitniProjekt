@@ -2,5 +2,6 @@ public enum ConnectionType
 {
 	Quest,
 	Reward,
-	Objective
+	Objective,
+	Dialogue
 }

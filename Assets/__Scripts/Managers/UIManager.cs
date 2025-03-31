@@ -10,39 +10,45 @@ using UnityEngine.Playables;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
-    private Canvas canvas;
-
-    [SerializeField]
     private QuestItem questPrefab;
     
     [SerializeField]
     private NotificationManager notificationManager;
 
     private List<string> notifList = new List<string>();
+    private List<string> questList = new List<string>();
     private int lastProcessedQuestIndex = 0;
     private int lastProcessedNotifIndex = 0;
 
-    private bool isRunningQuests = false;
-    private bool isPinned = false;
-    private bool isRunningNotifs = false;
+    private bool isRunningQuests;
+    private bool isRunningNotifs;
     
-    private QuestManager questManager;
-    private List<ParsedQuestModel> questList;
-
     [SerializeField] private TextMeshProUGUI timeDisplay;
     private TimeManager timeManager;
+    [SerializeField] private TextMeshProUGUI moneyDisplay;
+    private Firebase firebase;
 
     void Start()
     {
-        //AddQuest("Promluv si s kamarádem");
-        
-        //AddNotification("Vítej");
-        
-        questManager = FindFirstObjectByType<QuestManager>();
-        questList = questManager.GetQuestList();
-        
         timeManager = FindFirstObjectByType<TimeManager>();
         if (timeManager != null) timeDisplay.gameObject.SetActive(true);
+        
+        firebase = FindFirstObjectByType<Firebase>();
+       
+        
+        if (firebase != null)
+        {
+            firebase.OnDatabaseInitialized += OnDatabaseInitialized;
+        }
+
+        lastProcessedNotifIndex = 0;
+        lastProcessedQuestIndex = 0;
+    }
+    
+    private void OnDatabaseInitialized()
+    {
+        moneyDisplay.gameObject.SetActive(true);
+        DisplayGameMoney();
     }
 
     private void Update()
@@ -50,79 +56,44 @@ public class UIManager : MonoBehaviour
         DisplayGameTime();
     }
 
-    public void AddQuest(string questId)
+    public void AddQuest(string questText)
     {
-        string questName = "";
-        foreach (var quest in questList)
+        if (!isRunningQuests && questText != null)
         {
-            if(quest.GUID == questId)
-            {
-                questName = quest.QuestName;
-            }
-        }
-        
-        if (!isRunningQuests && !isPinned)
-        {
-            StartCoroutine(RunQuests(questName));
+            questList.Add(questText);
+            StartCoroutine(RunQuests());
         }
     }
 
-    private IEnumerator RunQuests(string questName)
+    private IEnumerator RunQuests()
     {
         isRunningQuests = true;
-    
         while (lastProcessedQuestIndex < questList.Count)
         {
+            string questName = questList[lastProcessedQuestIndex];
             lastProcessedQuestIndex++;
             
             questPrefab.defaultState = QuestItem.DefaultState.Expanded;
             questPrefab.questText = questName;
             questPrefab.UpdateUI();
-            
+
             questPrefab.AnimateQuest();
             questPrefab.ExpandQuest();
             yield return new WaitForSeconds(3);
-
+            
             questPrefab.MinimizeQuest();
             yield return new WaitForSeconds(1);
         }
-
-        isRunningQuests = false;
-    }
-    
-    public void PinQuest(string questId)
-    {
-        isPinned = true;
-        string questName = "";
-        foreach (var quest in questList)
-        {
-            if(quest.GUID == questId)
-            {
-                questName = quest.QuestName;
-                break;
-            }
-        }
         
-        questPrefab.defaultState = QuestItem.DefaultState.Expanded;
-        questPrefab.questText = questName;
-        questPrefab.UpdateUI();
-        questPrefab.AnimateQuest();
-        questPrefab.ExpandQuest();
-    }
-
-    public void UnPinQuest()
-    {
-        questPrefab.MinimizeQuest();
-        isPinned = false;
+        isRunningQuests = false;
     }
     
     public void AddNotification(string notifText)
     {
+        if (notifText == null) return;
+        
         notifList.Add(notifText);
-        //if (!isRunningNotifs)
-        //{
-            StartCoroutine(RunNotifications());
-        //}
+        StartCoroutine(RunNotifications());
     }
 
     private IEnumerator RunNotifications()
@@ -144,12 +115,23 @@ public class UIManager : MonoBehaviour
             notificationManager.MinimizeNotification();
             yield return new WaitForSeconds(1);
         }
-
+        
         isRunningNotifs = false;
     }
 
     private void DisplayGameTime()
     {
         timeDisplay.text = timeManager.GetDisplayTime(timeManager.GetWorldTime());
+    }
+
+    private async void DisplayGameMoney()
+    {
+        int playerMoney = await firebase.GetPlayerMoney();          //fix - db se neinitne v cas
+        moneyDisplay.text = string.Format("{0:N0} Ħ", playerMoney);
+    }
+
+    public void UpdateGameMoney(int amount)
+    {
+        moneyDisplay.text = string.Format("{0:N0} Ħ", amount);
     }
 }

@@ -36,7 +36,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             objectiveDescriptionField.RegisterValueChangedCallback(evt => ObjectiveDescription = evt.newValue);
             Add(objectiveDescriptionField);
 
-            var objectiveTypeField = new PopupField<string>("Objective Type", new List<string> { "Collect", "Interact" }, 0) { value = ObjectiveType };
+            var objectiveTypeField = new PopupField<string>("Objective Type", new List<string> { "Collect", "Interact", "PickUp" }, 0) { value = ObjectiveType };
             objectiveTypeField.RegisterValueChangedCallback(evt =>
             {
                 ObjectiveType = evt.newValue;
@@ -51,7 +51,8 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var optional = new Toggle("Is optional") { value = isOptional };
             optional.RegisterValueChangedCallback(evt => isOptional = evt.newValue);
             Add(optional);
-
+            
+            CreateCriteriaFields();
             RefreshExpandedState();
             RefreshPorts();
         }
@@ -65,34 +66,62 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             {
                 case "Collect":
                     var amountField = new IntegerField("Amount") { value = 0 };
+                    var existingCollectCriteria = CompletionCriteria.OfType<MoneyCollectionCriteria>().FirstOrDefault();
+                    if (existingCollectCriteria != null)
+                    {
+                        amountField.value = existingCollectCriteria.RequiredAmount;
+                    }
                     amountField.RegisterValueChangedCallback(evt =>
                     {
-                        var criteria = CompletionCriteria.OfType<MoneyCollectionCriteria>().FirstOrDefault();
-                        if (criteria == null)
+                        if (existingCollectCriteria == null)
                         {
-                            criteria = new MoneyCollectionCriteria();
-                            CompletionCriteria.Add(criteria);
+                            existingCollectCriteria = new MoneyCollectionCriteria();
+                            CompletionCriteria.Add(existingCollectCriteria);
                         }
-                        criteria.RequiredAmount = evt.newValue;
+                        existingCollectCriteria.RequiredAmount = evt.newValue;
                     });
                     criteriaContainer.Add(amountField);
                     break;
 
                 case "Interact":
                     var npcField = new TextField("NPC Name") { value = "" };
+                    var existingNpcCriteria = CompletionCriteria.OfType<NpcInteractionCriteria>().FirstOrDefault();
+                    if (existingNpcCriteria != null)
+                    {
+                        npcField.value = existingNpcCriteria.NpcName;
+                    }
                     npcField.RegisterValueChangedCallback(evt =>
                     {
-                        var criteria = CompletionCriteria.OfType<NpcInteractionCriteria>().FirstOrDefault();
-                        if (criteria == null)
+                        if (existingNpcCriteria == null)
                         {
-                            criteria = new NpcInteractionCriteria();
-                            CompletionCriteria.Add(criteria);
+                            existingNpcCriteria = new NpcInteractionCriteria();
+                            CompletionCriteria.Add(existingNpcCriteria);
                         }
-                        criteria.NpcName = evt.newValue;
+                        existingNpcCriteria.NpcName = evt.newValue;
                     });
                     criteriaContainer.Add(npcField);
                     break;
+
+                case "PickUp":
+                    var pickUpField = new IntegerField("Item ID") { value = 0 };
+                    var existingPickUpCriteria = CompletionCriteria.OfType<ItemCollectionCriteria>().FirstOrDefault();
+                    if (existingPickUpCriteria != null)
+                    {
+                        pickUpField.value = existingPickUpCriteria.RequiredItemCount;
+                    }
+                    pickUpField.RegisterValueChangedCallback(evt =>
+                    {
+                        if (existingPickUpCriteria == null)
+                        {
+                            existingPickUpCriteria = new ItemCollectionCriteria();
+                            CompletionCriteria.Add(existingPickUpCriteria);
+                        }
+                        existingPickUpCriteria.RequiredItemCount = evt.newValue;
+                    });
+                    criteriaContainer.Add(pickUpField);
+                    break;
             }
         }
+
     }
 }

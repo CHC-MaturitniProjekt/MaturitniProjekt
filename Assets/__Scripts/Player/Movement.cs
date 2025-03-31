@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -11,6 +12,11 @@ public class Movement : MonoBehaviour
     [SerializeField] private float crouchSpeed;
     [SerializeField] private float sprintTime;
     private float currentSprintTime;
+    
+    public float sprintDrainRate = 1f;
+    public float sprintRecoveryRate = 1f;
+    public float minRecoveryDelay = 0.5f;
+    public float maxRecoveryDelay = 2f;
 
     private bool isSprinting = false;
     [SerializeField] private float sprintRecoveryTime;
@@ -19,6 +25,8 @@ public class Movement : MonoBehaviour
     private bool isGrounded;
     private bool isCrouched;
 
+    private PlayerManager playerManager;
+    
     private Animator animator;
     
     private Vector2 movementInput;
@@ -46,6 +54,9 @@ public class Movement : MonoBehaviour
 
         currentSprintTime = sprintTime;
         camController = GetComponent<CameraController>();
+        playerManager = FindFirstObjectByType<PlayerManager>();
+        
+        currentSprintTime = sprintTime; 
     }
 
     private void OnCrouchInput()
@@ -61,6 +72,7 @@ public class Movement : MonoBehaviour
         if (!PlayerManager.Instance.isDisabled)
         {
             Move();
+            HandleSprint();
             GroundCheck();
             SetMovementStates();
         }
@@ -123,15 +135,6 @@ public class Movement : MonoBehaviour
 
         Vector3 movement = GetMovementInfo(moveSpeed);
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
-
-        if (isSprinting)
-        {
-            SprintTimer();
-        }
-        else if (currentSprintTime < sprintTime && !isSprinting)
-        {
-            SprintRecovery();
-        }
         
         animator.SetFloat("X", rb.velocity.magnitude);
     }
@@ -142,35 +145,78 @@ public class Movement : MonoBehaviour
         Vector3 rightMovement = transform.right * movementInput.x;
         return (forwardMovement + rightMovement).normalized * moveSpeed;
     }
+    
+    private Coroutine recoveryCoroutine;
 
-    private void SprintTimer()
+    private void HandleSprint()
     {
-        if (currentSprintTime > 0)
+        if (isSprinting && currentSprintTime > 0)
         {
-            currentSprintTime -= Time.deltaTime;
+            currentSprintTime -= sprintDrainRate * Time.deltaTime;
             PlayerManager.Instance.SetPlayerSprintTime(currentSprintTime);
+
+            if (currentSprintTime <= 0)
+            {
+                isSprinting = false;
+                StartCoroutine(SprintRecovery(maxRecoveryDelay));
+            }
+
+            if (recoveryCoroutine != null)
+            {
+                StopCoroutine(recoveryCoroutine);
+                recoveryCoroutine = null;
+                playerManager.isRecovering = false;
+            }
         }
-        else
+        else if (!isSprinting && currentSprintTime < sprintTime)
+        {
+            if (!playerManager.isRecovering)
+            {
+                float usedSprint = sprintTime - currentSprintTime;
+                float recoveryDelay = Mathf.Lerp(minRecoveryDelay, maxRecoveryDelay, usedSprint / sprintTime);
+
+                recoveryCoroutine = StartCoroutine(SprintRecovery(recoveryDelay));
+            }
+        }
+        else if (currentSprintTime >= sprintTime) 
+        {
+            playerManager.isRecovering = false;
+        }
+
+        if (playerManager.isRecovering)
         {
             isSprinting = false;
-            currentSprintTime = 0;
         }
     }
 
-    private void SprintRecovery()
+
+    private IEnumerator SprintRecovery(float delay = default)
     {
-        if (currentSprintTime < sprintTime)
+        if (playerManager.isRecovering) yield break;
+        
+        playerManager.isRecovering = true;
+
+        yield return new WaitForSeconds(delay);
+
+        while (currentSprintTime < sprintTime)
         {
-            PlayerManager.Instance.SetPlayerRecoveryTime(sprintRecoveryTime);
-            currentSprintTime += sprintRecoveryTime * Time.deltaTime;
+            currentSprintTime += sprintRecoveryRate * Time.deltaTime;
+            PlayerManager.Instance.SetPlayerSprintTime(currentSprintTime);
+            yield return null;
         }
 
+        currentSprintTime = sprintTime;
+        playerManager.isRecovering = false;
     }
 
     private void Jump()
     {
         isJumping = true;
-        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z); 
+
+        Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Vector3 preservedSpeed = horizontalVelocity.normalized * Mathf.Min(horizontalVelocity.magnitude, speed);
+
+        rb.velocity = new Vector3(preservedSpeed.x, jumpForce, preservedSpeed.z);
     }
 
     private void Crouch()
@@ -199,7 +245,16 @@ public class Movement : MonoBehaviour
 
         if (!isGrounded) return;
 
-        if (movementInput == Vector2.zero)
+        if (movementInput != Vector2.zero)
+        {
+            PlayerManager.Instance.SetMovementState((isSprinting || sprintTime <= 0) ? PlayerManager.MovementState.Running : PlayerManager.MovementState.Walking);
+        }
+        else
+        {
+            PlayerManager.Instance.SetMovementState(PlayerManager.MovementState.Idle);
+        }
+        
+        /*if (movementInput == Vector2.zero)    CROUCH LOGIC REMOVED IN EARLY ACCESS CUZ OF ANIMATIONS
         {
             PlayerManager.Instance.SetMovementState(!isCrouched ? PlayerManager.MovementState.Idle : PlayerManager.MovementState.Crouching);
         }
@@ -210,6 +265,6 @@ public class Movement : MonoBehaviour
         else
         {
             PlayerManager.Instance.SetMovementState(isSprinting ? PlayerManager.MovementState.Running : PlayerManager.MovementState.Walking);
-        }
+        }*/
     }
 }

@@ -16,6 +16,9 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
         public string QuestName;
         public string QuestDescription;
         public int QuestID;
+        public bool isObtained;
+        public bool isActive;
+        public bool isCompleted;
         
         public MainQuestNode()
         {
@@ -43,6 +46,10 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var rewardPort = new CustomPort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, ConnectionType.Reward);
             rewardPort.portName = "Rewards";
             outputContainer.Add(rewardPort);
+            
+            var dialoguePort = new CustomPort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, ConnectionType.Dialogue);
+            dialoguePort.portName = "Dialogues";
+            outputContainer.Add(dialoguePort);
 
             var questIDField = new IntegerField("Quest ID") { value = QuestID };
             questIDField.RegisterValueChangedCallback(evt => QuestID = evt.newValue);

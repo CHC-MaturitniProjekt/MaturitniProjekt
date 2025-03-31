@@ -61,9 +61,7 @@ public class Interact : MonoBehaviour
             return;
 
         
-            #region TobankoInteract
-            //Tobanko
-            Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         Debug.DrawRay(ray.origin, ray.direction * reachLength, Color.red);
         RaycastHit hit;
 
@@ -75,22 +73,6 @@ public class Interact : MonoBehaviour
                 interactable.OnInteract();
                 HideInteractThing();
             }
-        }
-        #endregion
-
-        switch (currentHitTag)
-        {
-            case var value when value == NPCTag:
-                InteractWithNPC();
-                break;
-            case var value when value == ItemTag:
-                InteractWithItem();
-                break;
-            //case var value when value == PCTag:
-            //    InteractWithPC();
-            //    break;
-            default:
-                break;
         }
     }
 
@@ -112,8 +94,6 @@ public class Interact : MonoBehaviour
             bool interacted = false;
 
             currentHitTag = hit.collider.tag;
-            #region TobankoInteract
-            //Tobanko Chujovina
             InteractAction interactable = hit.collider.GetComponent<InteractAction>();
             if (interactable != null)
             {
@@ -123,29 +103,13 @@ public class Interact : MonoBehaviour
                 Highlight(outline);
                 DisplayInteractThing(interactable.InteractionText, interactable.InteractionIcon, hit);
             }
-            #endregion
 
-            if (currentHitTag == NPCTag || currentHitTag == ItemTag )//|| currentHitTag == PCTag)
+            if (currentHitTag == ItemTag)
             {
                 interacted = true;
                 Outline outline = hit.collider.GetComponent<Outline>();
                 selectedObj = hit.collider.gameObject;
                 Highlight(outline);
-
-                switch (currentHitTag)
-                {
-                    case var tag when tag == NPCTag:
-                        DisplayInteractThing("Talk", interIconTalk, hit);
-                        break;
-                    case var tag when tag == ItemTag:
-                        DisplayInteractThing("Pick Up", interIconPickup, hit);
-                        break;
-                    //case var tag when tag == PCTag:
-                    //    DisplayInteractThing("Use PC", interIconTalk, hit);
-                    //    break;
-                    default:
-                        break;
-                }
             }
 
             if(!interacted)
@@ -185,7 +149,7 @@ public class Interact : MonoBehaviour
         }
     }
     
-    private void InteractWithNPC()
+    /*private void InteractWithNPC()
     {
         Debug.Log("Interacting with NPC");
 
@@ -213,7 +177,7 @@ public class Interact : MonoBehaviour
             itemHeld = selectedObj;
             PlayerManager.Instance.PickUpItem(selectedObj);
         }
-    }
+    }*/
 
     private void DisplayInteractThing(string text, Sprite icon, RaycastHit hit)
     {

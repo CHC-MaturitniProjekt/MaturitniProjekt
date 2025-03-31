@@ -10,9 +10,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float fov;
     [SerializeField] private float runFovIncrease;
     [SerializeField] private float jumpFovIncrease;
-    [SerializeField] private float crouchFovIncrease;
-    [SerializeField] private float mouseSensitivity = 100f;
-    [SerializeField] private float crouchHeight;
+    //[SerializeField] private float crouchFovIncrease;
+    public float mouseSensitivity = 100f;
+    //[SerializeField] private float crouchHeight;
 
     [Header("Head Bob Settings")]
     [SerializeField] private float walkSpeed;
@@ -21,8 +21,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float runAmount;
     [SerializeField] private float idleSpeed;
     [SerializeField] private float idleAmount;
-    [SerializeField] private float crouchSpeed;
-    [SerializeField] private float crouchAmount;
+    /*[SerializeField] private float crouchSpeed;
+    [SerializeField] private float crouchAmount;*/
 
     private float xRotation = 0f;
     private Vector2 mouseMove = Vector2.zero;
@@ -52,7 +52,7 @@ public class CameraController : MonoBehaviour
             FovChange();
             HeadBob();
 
-            Crouch();
+            //Crouch();
         }
     }
     
@@ -66,19 +66,17 @@ public class CameraController : MonoBehaviour
 
     private void Look()
     { 
-
-            float mouseX = mouseMove.x * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
-            float mouseY = mouseMove.y * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
+        float mouseX = mouseMove.x * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
+        float mouseY = mouseMove.y * (!isInConvo ? mouseSensitivity : 1f) * Time.deltaTime;
+    
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);                             
         
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -80f, 80f);                             
-            
-            cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
-            playerBody.Rotate(Vector3.up * mouseX);
-        
+        cam.transform.localRotation = Quaternion.Euler(xRotation, 90f, 0f);
+        playerBody.Rotate(Vector3.up * mouseX);
     }
 
-    public void FovChange()
+    private void FovChange()
     {
         float targetFov;
 
@@ -90,12 +88,12 @@ public class CameraController : MonoBehaviour
             case PlayerManager.MovementState.Jumping:
                 targetFov = fov + jumpFovIncrease;
                 break;
-            case PlayerManager.MovementState.Crouching:
+            /*case PlayerManager.MovementState.Crouching:           NO CROUCH IN EARLY ACCESS
                 targetFov = fov + crouchFovIncrease;
                 break;
             case PlayerManager.MovementState.CrouchRun:
                 targetFov = fov + (crouchFovIncrease + runFovIncrease) / 2;
-                break;
+                break;*/
             default:
                 targetFov = fov;
                 break;
@@ -103,42 +101,45 @@ public class CameraController : MonoBehaviour
         cam.Lens.FieldOfView = Mathf.Lerp(cam.Lens.FieldOfView, targetFov, Time.deltaTime * 3);
     }
 
-    public void HeadBob()
+    private float currentBobbingAmount = 0f;
+    private float currentBobbingSpeed = 0f; 
+
+    private void HeadBob()
     {
-        float bobbingSpeed;
-        float bobbingAmount;
+        float targetBobbingSpeed;
+        float targetBobbingAmount;
 
         switch (PlayerManager.Instance.CurrentState)
         {
             case PlayerManager.MovementState.Running:
-                bobbingSpeed = runSpeed;
-                bobbingAmount = runAmount;
+                targetBobbingSpeed = runSpeed;
+                targetBobbingAmount = runAmount;
                 break;
             case PlayerManager.MovementState.Walking:
-                bobbingSpeed = walkSpeed;
-                bobbingAmount = walkAmount;
-                break;
-            case PlayerManager.MovementState.Crouching:
-                bobbingSpeed = crouchSpeed;
-                bobbingAmount = crouchAmount;
-                break;
-            case PlayerManager.MovementState.CrouchRun:
-                bobbingSpeed = (crouchSpeed + runSpeed) / 2;
-                bobbingAmount = (crouchAmount + runAmount) / 2;
+                targetBobbingSpeed = walkSpeed;
+                targetBobbingAmount = walkAmount;
                 break;
             default:
-                bobbingSpeed = idleSpeed;
-                bobbingAmount = idleAmount;
+                targetBobbingSpeed = idleSpeed;
+                targetBobbingAmount = idleAmount;
                 break;
         }
 
-        timer += Time.deltaTime * bobbingSpeed * 10;
+        currentBobbingSpeed = Mathf.Lerp(currentBobbingSpeed, targetBobbingSpeed, Time.deltaTime * 5f);
+    
+        if (PlayerManager.Instance.isRecovering)
+        {
+            targetBobbingAmount += 0.1f;
+        }
+        currentBobbingAmount = Mathf.Lerp(currentBobbingAmount, targetBobbingAmount, Time.deltaTime * 3f);
+
+        timer += Time.deltaTime * currentBobbingSpeed * 10;
         float waveslice = Mathf.Sin(timer);
-        cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * bobbingAmount, 0);
-        
+
+        cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * currentBobbingAmount, 0);
     }
 
-    private void Crouch()
+    /*private void Crouch()
     {
         if (PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Crouching || PlayerManager.Instance.CurrentState == PlayerManager.MovementState.CrouchRun)
         {
@@ -149,13 +150,6 @@ public class CameraController : MonoBehaviour
             cam.transform.localPosition += initialCameraPosition;
         }
         
-    }
-
-    public void Exhaust()
-    {
-        if(PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Running)
-        {
-            //
-        }
-    }
+    }*/
+    
 }

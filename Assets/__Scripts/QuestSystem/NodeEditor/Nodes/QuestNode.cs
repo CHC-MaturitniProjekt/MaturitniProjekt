@@ -14,7 +14,8 @@ public class QuestNode : Node
         Start,
         MainQuestNode,
         ObjectiveNode,
-        RewardNode
+        RewardNode,
+        DialogueNode
     }
 
     public Color TitleColor = new Color(50f / 255f, 50f / 255f, 50f / 255f);

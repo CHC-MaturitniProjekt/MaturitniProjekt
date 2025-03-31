@@ -6,19 +6,24 @@ using static UnityEditor.Progress;
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
+    
+    private VolumeManager volumeManager;
+    private Movement playerMovement;
+    
     private float playerSprintTime;
     private float playerSprintRecoveryT;
     private PickUp pickUpScript;
     public bool isDisabled = false;
+    public bool isRecovering;
     
     public enum MovementState
     {
         Idle,
         Walking,
         Running,
-        Crouching,
+        //Crouching,
         Jumping,
-        CrouchRun
+        //CrouchRun
     }
 
     public MovementState CurrentState { get; private set; }
@@ -36,6 +41,9 @@ public class PlayerManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        volumeManager = FindFirstObjectByType<VolumeManager>();
+        playerMovement = FindFirstObjectByType<Movement>();
     }
 
     public void EnablePlayerWithDelay()
@@ -64,11 +72,6 @@ public class PlayerManager : MonoBehaviour
         return playerSprintTime;
     }
     
-    public void SetPlayerRecoveryTime(float sprintTime)
-    {
-        playerSprintRecoveryT = sprintTime;
-    }
-    
     public float GetPlayerSprintRecoveryTime()
     {
         return playerSprintRecoveryT;
@@ -80,20 +83,16 @@ public class PlayerManager : MonoBehaviour
         pickUpScript.CarryItem(item);
     }
 
-    public void DropItem(GameObject item)
+    public IEnumerator TeleportPlayerWithTransition(Vector3 tpPos, string name)
     {
-        pickUpScript.DropItem(item);
+        volumeManager.PlayTeleportTransition(name);
+        yield return new WaitForSeconds(0.3f);
+        TeleportPlayer(tpPos);
     }
+    
+    public void TeleportPlayer(Vector3 tpPos)
+    {
+        playerMovement.transform.position = tpPos;
+    }
+
 }
-
-
-//ziskat item z raycastu
-//poslat do PickUp prefab
-//smazat objekt ze sceny
-//spawnout objekt na ItemPosition zmenseny
-//pridat input na dropnuti
-//pri dropnuti se dropne item z pozice ruky s nejakym forcem dopredu
-
-//vymyselt system na rozdeleni objektu na pickable
-//dost mozna bude vic itemu ktere muze mit
-//ui pro itemy?

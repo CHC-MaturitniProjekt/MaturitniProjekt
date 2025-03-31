@@ -44,6 +44,11 @@ public class NPCBrain : MonoBehaviour
         NPCCycles();
     }
 
+    public NPCScriptableObject GetNPCSO()
+    {
+        return npcInfo;
+    }
+
     private void UpdateBehavior()
     {
         switch (currentBehavior)
@@ -74,15 +79,12 @@ public class NPCBrain : MonoBehaviour
         switch (timeManager.GetWorldTime())
         {
             case 480:
-                Debug.Log("Rano");
                 break;
-            case 840:
-                Debug.Log("Odpoledne");
+            case 840: 
                 SetBehavior(NPCBehavior.GoTo);
                 currentWaypoint = waypointManager.GetWaypoint("DumWaypoint");
                 break;
             case 1140:
-                Debug.Log("Vecer");
                 SetBehavior(NPCBehavior.Wander);
                 break;
             default:
@@ -109,8 +111,6 @@ public class NPCBrain : MonoBehaviour
     public void StartConversation()
     {
          tempBehaviour = currentBehavior;
-         Debug.Log("Start Conversation: " + tempBehaviour);
-         
          playerCam.isInConvo = true;
     }
     

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Emit;
+using Language.Lua;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -34,6 +36,31 @@ public class QuestGraphView : GraphView
         grid.StretchToParentSize();
 
         EditorApplication.delayCall += afterGraphInicialization;
+        
+        this.AddManipulator(new ContextualMenuManipulator(evt => ShowNodeCreationDropdown(evt.menu, evt.mousePosition / this.scale)));
+    }
+
+    public void ShowNodeCreationDropdown(DropdownMenu menu, Vector2 mousePosition)
+    {
+        menu.AppendAction("Quest Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.MainQuestNode, mousePosition);
+        });
+
+        menu.AppendAction("Objective Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.ObjectiveNode, mousePosition);
+        });
+
+        menu.AppendAction("Reward Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.RewardNode, mousePosition);
+        });
+
+        menu.AppendAction("Dialogue Node", action =>
+        {
+            CreateNode(QuestNode.NodeTypes.DialogueNode, mousePosition);
+        });
     }
 
     public void afterGraphInicialization()
@@ -80,7 +107,22 @@ public class QuestGraphView : GraphView
             AssetDatabase.SaveAssets();
         }
 
-        CreateNode(NodeTypes.Start);
+        if (!NodeExists(QuestNode.NodeTypes.Start))
+        {
+            CreateNode(QuestNode.NodeTypes.Start);
+        }    
+    }
+    
+    private bool NodeExists(QuestNode.NodeTypes nodeType)
+    {
+        foreach (var node in nodes.ToList())
+        {
+            if (node is QuestNode questNode && questNode.QuestType == nodeType)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -96,7 +138,10 @@ public class QuestGraphView : GraphView
                     QuestID = 0,
                     title = "Quest Node",
                     QuestName = "New Quest",
-                    QuestDescription = "Describe the quest here"
+                    QuestDescription = "Describe the quest here",
+                    isActive = false,
+                    isCompleted = false,
+                    isObtained = false
                 };
                 break;
 
@@ -117,6 +162,16 @@ public class QuestGraphView : GraphView
                     RewardValue = 100
                 };
                 break;
+            case QuestNode.NodeTypes.DialogueNode:
+                node = new DialogueNode
+                {
+                    DialogueName = "Dialogue",
+                    NPCID = 0,
+                    order = 0,
+                    isCompleted = false,
+                    isSMS = false
+                };
+                break;
             case QuestNode.NodeTypes.Start:
                 node = new StartQuestNode
                 {
@@ -132,7 +187,7 @@ public class QuestGraphView : GraphView
         node.style.backgroundColor = UnityEngine.Color.black;
 
         node.GUID = Guid.NewGuid().ToString();
-        node.SetPosition(new Rect(Vector2.zero, new Vector2(500, 450)));
+        node.SetPosition(new Rect(position, new Vector2(500, 450)));
         AddElement(node);
     }
     
@@ -142,38 +197,53 @@ public class QuestGraphView : GraphView
         
         switch (nodeType)
         {
-            case QuestNode.NodeTypes.Start:
+            case NodeTypes.Start:
                 node = new StartQuestNode
                 {
                     title = nodeType.ToString(),
                 };
                 break;
-            case QuestNode.NodeTypes.MainQuestNode:
+            case NodeTypes.MainQuestNode:
                 node = new MainQuestNode
                 {
                     title = nodeType.ToString(),
                     QuestID = (nodeData as MainQuestNodeModel).QuestID,
                     QuestName = (nodeData as MainQuestNodeModel).QuestName,
-                    QuestDescription = (nodeData as MainQuestNodeModel).QuestDescription
+                    QuestDescription = (nodeData as MainQuestNodeModel).QuestDescription,
+                    isActive = (nodeData as MainQuestNodeModel).isActive,
+                    isObtained = (nodeData as MainQuestNodeModel).isObtained,
+                    isCompleted = (nodeData as MainQuestNodeModel).isCompleted,
+                    
                 };
                 break;
 
-            case QuestNode.NodeTypes.ObjectiveNode:
+            case NodeTypes.ObjectiveNode:
                 node = new ObjectiveNode
                 {
                     title = nodeType.ToString(),
                     ObjectiveDescription = (nodeData as ObjectiveNodeModel).ObjectiveDescription,
                     ObjectiveType = (nodeData as ObjectiveNodeModel).ObjectiveType,
                     isOptional = (nodeData as ObjectiveNodeModel).isOptional,
-                    CompletionCriteria = (nodeData as ObjectiveNodeModel).CompletionCriteria
+                    CompletionCriteria = CompletionCriteriaSerializer.Deserialize((nodeData as ObjectiveNodeModel).CompletionCriteria)
                 };
                 break;
-            case QuestNode.NodeTypes.RewardNode:
+            case NodeTypes.RewardNode:
                 node = new RewardNode
                 {
                     title = nodeType.ToString(),
                     RewardType = (nodeData as RewardNodeModel).RewardType,
                     RewardValue = (nodeData as RewardNodeModel).RewardValue
+                };
+                break;
+            case NodeTypes.DialogueNode:
+                node = new DialogueNode
+                {
+                    title = nodeType.ToString(),
+                    DialogueName = (nodeData as DialogueNodeModel).DialogueName,
+                    NPCID = (nodeData as DialogueNodeModel).NPCID,
+                    order = (nodeData as DialogueNodeModel).order,
+                    isCompleted = (nodeData as DialogueNodeModel).isCompleted,
+                    isSMS = (nodeData as DialogueNodeModel).isSMS
                 };
                 break;
 

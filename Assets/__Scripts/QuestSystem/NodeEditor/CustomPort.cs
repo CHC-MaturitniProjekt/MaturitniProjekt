@@ -25,6 +25,7 @@ public class CustomPort : Port
             ConnectionType.Quest => Color.red,
             ConnectionType.Reward => Color.cyan,
             ConnectionType.Objective => Color.green,
+            ConnectionType.Dialogue => Color.magenta,
             _ => Color.white
         };
     }
