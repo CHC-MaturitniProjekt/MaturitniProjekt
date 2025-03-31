@@ -7,6 +7,21 @@ public class Pc : MonoBehaviour
 {
     [SerializeField] private InputReader input;
     public bool isInteracting = false;
+    public static Pc Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         input.InteractEvent += OnInteractExit;
