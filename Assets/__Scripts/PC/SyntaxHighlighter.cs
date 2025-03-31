@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 
@@ -8,6 +6,7 @@ public class SyntaxHighlighter : MonoBehaviour
 {
     public TMP_InputField inputField;
     public TextMeshProUGUI syntaxHighlighter;
+    public SyntaxHighlighterSO syntaxHighlighterSO; // Odkaz na ScriptableObject
 
     private void Start()
     {
@@ -18,12 +17,11 @@ public class SyntaxHighlighter : MonoBehaviour
     {
         string highlightedText = text;
 
-        // Příklad pro C# klíčová slova
-        highlightedText = Regex.Replace(highlightedText, @"\b(public|private|void|class|new|if|else)\b", "<color=#ff6600>$1</color>");
-
-        // Další pravidla (čísla, stringy, komentáře)
-        highlightedText = Regex.Replace(highlightedText, @"(\"".*?\"")", "<color=#00ff00>$1</color>"); // stringy
-        highlightedText = Regex.Replace(highlightedText, @"(//.*?$)", "<color=#808080>$1</color>", RegexOptions.Multiline); // komentáře
+        foreach (var syntaxWord in syntaxHighlighterSO.words)
+        {
+            string colorHex = ColorUtility.ToHtmlStringRGB(syntaxWord.color);
+            highlightedText = Regex.Replace(highlightedText, $@"\b({syntaxWord.word})\b", $"<color=#{colorHex}>$1</color>");
+        }
 
         syntaxHighlighter.text = highlightedText;
     }
