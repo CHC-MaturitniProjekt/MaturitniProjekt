@@ -8,7 +8,7 @@ public class CutsceneManager : MonoBehaviour
     
     [Header("Debug")]
     [SerializeField] private bool startOnAwake = false;
-
+    
     private void Awake()
     {
         foreach (var animator in cutsceneAnimators)
@@ -32,6 +32,7 @@ public class CutsceneManager : MonoBehaviour
     
     private IEnumerator PlayCutsceneSequence()
     {
+        PlayerManager.Instance.isDisabled = true;
         for (int i = 0; i < cutsceneAnimators.Length; i++)
         {
             Animator animator = cutsceneAnimators[i];
@@ -42,5 +43,7 @@ public class CutsceneManager : MonoBehaviour
 
             animator.enabled = false;
         }
+
+        PlayerManager.Instance.isDisabled = false;
     }
 }

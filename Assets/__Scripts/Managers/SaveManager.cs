@@ -9,7 +9,6 @@ using static UnityEditor.Progress;
 public class SaveManager : MonoBehaviour
 {
     private VolumeManager volumeManager;
-    private PlayerManager playerManager;
     private Movement playerMovement;
     private CameraController camController;
     
@@ -26,15 +25,8 @@ public class SaveManager : MonoBehaviour
     {
         camController = FindFirstObjectByType<CameraController>();
         pickUpScript = FindFirstObjectByType<PickUp>();
-        playerManager = FindFirstObjectByType<PlayerManager>();
         playerMovement = FindFirstObjectByType<Movement>();
         time = FindFirstObjectByType<TimeManager>();
-        
-        if (playerManager == null)
-        {
-            Debug.LogError("PlayerManager not found!");
-            return;
-        }
         
         LoadGame();
     }
@@ -68,7 +60,7 @@ public class SaveManager : MonoBehaviour
         }
 
         time.SetWorldTime(data.timeOfDay);
-        playerManager.TeleportPlayer(data.playerPosition);
+        PlayerManager.Instance.TeleportPlayer(data.playerPosition);
 
         var allInteractables = FindObjectsOfType<ItemInteract>(); 
         foreach (var itemData in data.interactableItems)
