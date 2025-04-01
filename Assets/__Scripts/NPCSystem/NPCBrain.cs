@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class NPCBrain : MonoBehaviour
 {
-    [SerializeField] private NPCState state;
-    [SerializeField] private NPCMovement movement;
+    private NPCState state;
+    private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
     [SerializeField] private NPCScriptableObject npcInfo;
 
