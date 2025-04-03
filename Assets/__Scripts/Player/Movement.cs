@@ -22,6 +22,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float sprintRecoveryTime;
     [SerializeField] private float jumpForce;
     private bool isJumping = false;
+    public bool isSitting = false;
     private bool isGrounded;
     private bool isCrouched;
 
@@ -44,7 +45,7 @@ public class Movement : MonoBehaviour
         input.JumpEvent += OnJumpInput;
         input.SprintStart += OnSprintInput;
         input.SprintEnd += OnSprintEnd;
-        input.CrouchEvent += OnCrouchInput;
+        //input.CrouchEvent += OnCrouchInput;
 
         rb = GetComponent<Rigidbody>();
         rb.interpolation = RigidbodyInterpolation.None;
@@ -59,22 +60,29 @@ public class Movement : MonoBehaviour
         currentSprintTime = sprintTime; 
     }
 
-    private void OnCrouchInput()
+    /*private void OnCrouchInput()
     {
         if (!PlayerManager.Instance.isDisabled)
         {
             Crouch();
         }
-    }
+    }*/
 
     void FixedUpdate()
     {
         if (!PlayerManager.Instance.isDisabled)
         {
+            if (PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Sitting)
+            {
+                Debug.Log("aaa");
+                HandleSit();
+            }
+            
             Move();
             HandleSprint();
             GroundCheck();
             SetMovementStates();
+
         }
     }
 
@@ -116,18 +124,18 @@ public class Movement : MonoBehaviour
     private void Move()
     {
         float moveSpeed;
-        if (isSprinting && !isCrouched)
+        if (isSprinting && !isCrouched && !isSitting)
         {
             moveSpeed = Mathf.Lerp(rb.velocity.magnitude, sprintSpeed, Time.fixedDeltaTime * 5f);
         }
-        else if (isCrouched && !isSprinting)
+        /*else if (isCrouched && !isSprinting)
         {
             moveSpeed = Mathf.Lerp(rb.velocity.magnitude, crouchSpeed, Time.fixedDeltaTime * 5f);
         }
         else if (isCrouched && isSprinting)
         {
             moveSpeed = Mathf.Lerp(rb.velocity.magnitude, (crouchSpeed + sprintSpeed) / 2, Time.fixedDeltaTime * 5f);
-        }
+        }*/
         else
         {
             moveSpeed = Mathf.Lerp(rb.velocity.magnitude, speed, Time.fixedDeltaTime * 5f);
@@ -135,8 +143,11 @@ public class Movement : MonoBehaviour
 
         Vector3 movement = GetMovementInfo(moveSpeed);
         rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
-        
-        animator.SetFloat("X", rb.velocity.magnitude);
+
+        if (!isSitting)
+        {
+            animator.SetFloat("X", rb.velocity.magnitude);
+        }
     }
 
     private Vector3 GetMovementInfo(float moveSpeed)
@@ -145,9 +156,13 @@ public class Movement : MonoBehaviour
         Vector3 rightMovement = transform.right * movementInput.x;
         return (forwardMovement + rightMovement).normalized * moveSpeed;
     }
+
+    private void HandleSit()
+    {
+        animator.SetBool("BenchSit", true);
+    }
     
     private Coroutine recoveryCoroutine;
-
     private void HandleSprint()
     {
         if (isSprinting && currentSprintTime > 0)
@@ -219,10 +234,10 @@ public class Movement : MonoBehaviour
         rb.velocity = new Vector3(preservedSpeed.x, jumpForce, preservedSpeed.z);
     }
 
-    private void Crouch()
+    /*private void Crouch()
     {
         isCrouched = !isCrouched;
-    }
+    }*/
 
     private void GroundCheck()
     {

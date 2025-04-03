@@ -23,6 +23,7 @@ public class PlayerManager : MonoBehaviour
         Running,
         //Crouching,
         Jumping,
+        Sitting,
         //CrouchRun
     }
 

@@ -5,14 +5,13 @@ public class CameraController : MonoBehaviour
 {
     [Header("Camera Settings")]
     [SerializeField] private Transform playerBody;
+    [SerializeField] private Transform head;
     [SerializeField] private CinemachineCamera cam;
     [SerializeField] private InputReader input;
     [SerializeField] private float fov;
     [SerializeField] private float runFovIncrease;
     [SerializeField] private float jumpFovIncrease;
-    //[SerializeField] private float crouchFovIncrease;
     public float mouseSensitivity = 100f;
-    //[SerializeField] private float crouchHeight;
 
     [Header("Head Bob Settings")]
     [SerializeField] private float walkSpeed;
@@ -21,23 +20,26 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float runAmount;
     [SerializeField] private float idleSpeed;
     [SerializeField] private float idleAmount;
-    /*[SerializeField] private float crouchSpeed;
-    [SerializeField] private float crouchAmount;*/
 
     private float xRotation = 0f;
     private Vector2 mouseMove = Vector2.zero;
     private float timer = 0.0f;
     private Vector3 initialCameraPosition;
-    private Vector2 currentMouseDelta;
-    private Vector2 currentMouseDeltaVelocity;
+    private Vector3 originalHeadPosition;
+    private bool isHeadOffsetApplied = false;
 
     public bool isInConvo = false;
-    
+
     private void Start()
     {   
         Cursor.lockState = CursorLockMode.Locked;
         input.LookEvent += Input_LookEvent;
         cam.Lens.FieldOfView = fov;
+
+        if (head != null)
+        {
+            originalHeadPosition = head.localPosition;
+        }
     }
 
     private void Input_LookEvent(Vector2 obj)
@@ -51,8 +53,6 @@ public class CameraController : MonoBehaviour
         {
             FovChange();
             HeadBob();
-
-            //Crouch();
         }
     }
     
@@ -61,6 +61,40 @@ public class CameraController : MonoBehaviour
         if (!PlayerManager.Instance.isDisabled)
         {
             Look();
+        }
+    }
+    
+    public void ResetCameraPosition()
+    {
+        if (head != null)
+        {
+            head.localPosition = originalHeadPosition;
+        }
+    }
+
+    public void AdjustCameraHeight(SitInteract.SitType sitType)
+    {
+        float heightOffset = 0f;
+
+        switch (sitType)
+        {
+            case SitInteract.SitType.Bench:
+                heightOffset = -0.834f;
+                break;
+            case SitInteract.SitType.Sofa:
+                heightOffset = -1f;
+                break;
+            case SitInteract.SitType.Bed:
+                heightOffset = -0.4f;
+                break;
+            case SitInteract.SitType.Ground:
+                heightOffset = -0.86f;
+                break;
+        }
+
+        if (head != null)
+        {
+            head.localPosition = originalHeadPosition + new Vector3(0, heightOffset, 0);
         }
     }
 
@@ -88,12 +122,6 @@ public class CameraController : MonoBehaviour
             case PlayerManager.MovementState.Jumping:
                 targetFov = fov + jumpFovIncrease;
                 break;
-            /*case PlayerManager.MovementState.Crouching:           NO CROUCH IN EARLY ACCESS
-                targetFov = fov + crouchFovIncrease;
-                break;
-            case PlayerManager.MovementState.CrouchRun:
-                targetFov = fov + (crouchFovIncrease + runFovIncrease) / 2;
-                break;*/
             default:
                 targetFov = fov;
                 break;
@@ -138,18 +166,4 @@ public class CameraController : MonoBehaviour
 
         cam.transform.localPosition = initialCameraPosition + new Vector3(0, waveslice * currentBobbingAmount, 0);
     }
-
-    /*private void Crouch()
-    {
-        if (PlayerManager.Instance.CurrentState == PlayerManager.MovementState.Crouching || PlayerManager.Instance.CurrentState == PlayerManager.MovementState.CrouchRun)
-        {
-            cam.transform.localPosition += new Vector3(0, crouchHeight, 0);
-        } 
-        else
-        {
-            cam.transform.localPosition += initialCameraPosition;
-        }
-        
-    }*/
-    
 }
