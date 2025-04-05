@@ -17,4 +17,40 @@ MonoBehaviour:
   NPCDialogueType: 7
   NPCWayPointNames:
   - DumWaypoint
-  NPCId: 0
+  NPCCompletedDialogues: []
+  NPCId: 1
+  NPCHome: {fileID: 0}
+  NPCActiveTimeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 0.99999905
+      inSlope: 0.0063699107
+      outSlope: 0.0063699107
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.021970749
+    - serializedVersion: 3
+      time: 1
+      value: -0.00031280518
+      inSlope: 0.023652472
+      outSlope: 0.023652472
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.37842852
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 0
+    m_RotationOrder: 4
+  NPCRandomness: 0.5

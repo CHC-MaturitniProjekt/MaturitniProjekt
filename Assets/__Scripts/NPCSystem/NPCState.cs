@@ -7,4 +7,5 @@ public class NPCState : MonoBehaviour
     public bool IsLookingAtPlayer { get; set; }
     public bool IsRunningAway { get; set; }
     public bool IsOverriden { get; set; }
+    public bool IsSitting { get; set; }
 }

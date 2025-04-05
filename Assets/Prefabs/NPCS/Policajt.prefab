@@ -58,6 +58,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3983510180697848135, guid: 48645da77fafd5241aed45b8edc1c8b9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 48645da77fafd5241aed45b8edc1c8b9,
         type: 3}
       propertyPath: m_Name
@@ -226,8 +231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9d2c7b8aafc1ab40a947f608ca346a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: {fileID: 6443212243144674986}
-  movement: {fileID: 1907901302667959977}
   currentBehavior: 0
   npcInfo: {fileID: 11400000, guid: 63b9fc1e79595194b9d4e911d9e844ae, type: 2}
 --- !u!114 &1907901302667959977

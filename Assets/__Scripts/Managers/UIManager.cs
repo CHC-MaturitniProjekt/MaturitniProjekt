@@ -126,7 +126,7 @@ public class UIManager : MonoBehaviour
 
     private async void DisplayGameMoney()
     {
-        int playerMoney = await firebase.GetPlayerMoney();          //fix - db se neinitne v cas
+        int playerMoney = await firebase.GetPlayerMoney();
         moneyDisplay.text = string.Format("{0:N0} Ħ", playerMoney);
     }
 

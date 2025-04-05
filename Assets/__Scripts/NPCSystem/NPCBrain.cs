@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class NPCBrain : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class NPCBrain : MonoBehaviour
     private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
     [SerializeField] private NPCScriptableObject npcInfo;
+    public Transform npcHouse;
 
     private List<Transform> waypoints;
 
@@ -71,25 +74,53 @@ public class NPCBrain : MonoBehaviour
             case NPCBehavior.Idle:
                 movement.HandleIdle();
                 break;
+            case NPCBehavior.Sit:
+                movement.HandleSit();
+                break;
+            case NPCBehavior.GoHome:
+                movement.HandleGoHome();
+                break;
         }
     }
     
-    private void NPCCycles() 
+    private void NPCCycles()
     {
-        switch (timeManager.GetWorldTime())
+        float currentHour = timeManager.GetWorldTime()/60f;
+        float activeValue = npcInfo.NPCActiveTimeCurve.Evaluate(currentHour);
+        
+        if (currentHour >= 22f || currentHour < 6f)
         {
-            case 480:
-                break;
-            case 840: 
-                SetBehavior(NPCBehavior.GoTo);
-                currentWaypoint = waypointManager.GetWaypoint("DumWaypoint");
-                break;
-            case 1140:
-                SetBehavior(NPCBehavior.Wander);
-                break;
-            default:
-                break;
+            if (currentBehavior != NPCBehavior.GoHome)
+            {
+                SetBehavior(NPCBehavior.GoHome);
+            }
+            return;
         }
+        
+        if (currentHour >= 6f && currentHour < 22f && currentBehavior == NPCBehavior.GoHome)
+        {
+            Vector3 safeSpawn = npcHouse.position + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(safeSpawn, out hit, 2f, NavMesh.AllAreas))
+            {
+                gameObject.SetActive(true);
+                GetComponent<NavMeshAgent>().Warp(hit.position);
+                SetBehavior(NPCBehavior.Idle);
+                return;
+            } 
+        }
+        
+        if (Random.value < npcInfo.NPCRandomness * activeValue * Time.deltaTime)
+        {
+            NPCBehavior randomChoice = GetRandomBehavior();
+            SetBehavior(randomChoice);
+        }
+    }
+    
+    private NPCBehavior GetRandomBehavior()
+    {
+        var possible = new List<NPCBehavior> { NPCBehavior.Wander, NPCBehavior.Sit, NPCBehavior.Idle };
+        return possible[Random.Range(0, possible.Count)];
     }
     
 
@@ -124,31 +155,39 @@ public class NPCBrain : MonoBehaviour
 
     public void SetBehavior(NPCBehavior newBehavior, float duration = 0)
     {
+        if (currentBehavior == NPCBehavior.Sit && newBehavior != NPCBehavior.Sit)
+        {
+            movement.InterruptSit();
+        }
+
         if (duration > 0 && currentBehavior != NPCBehavior.GoTo)
         {
             StartCoroutine(OverrideBehaviorRoutine(newBehavior, duration));
             return;
         }
-        
-        currentBehavior = newBehavior;
-        if (newBehavior == NPCBehavior.RunAway) 
-        {
-            state.IsRunningAway = true;
-        }
-        else 
-        {
-            state.IsRunningAway = false;
-        }
-    }
 
+        currentBehavior = newBehavior;
+        state.IsRunningAway = newBehavior == NPCBehavior.RunAway;
+    }
+    
+    public NPCBehavior GetCurrentBehavior()
+    {
+        return currentBehavior;
+    }
+    
     private IEnumerator OverrideBehaviorRoutine(NPCBehavior tempBehavior, float duration)
     {
+        if (currentBehavior == NPCBehavior.Sit && tempBehavior != NPCBehavior.Sit)
+        {
+            movement.InterruptSit();
+        }
+
         var originalBehavior = currentBehavior;
         state.IsOverriden = true;
         currentBehavior = tempBehavior;
-        
+
         yield return new WaitForSeconds(duration);
-        
+
         currentBehavior = originalBehavior;
         state.IsOverriden = false;
     }
@@ -160,6 +199,8 @@ public class NPCBrain : MonoBehaviour
         RunAway,
         Idle,
         LookAtPlayer,
-        GoTo
+        GoTo,
+        Sit,
+        GoHome
     }
 }
