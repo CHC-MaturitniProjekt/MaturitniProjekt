@@ -13,33 +13,24 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private NPCBehavior currentBehavior;
     [SerializeField] private NPCScriptableObject npcInfo;
     public Transform npcHouse;
-
-    private List<Transform> waypoints;
-
+    
     private CameraController playerCam;
     private TimeManager timeManager;
-    private WaypointManager waypointManager;
     private Transform currentWaypoint;
     public NPCBehavior AfterDialogueBehavior {get; set;}
-
-    private NPCBehavior tempBehaviour;
+    
+    private TextureAnimation textureAnimation;
+    
     private void Awake()
     {
         state = GetComponent<NPCState>();
         movement = GetComponent<NPCMovement>();
         playerCam = FindFirstObjectByType<CameraController>();
         timeManager = FindAnyObjectByType<TimeManager>();
-        waypointManager = FindAnyObjectByType<WaypointManager>();
-    }
 
-    private void Start()
-    {
-        waypoints = npcInfo.NPCWayPointNames
-            .Select(name => WaypointManager.Instance.GetWaypoint(name))
-            .Where(transform => transform != null)
-            .ToList();
+        textureAnimation = GetComponent<TextureAnimation>();
     }
-
+    
     private void Update()
     {
         if (state.IsOverriden) return;
@@ -110,7 +101,7 @@ public class NPCBrain : MonoBehaviour
             } 
         }
         
-        if (Random.value < npcInfo.NPCRandomness * activeValue * Time.deltaTime)
+        if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
         {
             NPCBehavior randomChoice = GetRandomBehavior();
             SetBehavior(randomChoice);
@@ -141,16 +132,15 @@ public class NPCBrain : MonoBehaviour
     
     public void StartConversation()
     {
-         tempBehaviour = currentBehavior;
          playerCam.isInConvo = true;
+         textureAnimation.PlayAnimation(TextureAnimation.AnimationType.Speaking);
     }
     
     public void EndConversation()
     {
         currentBehavior = AfterDialogueBehavior;
-        
         playerCam.isInConvo = false;
-
+        textureAnimation.PlayAnimation(TextureAnimation.AnimationType.Blinking);
     }
 
     public void SetBehavior(NPCBehavior newBehavior, float duration = 0)

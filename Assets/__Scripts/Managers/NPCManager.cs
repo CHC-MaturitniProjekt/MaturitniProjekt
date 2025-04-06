@@ -40,16 +40,4 @@ public class NPCManager : MonoBehaviour
             reservedSeats.Remove(seat);
         }
     }
-
-    public void ReleaseSeatByNPC(GameObject npc)
-    {
-        foreach (var pair in reservedSeats)
-        {
-            if (pair.Value == npc)
-            {
-                reservedSeats.Remove(pair.Key);
-                break;
-            }
-        }
-    }
 }
