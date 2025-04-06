@@ -116,6 +116,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6ad9658aafacfa449846674556c11b5,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 71281736775153306}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6ad9658aafacfa449846674556c11b5,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 4500704678706081839}
   m_SourcePrefab: {fileID: 100100000, guid: f6ad9658aafacfa449846674556c11b5, type: 3}
 --- !u!1 &2688465027348832815 stripped
@@ -206,7 +210,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 200
-  m_StoppingDistance: 0
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -226,10 +230,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9d2c7b8aafc1ab40a947f608ca346a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: {fileID: 5151556747867959212}
-  movement: {fileID: 386364399253389205}
   currentBehavior: 0
-  npcInfo: {fileID: 11400000, guid: 63b9fc1e79595194b9d4e911d9e844ae, type: 2}
+  npcInfo: {fileID: 11400000, guid: 5d03f2b71b76a2e48910f6db25023c7d, type: 2}
+  npcHouse: {fileID: 0}
 --- !u!114 &386364399253389205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,6 +246,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -292,6 +300,24 @@ MonoBehaviour:
   InteractionIcon: {fileID: 21300000, guid: c469889db0eea1a459df9473c96b26fb, type: 3}
   InteractionText: Talk
   NPCSO: {fileID: 11400000, guid: 8d51aee191264c04ca1d1a4f039c887f, type: 2}
+--- !u!114 &71281736775153306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2688465027348832815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7095376eb99fac34d82989d1962ab2fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skinnedMeshRenderer: {fileID: 6443534759296866407}
+  XOffsetPX: 0.5395
+  YOffsetPX: -0.5325
+  minBlinkTime: 3
+  maxBlinkTime: 6
+  framesPerAnimation: 2
 --- !u!114 &4500704678706081839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,6 +405,12 @@ Transform:
 --- !u!4 &5314983964617704224 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6939110939196300382, guid: f6ad9658aafacfa449846674556c11b5,
+    type: 3}
+  m_PrefabInstance: {fileID: 2994385104161021822}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &6443534759296866407 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1089244550062897383, guid: f6ad9658aafacfa449846674556c11b5,
     type: 3}
   m_PrefabInstance: {fileID: 2994385104161021822}
   m_PrefabAsset: {fileID: 0}

@@ -116,8 +116,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ecce9864ce4016a448d97241fdb11d0e,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 406652706307237721}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ecce9864ce4016a448d97241fdb11d0e,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 5335860318825219289}
   m_SourcePrefab: {fileID: 100100000, guid: ecce9864ce4016a448d97241fdb11d0e, type: 3}
+--- !u!137 &1816775704583678 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3367466173310176410, guid: ecce9864ce4016a448d97241fdb11d0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3368077883868057956}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1072733042249088659 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6890843909931749385, guid: ecce9864ce4016a448d97241fdb11d0e,
@@ -212,7 +222,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 200
-  m_StoppingDistance: 0
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -234,6 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentBehavior: 0
   npcInfo: {fileID: 11400000, guid: 63b9fc1e79595194b9d4e911d9e844ae, type: 2}
+  npcHouse: {fileID: 0}
 --- !u!114 &6348480805425065376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,6 +258,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -296,6 +312,24 @@ MonoBehaviour:
   InteractionIcon: {fileID: 21300000, guid: c469889db0eea1a459df9473c96b26fb, type: 3}
   InteractionText: Talk
   NPCSO: {fileID: 11400000, guid: 8d51aee191264c04ca1d1a4f039c887f, type: 2}
+--- !u!114 &406652706307237721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2485064695040650293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7095376eb99fac34d82989d1962ab2fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skinnedMeshRenderer: {fileID: 1816775704583678}
+  XOffsetPX: 0.5355
+  YOffsetPX: -0.535
+  minBlinkTime: 3
+  maxBlinkTime: 6
+  framesPerAnimation: 2
 --- !u!114 &5335860318825219289
 MonoBehaviour:
   m_ObjectHideFlags: 0
