@@ -22,6 +22,23 @@ public class NPCMovement : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Transform headBone;
+
+    [Header("Store interactions")] 
+    [Header("Market")]
+    [SerializeField] private Transform marketEntrance;
+    [SerializeField] private Transform marketExit;
+    public bool isAtMarket = false;
+    [Header("Medical")]
+    [SerializeField] private Transform medicalEntrance;
+    [SerializeField] private Transform medicalExit;
+    public bool isAtMedical = false;
+    [Header("BodyMods")]
+    [SerializeField] private Transform bodymodEntrance;
+    [SerializeField] private Transform bodymodExit;
+    public bool isAtBodymod = false;
+    
+    public enum StoreType { None, Market, Medical, BodyMod }
+    public StoreType currentStore = StoreType.None;
     
     private NavMeshAgent agent;
     private NPCState state;
@@ -42,7 +59,6 @@ public class NPCMovement : MonoBehaviour
     private float stuckThreshold = 0.1f;
     private float pathTimeout = 10f;
     private float lastPathCalculationTime;
-
     
     private void Awake()
     {
@@ -106,7 +122,6 @@ public class NPCMovement : MonoBehaviour
             }
         }
     }
-
 
     private void FixedUpdate()
     {
@@ -174,7 +189,8 @@ public class NPCMovement : MonoBehaviour
         int attempts = 0;
         const int maxAttempts = 10;
         const float minWanderDistance = 5f;
-    
+        const float randomRadius = 10f;
+
         do
         {
             Transform randomWaypoint = waypoints[Random.Range(0, waypoints.Length)];
@@ -186,14 +202,35 @@ public class NPCMovement : MonoBehaviour
             {
                 newDestination = randomWaypoint.position;
             }
-        
+
             attempts++;
         } 
         while (Vector3.Distance(transform.position, newDestination) < minWanderDistance && 
                attempts < maxAttempts);
 
+        if (attempts >= maxAttempts)
+        {
+            do
+            {
+                Vector3 randomDirection = Random.insideUnitSphere * randomRadius;
+                randomDirection += transform.position;
+                if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                {
+                    newDestination = hit.position;
+                }
+                else
+                {
+                    newDestination = randomDirection;
+                }
+
+                attempts++;
+            }
+            while (Vector3.Distance(transform.position, newDestination) < minWanderDistance &&
+                   attempts < maxAttempts);
+        }
+
         lastPathCalculationTime = Time.time;
-    
+
         HandleGoTo(newDestination);
     }
     
@@ -392,6 +429,91 @@ public class NPCMovement : MonoBehaviour
         {
             gameObject.SetActive(false);
         } 
+    }
+
+    public StoreType GetRandomStore()
+    {
+        return new List<StoreType>
+        {
+            StoreType.Market,
+            StoreType.Medical,
+            StoreType.BodyMod
+        }[Random.Range(0, 3)];
+    }
+    
+    public void HandleGoToStore()
+    {
+        Transform exit = null;
+        Transform entrance = null;
+        StoreType selectedStore = GetRandomStore();
+
+        switch (selectedStore)
+        {
+            case StoreType.Market:
+                exit = marketExit;
+                entrance = marketEntrance;
+                break;
+            case StoreType.Medical:
+                exit = medicalExit;
+                entrance = medicalEntrance;
+                break;
+            case StoreType.BodyMod:
+                exit = bodymodExit;
+                entrance = bodymodEntrance;
+                break;
+        }
+    
+        if (entrance == null) return;
+        
+        HandleGoTo(entrance.position);
+
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            agent.Warp(exit.position);
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+
+            isAtMarket = selectedStore == StoreType.Market;
+            isAtMedical = selectedStore == StoreType.Medical;
+            isAtBodymod = selectedStore == StoreType.BodyMod;
+            currentStore = selectedStore;
+        }
+    }
+    
+    public void HandleExitStore()
+    {
+        Transform exit = null;
+        Transform entrance = null;
+
+        switch (currentStore)
+        {
+            case StoreType.Market:
+                exit = marketExit;
+                entrance = marketEntrance;
+                break;
+            case StoreType.Medical:
+                exit = medicalExit;
+                entrance = medicalEntrance;
+                break;
+            case StoreType.BodyMod:
+                exit = bodymodExit;
+                entrance = bodymodEntrance;
+                break;
+        }
+
+        if (exit != null && entrance != null)
+        {
+            HandleGoTo(exit.position);
+
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                agent.Warp(entrance.position);
+                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+                isAtMarket = false;
+                isAtBodymod = false;
+                isAtMedical = false;
+                currentStore = StoreType.None;
+            }
+        }
     }
 
     public void HandleFollowPlayer()

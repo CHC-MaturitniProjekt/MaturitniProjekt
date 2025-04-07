@@ -71,6 +71,12 @@ public class NPCBrain : MonoBehaviour
             case NPCBehavior.GoHome:
                 movement.HandleGoHome();
                 break;
+            case NPCBehavior.GoToStore:
+                movement.HandleGoToStore();
+                break;
+            case NPCBehavior.ExitStore:
+                movement.HandleExitStore();
+                break;
         }
     }
     
@@ -110,10 +116,54 @@ public class NPCBrain : MonoBehaviour
     
     private NPCBehavior GetRandomBehavior()
     {
-        var possible = new List<NPCBehavior> { NPCBehavior.Wander, NPCBehavior.Sit, NPCBehavior.Idle };
-        return possible[Random.Range(0, possible.Count)];
+        if (movement.currentStore != NPCMovement.StoreType.None)
+        {
+            List<(NPCBehavior behavior, float weight)> inStoreBehaviors = new List<(NPCBehavior, float)>
+            {
+                (NPCBehavior.Idle, 0.3f),
+                (NPCBehavior.Wander, 0.4f),
+                (NPCBehavior.ExitStore, 0.3f)
+            };
+            
+            float inStoreTotalWeight = inStoreBehaviors.Sum(b => b.weight);
+            float inStoreRandomValue = Random.Range(0, inStoreTotalWeight);
+
+            foreach (var behavior in inStoreBehaviors)
+            {
+                if (inStoreRandomValue < behavior.weight)
+                {
+                    Debug.Log(name + ": " +behavior.behavior);
+                    return behavior.behavior;
+                }
+                inStoreRandomValue -= behavior.weight;
+            }
+
+            return NPCBehavior.Idle;
+        }
+
+        List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
+        {
+            (NPCBehavior.Idle, 0.15f),
+            (NPCBehavior.Wander, 0.5f),
+            (NPCBehavior.Sit, 0.2f),
+            (NPCBehavior.GoToStore, 0.15f)
+        };
+
+        float totalWeight = behaviors.Sum(b => b.weight);
+        float randomValue = Random.Range(0, totalWeight);
+        
+        foreach (var behavior in behaviors)
+        {
+            if (randomValue < behavior.weight)
+            {
+                Debug.Log(name + ": " +behavior.behavior);
+                return behavior.behavior;
+            }
+            randomValue -= behavior.weight;
+        }
+
+        return NPCBehavior.Idle;
     }
-    
 
     private void HandleWanderBehavior()
     {
@@ -191,6 +241,11 @@ public class NPCBrain : MonoBehaviour
         LookAtPlayer,
         GoTo,
         Sit,
-        GoHome
+        GoHome,
+        GoToMarket,
+        GoToMedical,
+        GoToBodyMod,
+        GoToStore,
+        ExitStore
     }
 }
