@@ -12,6 +12,7 @@ public class NPCBrain : MonoBehaviour
     private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
     [SerializeField] private NPCScriptableObject npcInfo;
+    [SerializeField] private int npcId;
     public Transform npcHouse;
     
     private CameraController playerCam;
@@ -74,6 +75,15 @@ public class NPCBrain : MonoBehaviour
             case NPCBehavior.GoToStore:
                 movement.HandleGoToStore();
                 break;
+            case NPCBehavior.GoToMarket:
+                movement.HandleGoToStore(NPCMovement.StoreType.Market);
+                break;
+            case NPCBehavior.GoToBodyMod:
+                movement.HandleGoToStore(NPCMovement.StoreType.BodyMod);
+                break;
+            case NPCBehavior.GoToMedical:
+                movement.HandleGoToStore(NPCMovement.StoreType.Medical);
+                break;
             case NPCBehavior.ExitStore:
                 movement.HandleExitStore();
                 break;
@@ -102,15 +112,36 @@ public class NPCBrain : MonoBehaviour
             {
                 gameObject.SetActive(true);
                 GetComponent<NavMeshAgent>().Warp(hit.position);
-                SetBehavior(NPCBehavior.Idle);
+                SetBehavior(NPCBehavior.Wander);
                 return;
             } 
         }
         
         if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
         {
-            NPCBehavior randomChoice = GetRandomBehavior();
-            SetBehavior(randomChoice);
+            if (npcInfo.NPCBehaviourType != NPCScriptableObject.NPCBehaviourTypes.Stationary)
+            {
+                SetBehavior(GetRandomBehavior());
+                
+            }
+            else
+            {
+                switch (npcId)
+                {
+                    case 8:     //market
+                        Debug.Log(name + " " + npcId);
+                        SetBehavior(NPCBehavior.GoToMarket);
+                        break;
+                    case 9:     //medical
+                        Debug.Log(name + " " + npcId);
+                        SetBehavior(NPCBehavior.GoToMedical);
+                        break;
+                    case 3:     //bodymods
+                        Debug.Log(name + " " + npcId);
+                        SetBehavior(NPCBehavior.GoToBodyMod);
+                        break;
+                }
+            }
         }
     }
     
@@ -132,7 +163,6 @@ public class NPCBrain : MonoBehaviour
             {
                 if (inStoreRandomValue < behavior.weight)
                 {
-                    Debug.Log(name + ": " +behavior.behavior);
                     return behavior.behavior;
                 }
                 inStoreRandomValue -= behavior.weight;
@@ -156,7 +186,6 @@ public class NPCBrain : MonoBehaviour
         {
             if (randomValue < behavior.weight)
             {
-                Debug.Log(name + ": " +behavior.behavior);
                 return behavior.behavior;
             }
             randomValue -= behavior.weight;

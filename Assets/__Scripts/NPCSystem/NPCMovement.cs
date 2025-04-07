@@ -441,11 +441,12 @@ public class NPCMovement : MonoBehaviour
         }[Random.Range(0, 3)];
     }
     
-    public void HandleGoToStore()
+    public void HandleGoToStore(StoreType storeType = StoreType.None)
     {
         Transform exit = null;
         Transform entrance = null;
-        StoreType selectedStore = GetRandomStore();
+        
+        StoreType selectedStore = storeType != StoreType.None ? GetRandomStore() : storeType;
 
         switch (selectedStore)
         {
