@@ -22,7 +22,7 @@ public enum OpCode
     COMPARE, JUMP_IF_EQUAL, JUMP_IF_NOT_EQUAL, JUMP_IF_GREATER, JUMP_IF_LESS,
 
     //IO
-    READ, WRITE,
+    READ, WRITE,  //TODO
 
     //OTHERS
     RANDOM,

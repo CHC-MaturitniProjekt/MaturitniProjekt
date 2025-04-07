@@ -16,6 +16,6 @@ public class SyntaxHighlighterSO : ScriptableObject
 [Serializable] 
 public class SyntaxHighlighterWord
 {
-    public string word = "default"; 
+    public string[] words; 
     public Color color = Color.blue; 
 }

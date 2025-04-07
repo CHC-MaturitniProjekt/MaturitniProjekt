@@ -13,5 +13,42 @@ MonoBehaviour:
   m_Name: SyntaxHighlighter
   m_EditorClassIdentifier: 
   words:
-  - word: public
-    color: {r: 0, g: 0.25360346, b: 1, a: 1}
+  - words:
+    - R0
+    - R1
+    - R2
+    - R3
+    - R4
+    - R5
+    - R6
+    - R7
+    - R8
+    - R9
+    color: {r: 1, g: 0.20382687, b: 0, a: 1}
+  - words:
+    - ADD
+    - SUB
+    - PRINT
+    - EXIT
+    - LABEL
+    - AND
+    - OR
+    - XOR
+    - NOT
+    - INC
+    - DEC
+    - PUSH
+    - POP
+    - MOVE
+    - JUMP
+    - CALL
+    - RET
+    - COMPARE
+    - JUMP_IF_EQUAL
+    - JUMP_IF_NOT_EQUAL
+    - JUMP_IF_GREATER
+    - JUMP_IF_LESS
+    - READ
+    - WRITE
+    - RANDOM
+    color: {r: 0, g: 0.17614913, b: 1, a: 1}

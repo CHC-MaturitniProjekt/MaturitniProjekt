@@ -8,6 +8,9 @@ public class VirtualMachine
     private int registerSize = 10;
     private int stackSize = 10;
     private int[] stack = new int[10];
+    private int callStackSize = 10;
+    private int[] callStack = new int[10];
+    private int callStackPointer = -1;
     private int stackPointer = -1;
     private Dictionary<string, int> registers = new Dictionary<string, int>
     {
@@ -19,6 +22,7 @@ public class VirtualMachine
     private Dictionary<string, int> labels = new();
 
     public event Action<string> OnError;
+    public event Action<string> OnPrint;
 
     public void LoadProgram(List<Instruction> instructions)
     {
@@ -92,7 +96,7 @@ public class VirtualMachine
                     break;
 
                 case OpCode.PRINT:
-                    Debug.Log($"[{instr.Operands[0]}] = {registers[instr.Operands[0]]}");
+                    OnPrint?.Invoke($"[{instr.Operands[0]}] = {registers[instr.Operands[0]]}");
                     break;
 
                 case OpCode.EXIT:
@@ -146,20 +150,20 @@ public class VirtualMachine
                     break;
 
                 case OpCode.CALL:
-                    if (stackPointer + 1 >= stackSize)
+                    if (callStackPointer + 1 >= callStackSize)
                     {
                         OnError?.Invoke("Stack overflow on CALL");
                     }
                     else
                     {
-                        int callTarget = GetOperandValue(instr.Operands[0]);
+                        int callTarget = GetJumpOperandValue(instr.Operands[0]);
                         if (callTarget < 0 || callTarget >= program.Count)
                         {
                             OnError?.Invoke($"Invalid CALL target: {callTarget}");
                         }
                         else
                         {
-                            stack[++stackPointer] = instructionPointer;
+                            callStack[++callStackPointer] = instructionPointer;
                             instructionPointer = callTarget - 1;
                         }
                     }
@@ -172,7 +176,7 @@ public class VirtualMachine
                     }
                     else
                     {
-                        instructionPointer = stack[stackPointer--];
+                        instructionPointer = callStack[callStackPointer--];
                     }
                     break;
 

@@ -1,11 +1,18 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 class TobanScriptTest : MonoBehaviour
 {
+    public TextMeshProUGUI text;
+
     void Start()
     {
         VirtualMachine vm = new VirtualMachine();
+        string code = "";
+
+        Lexer lexer = new Lexer(code);
+        List<Instruction> tokens = lexer.Tokenize();
 
         List<Instruction> program = new List<Instruction>
         {
@@ -33,6 +40,20 @@ class TobanScriptTest : MonoBehaviour
         };
 
         vm.LoadProgram(program);
+        vm.OnError += (msg) => Debug.LogError("VM Error: " + msg);
+        VirtualMachineRunner.Instance.Initialize(vm);
+       // VirtualMachineRunner.Instance.Run();
+    }
+
+    public void onStartClick()
+    {
+        VirtualMachine vm = new VirtualMachine();
+
+        Lexer lexer = new Lexer(text.text);
+        List<Instruction> tokens = lexer.Tokenize();
+
+
+        vm.LoadProgram(tokens);
         vm.OnError += (msg) => Debug.LogError("VM Error: " + msg);
         VirtualMachineRunner.Instance.Initialize(vm);
         VirtualMachineRunner.Instance.Run();
