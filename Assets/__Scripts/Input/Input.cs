@@ -125,15 +125,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""pcLeftClick"",
-                    ""type"": ""Button"",
-                    ""id"": ""9b4a6cb6-f4cc-4617-9861-384994b27eef"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -367,10 +358,67 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""action"": ""drop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""PC"",
+            ""id"": ""6b0604cb-891d-4271-aa52-285afb675eb2"",
+            ""actions"": [
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""7533d3f0-2a48-4f95-a91c-a21a37f55a53"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Step"",
+                    ""type"": ""Button"",
+                    ""id"": ""f4eb6753-37a6-4a9f-be20-55159eca82d2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""pcLeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""34581cdd-9155-463c-b818-fbe16a214ebf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""119b5aca-1e5a-466c-9425-72c7552aa72d"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6a3d6bc2-d150-4e4c-9fc2-a456c830a8c8"",
+                    ""id"": ""4f3a4b57-9d29-4cc8-a3f3-cdba2fe9505b"",
+                    ""path"": ""<Keyboard>/f2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Step"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""77d7b435-4b5b-4b29-b71b-fc7e248148cb"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -397,7 +445,11 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Main_camIndexIncrement = m_Main.FindAction("camIndexIncrement", throwIfNotFound: true);
         m_Main_camIndexDecrement = m_Main.FindAction("camIndexDecrement", throwIfNotFound: true);
         m_Main_drop = m_Main.FindAction("drop", throwIfNotFound: true);
-        m_Main_pcLeftClick = m_Main.FindAction("pcLeftClick", throwIfNotFound: true);
+        // PC
+        m_PC = asset.FindActionMap("PC", throwIfNotFound: true);
+        m_PC_Exit = m_PC.FindAction("Exit", throwIfNotFound: true);
+        m_PC_Step = m_PC.FindAction("Step", throwIfNotFound: true);
+        m_PC_pcLeftClick = m_PC.FindAction("pcLeftClick", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -470,7 +522,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_camIndexIncrement;
     private readonly InputAction m_Main_camIndexDecrement;
     private readonly InputAction m_Main_drop;
-    private readonly InputAction m_Main_pcLeftClick;
     public struct MainActions
     {
         private @Inputs m_Wrapper;
@@ -486,7 +537,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         public InputAction @camIndexIncrement => m_Wrapper.m_Main_camIndexIncrement;
         public InputAction @camIndexDecrement => m_Wrapper.m_Main_camIndexDecrement;
         public InputAction @drop => m_Wrapper.m_Main_drop;
-        public InputAction @pcLeftClick => m_Wrapper.m_Main_pcLeftClick;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -529,9 +579,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @drop.started += instance.OnDrop;
             @drop.performed += instance.OnDrop;
             @drop.canceled += instance.OnDrop;
-            @pcLeftClick.started += instance.OnPcLeftClick;
-            @pcLeftClick.performed += instance.OnPcLeftClick;
-            @pcLeftClick.canceled += instance.OnPcLeftClick;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -569,9 +616,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @drop.started -= instance.OnDrop;
             @drop.performed -= instance.OnDrop;
             @drop.canceled -= instance.OnDrop;
-            @pcLeftClick.started -= instance.OnPcLeftClick;
-            @pcLeftClick.performed -= instance.OnPcLeftClick;
-            @pcLeftClick.canceled -= instance.OnPcLeftClick;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -589,6 +633,68 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         }
     }
     public MainActions @Main => new MainActions(this);
+
+    // PC
+    private readonly InputActionMap m_PC;
+    private List<IPCActions> m_PCActionsCallbackInterfaces = new List<IPCActions>();
+    private readonly InputAction m_PC_Exit;
+    private readonly InputAction m_PC_Step;
+    private readonly InputAction m_PC_pcLeftClick;
+    public struct PCActions
+    {
+        private @Inputs m_Wrapper;
+        public PCActions(@Inputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Exit => m_Wrapper.m_PC_Exit;
+        public InputAction @Step => m_Wrapper.m_PC_Step;
+        public InputAction @pcLeftClick => m_Wrapper.m_PC_pcLeftClick;
+        public InputActionMap Get() { return m_Wrapper.m_PC; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PCActions set) { return set.Get(); }
+        public void AddCallbacks(IPCActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PCActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PCActionsCallbackInterfaces.Add(instance);
+            @Exit.started += instance.OnExit;
+            @Exit.performed += instance.OnExit;
+            @Exit.canceled += instance.OnExit;
+            @Step.started += instance.OnStep;
+            @Step.performed += instance.OnStep;
+            @Step.canceled += instance.OnStep;
+            @pcLeftClick.started += instance.OnPcLeftClick;
+            @pcLeftClick.performed += instance.OnPcLeftClick;
+            @pcLeftClick.canceled += instance.OnPcLeftClick;
+        }
+
+        private void UnregisterCallbacks(IPCActions instance)
+        {
+            @Exit.started -= instance.OnExit;
+            @Exit.performed -= instance.OnExit;
+            @Exit.canceled -= instance.OnExit;
+            @Step.started -= instance.OnStep;
+            @Step.performed -= instance.OnStep;
+            @Step.canceled -= instance.OnStep;
+            @pcLeftClick.started -= instance.OnPcLeftClick;
+            @pcLeftClick.performed -= instance.OnPcLeftClick;
+            @pcLeftClick.canceled -= instance.OnPcLeftClick;
+        }
+
+        public void RemoveCallbacks(IPCActions instance)
+        {
+            if (m_Wrapper.m_PCActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPCActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PCActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PCActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PCActions @PC => new PCActions(this);
     public interface IMainActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -602,6 +708,11 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         void OnCamIndexIncrement(InputAction.CallbackContext context);
         void OnCamIndexDecrement(InputAction.CallbackContext context);
         void OnDrop(InputAction.CallbackContext context);
+    }
+    public interface IPCActions
+    {
+        void OnExit(InputAction.CallbackContext context);
+        void OnStep(InputAction.CallbackContext context);
         void OnPcLeftClick(InputAction.CallbackContext context);
     }
 }

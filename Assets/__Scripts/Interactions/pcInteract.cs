@@ -6,7 +6,10 @@ using UnityEngine;
 using Task = System.Threading.Tasks.Task;
 
 public class PcInteract : InteractAction
-{    public override void OnInteract()
+{
+    [Header("Input")]
+    [SerializeField] private InputReader input;
+    public override void OnInteract()
     {
         Debug.Log("Start");
         CameraManager.Instance.EnterPcCamera();
@@ -14,7 +17,7 @@ public class PcInteract : InteractAction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
         GetComponent<Pc>().StartInteracting();
-      
+        input.PcInputEnable();
     }
 
     public override Task OnObjectiveInteract()
