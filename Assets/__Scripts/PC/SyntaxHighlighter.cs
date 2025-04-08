@@ -4,32 +4,54 @@ using UnityEngine;
 
 public class SyntaxHighlighter : MonoBehaviour
 {
-    public TMP_InputField inputField;
-    public TextMeshProUGUI syntaxHighlighter;
-    public SyntaxHighlighterSO syntaxHighlighterSO;
+    [Header("References")]
+    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private TextMeshProUGUI syntaxHighlighter;
+    [SerializeField] private SyntaxHighlighterSO syntaxHighlighterSO;
+    [Header("Settings")]
+    [SerializeField] private Color numberColor;
+    [SerializeField] private Color debugHighlightColor = Color.red;
 
-    public Color numberColor;
+    private int debugLineIndex = -1;
 
     private void Start()
     {
         inputField.onValueChanged.AddListener(UpdateSyntaxHighlighting);
     }
 
+    public void SetDebugLine(int index)
+    {
+        debugLineIndex = index;
+        UpdateSyntaxHighlighting(inputField.text);
+    }
+
     void UpdateSyntaxHighlighting(string text)
     {
-        string highlightedText = text;
-
-        highlightedText = Regex.Replace(highlightedText, @"(?<!<color=#[A-Fa-f0-9]{6}>)(\b\d+(\.\d+)?\b)", $"<color=#{ColorUtility.ToHtmlStringRGB(numberColor)}>$1</color>");
-
-        foreach (var syntaxWord in syntaxHighlighterSO.words)
+        string[] lines = text.Split('\n');
+        for (int i = 0; i < lines.Length; i++)
         {
-            string colorHex = ColorUtility.ToHtmlStringRGB(syntaxWord.color);
-            foreach (var word in syntaxWord.words)
+            string line = lines[i];
+
+            line = Regex.Replace(line, @"(?<!<color=#[A-Fa-f0-9]{6}>)(\b\d+(\.\d+)?\b)", $"<color=#{ColorUtility.ToHtmlStringRGB(numberColor)}>$1</color>");
+
+            foreach (var syntaxWord in syntaxHighlighterSO.words)
             {
-                highlightedText = Regex.Replace(highlightedText, $@"\b({word})\b", $"<color=#{colorHex}>$1</color>");
+                string colorHex = ColorUtility.ToHtmlStringRGB(syntaxWord.color);
+                foreach (var word in syntaxWord.words)
+                {
+                    line = Regex.Replace(line, $@"\b({word})\b", $"<color=#{colorHex}>$1</color>");
+                }
             }
+
+            if (i == debugLineIndex)
+            {
+                string colorHex = ColorUtility.ToHtmlStringRGBA(debugHighlightColor);
+                line = $"<mark=#{colorHex}>{line}</mark>";
+            }
+
+            lines[i] = line;
         }
 
-        syntaxHighlighter.text = highlightedText;
+        syntaxHighlighter.text = string.Join("\n", lines);
     }
 }
