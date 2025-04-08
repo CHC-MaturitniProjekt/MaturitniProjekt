@@ -13,6 +13,7 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private NPCBehavior currentBehavior;
     [SerializeField] private NPCScriptableObject npcInfo;
     [SerializeField] private int npcId;
+    public bool isShopkeeper;
     public Transform npcHouse;
     
     private CameraController playerCam;
@@ -30,6 +31,11 @@ public class NPCBrain : MonoBehaviour
         timeManager = FindAnyObjectByType<TimeManager>();
 
         textureAnimation = GetComponent<TextureAnimation>();
+
+        if (npcId is 3 or 8 or 9)
+        {
+            isShopkeeper = true;
+        }
     }
     
     private void Update()
@@ -129,15 +135,12 @@ public class NPCBrain : MonoBehaviour
                 switch (npcId)
                 {
                     case 8:     //market
-                        Debug.Log(name + " " + npcId);
                         SetBehavior(NPCBehavior.GoToMarket);
                         break;
                     case 9:     //medical
-                        Debug.Log(name + " " + npcId);
                         SetBehavior(NPCBehavior.GoToMedical);
                         break;
                     case 3:     //bodymods
-                        Debug.Log(name + " " + npcId);
                         SetBehavior(NPCBehavior.GoToBodyMod);
                         break;
                 }

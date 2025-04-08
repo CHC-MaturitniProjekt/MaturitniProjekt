@@ -27,14 +27,17 @@ public class NPCMovement : MonoBehaviour
     [Header("Market")]
     [SerializeField] private Transform marketEntrance;
     [SerializeField] private Transform marketExit;
+    [SerializeField] private Transform markerCounter;
     public bool isAtMarket = false;
     [Header("Medical")]
     [SerializeField] private Transform medicalEntrance;
     [SerializeField] private Transform medicalExit;
+    [SerializeField] private Transform medicalCounter;
     public bool isAtMedical = false;
     [Header("BodyMods")]
     [SerializeField] private Transform bodymodEntrance;
     [SerializeField] private Transform bodymodExit;
+    [SerializeField] private Transform bodymodCounter;
     public bool isAtBodymod = false;
     
     public enum StoreType { None, Market, Medical, BodyMod }
@@ -425,13 +428,13 @@ public class NPCMovement : MonoBehaviour
 
         HandleGoTo(npcBrain.npcHouse.position);
 
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        if (!agent.pathPending && agent.remainingDistance <= 1f)
         {
             gameObject.SetActive(false);
         } 
     }
 
-    public StoreType GetRandomStore()
+    private StoreType GetRandomStore()
     {
         return new List<StoreType>
         {
@@ -446,7 +449,7 @@ public class NPCMovement : MonoBehaviour
         Transform exit = null;
         Transform entrance = null;
         
-        StoreType selectedStore = storeType != StoreType.None ? GetRandomStore() : storeType;
+        StoreType selectedStore = storeType != StoreType.None ? storeType : GetRandomStore();
 
         switch (selectedStore)
         {
@@ -477,6 +480,35 @@ public class NPCMovement : MonoBehaviour
             isAtMedical = selectedStore == StoreType.Medical;
             isAtBodymod = selectedStore == StoreType.BodyMod;
             currentStore = selectedStore;
+        }
+
+        if (npcBrain.isShopkeeper)
+        {
+            GetBehindCounter();
+        }
+    }
+
+    private void GetBehindCounter()
+    {
+        Transform counterWaypoint = null;
+
+        switch (currentStore)
+        {
+            case StoreType.Market:
+                counterWaypoint = markerCounter;
+                break;
+            case StoreType.Medical:
+                counterWaypoint = medicalCounter;
+                break;
+            case StoreType.BodyMod:
+                counterWaypoint = bodymodCounter;
+                break;
+        }
+
+        if (counterWaypoint != null)
+        {
+            agent.stoppingDistance = 0.3f;
+            HandleGoTo(counterWaypoint.position);
         }
     }
     
