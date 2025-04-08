@@ -65,4 +65,25 @@ public class VirtualMachineRunner : MonoBehaviour
             }
         }
     }
+
+    public int getCurrentInstruction()
+    {
+        return vm.currentInstruction();
+    }
+
+    public bool HasInstructions()
+    {
+        return vm.HasInstructions();
+    }
+
+    public void Step()
+    {
+        if (vm == null)
+            return;
+
+        if (vm.HasInstructions())
+        {
+            vm.Tick();
+        }
+    }
 }

@@ -103,15 +103,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "pcLeftClick",
-                    "type": "Button",
-                    "id": "9b4a6cb6-f4cc-4617-9861-384994b27eef",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -345,10 +336,67 @@
                     "action": "drop",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "PC",
+            "id": "6b0604cb-891d-4271-aa52-285afb675eb2",
+            "actions": [
+                {
+                    "name": "Exit",
+                    "type": "Button",
+                    "id": "7533d3f0-2a48-4f95-a91c-a21a37f55a53",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Step",
+                    "type": "Button",
+                    "id": "f4eb6753-37a6-4a9f-be20-55159eca82d2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "pcLeftClick",
+                    "type": "Button",
+                    "id": "34581cdd-9155-463c-b818-fbe16a214ebf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "119b5aca-1e5a-466c-9425-72c7552aa72d",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "6a3d6bc2-d150-4e4c-9fc2-a456c830a8c8",
+                    "id": "4f3a4b57-9d29-4cc8-a3f3-cdba2fe9505b",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Step",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77d7b435-4b5b-4b29-b71b-fc7e248148cb",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",

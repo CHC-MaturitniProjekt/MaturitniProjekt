@@ -43,6 +43,7 @@ public class VirtualMachine
 
     public void Tick()
     {
+        Debug.Log("TICK");
         if (instructionPointer < 0 || instructionPointer >= program.Count)
         {
             OnError?.Invoke($"Invalid instruction pointer: {instructionPointer}");
@@ -51,6 +52,11 @@ public class VirtualMachine
 
         ExecuteInstruction(program[instructionPointer]);
         instructionPointer++;
+    }
+
+    public int currentInstruction()
+    {
+        return instructionPointer;
     }
 
     private int GetOperandValue(string operand)

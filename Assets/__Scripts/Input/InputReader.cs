@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 [CreateAssetMenu(menuName = "InputReader")]
-public class InputReader : ScriptableObject, Inputs.IMainActions
+public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActions
 {
     Inputs _inputs;
 
@@ -15,14 +15,35 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
         if (_inputs == null)
         {
             _inputs = new Inputs();
-            _inputs.Main.SetCallbacks(this);
-            _inputs.Main.Enable();
+            MainInputEnable();
         }
+    }
+
+    public void MainInputEnable()
+    {
+        _inputs.Main.SetCallbacks(this);
+        _inputs.Main.Enable();
+    }
+
+    public void MainInputDisable()
+    {
+        _inputs.Main.Disable();
+    }
+
+    public void PcInputEnable()
+    {
+        _inputs.PC.SetCallbacks(this);
+        _inputs.PC.Enable();
+    }
+
+    public void PcInputDisable()
+    {
+        _inputs.PC.Disable();
     }
 
     private void OnDisable()
     {
-        _inputs.Main.Disable();
+        MainInputDisable();
     }
 
     public event Action<Vector2> MoveEvent;
@@ -124,5 +145,18 @@ public class InputReader : ScriptableObject, Inputs.IMainActions
         {
             PcLeftClickEnd?.Invoke();
         }
+    }
+
+    public event Action PcOnExit;
+    public void OnExit(InputAction.CallbackContext context)
+    {
+        PcOnExit?.Invoke();
+    }
+
+    public event Action PcOnStep;
+    public void OnStep(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            PcOnStep?.Invoke();
     }
 }

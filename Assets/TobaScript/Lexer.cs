@@ -5,7 +5,7 @@ public class Lexer
 {
     private string input;
     private int position;
-    public event Action<string> OnSyntaxError;
+
     public Lexer(string input)
     {
         this.input = input;

@@ -24,7 +24,7 @@ public class Pc : MonoBehaviour
 
     void Start()
     {
-        input.InteractEvent += OnInteractExit;
+        input.PcOnExit += OnInteractExit;
     }
 
     public void StartInteracting()
@@ -46,6 +46,7 @@ public class Pc : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             CameraManager.Instance.EnterPlayerCamera();
             PlayerManager.Instance.EnablePlayerWithDelay();
+            input.PcInputDisable();
         }
     }
 }
