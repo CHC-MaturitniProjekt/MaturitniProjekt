@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VirtualMachineRunner : MonoBehaviour
@@ -64,6 +65,11 @@ public class VirtualMachineRunner : MonoBehaviour
                 isRunning = false;
             }
         }
+    }
+
+    public Dictionary<string, int> getRegisters()
+    {
+        return vm.getRegisters();
     }
 
     public int getCurrentInstruction()

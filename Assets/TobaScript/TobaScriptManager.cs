@@ -15,9 +15,11 @@ class TobanScriptManager : MonoBehaviour
     [SerializeField] private GameObject printLogPrefab;
     [SerializeField] private TextMeshProUGUI debugButton;
     [SerializeField] private SyntaxHighlighter syntaxHighlighter;
+    [SerializeField] private RegisterViewController registerViewController;
+    [SerializeField] private GameObject registerViewParent;
 
     private VirtualMachine debugVm;
-    public int debugVmCurrentStep;
+    private int debugVmCurrentStep;
 
     public void onStartDebugClick()
     {
@@ -41,6 +43,8 @@ class TobanScriptManager : MonoBehaviour
             VirtualMachineRunner.Instance.Initialize(debugVm);
             debugVmCurrentStep = 0;
             syntaxHighlighter.SetDebugLine(debugVmCurrentStep);
+            registerViewParent.SetActive(true);
+            registerViewController.updateRegisters(debugVm.getRegisters());
         }
         catch (Exception err)
         {
@@ -56,6 +60,7 @@ class TobanScriptManager : MonoBehaviour
             VirtualMachineRunner.Instance.Step();
             debugVmCurrentStep = VirtualMachineRunner.Instance.getCurrentInstruction();
             syntaxHighlighter.SetDebugLine(debugVmCurrentStep);
+            registerViewController.updateRegisters(debugVm.getRegisters());
             if (!VirtualMachineRunner.Instance.HasInstructions())
                 stopDebug();
         }
@@ -68,6 +73,8 @@ class TobanScriptManager : MonoBehaviour
         debugVmCurrentStep = -1;
         debugButton.text = "Debug";
         syntaxHighlighter.SetDebugLine(debugVmCurrentStep);
+        registerViewController.resetRegisters();
+        registerViewParent.SetActive(false);
     }
 
     public void onPlayClick()

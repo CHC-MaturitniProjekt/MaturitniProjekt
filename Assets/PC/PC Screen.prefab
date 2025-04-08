@@ -473,17 +473,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737668884540312103}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1498267927221647793}
-  m_Father: {fileID: 3679660654214058112}
+  m_Father: {fileID: 420675677721549677}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 374, y: -141}
+  m_AnchoredPosition: {x: 379.08997, y: 83.650024}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8218483111020757452
@@ -1745,7 +1745,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4003951416183528741}
   m_Direction: 0
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1960,6 +1960,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6055303876111690846}
+  - {fileID: 3929736958789956096}
   m_Father: {fileID: 2510279545565945018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2125,7 +2126,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 19.5, y: 187}
+  m_AnchoredPosition: {x: 19.5, y: 100.03284}
   m_SizeDelta: {x: 200, y: -374}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1766441799962328830
@@ -3400,10 +3401,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 2510279545565945018}
-    - targetCorrespondingSourceObject: {fileID: 6701236184263004562, guid: a4ae595dfe7601241adad3758234f44a,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3929736958789956096}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 9202005367528118366, guid: a4ae595dfe7601241adad3758234f44a,
         type: 3}
@@ -3463,7 +3460,8 @@ MonoBehaviour:
     type: 3}
   debugButton: {fileID: 1796725259510733448}
   syntaxHighlighter: {fileID: 5833587406507384742}
-  debugVmCurrentStep: 0
+  registerViewController: {fileID: 0}
+  registerViewParent: {fileID: 0}
 --- !u!224 &3679660654214058112 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6701236184263004562, guid: a4ae595dfe7601241adad3758234f44a,

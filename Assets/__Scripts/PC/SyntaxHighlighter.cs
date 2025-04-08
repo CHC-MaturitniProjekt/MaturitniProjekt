@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ public class SyntaxHighlighter : MonoBehaviour
     void UpdateSyntaxHighlighting(string text)
     {
         string[] lines = text.Split('\n');
+
         for (int i = 0; i < lines.Length; i++)
         {
             string line = lines[i];
@@ -37,10 +39,8 @@ public class SyntaxHighlighter : MonoBehaviour
             foreach (var syntaxWord in syntaxHighlighterSO.words)
             {
                 string colorHex = ColorUtility.ToHtmlStringRGB(syntaxWord.color);
-                foreach (var word in syntaxWord.words)
-                {
-                    line = Regex.Replace(line, $@"\b({word})\b", $"<color=#{colorHex}>$1</color>");
-                }
+                string keywordPattern = string.Join("|", syntaxWord.words.Select(Regex.Escape));
+                line = Regex.Replace(line, $@"\b({keywordPattern})\b", $"<color=#{colorHex}>$1</color>");
             }
 
             if (i == debugLineIndex)
