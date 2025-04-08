@@ -37,7 +37,12 @@ public class NPCBrain : MonoBehaviour
             isShopkeeper = true;
         }
     }
-    
+
+    private void Start()
+    {
+        NPCManager.Instance.RegisterNPC(gameObject);
+    }
+
     private void Update()
     {
         if (state.IsOverriden) return;
@@ -101,26 +106,21 @@ public class NPCBrain : MonoBehaviour
         float currentHour = timeManager.GetWorldTime()/60f;
         float activeValue = npcInfo.NPCActiveTimeCurve.Evaluate(currentHour);
         
-        if (currentHour >= 6f && currentHour < 22f && currentBehavior == NPCBehavior.GoHome)
-        {
-            movement.HandleLeaveHome();
-        }
-        
-        if (currentHour >= 22f || currentHour < 6f)
-        {
-            if (currentBehavior != NPCBehavior.GoHome)
-            {
-                SetBehavior(NPCBehavior.GoHome);
-            }
-            return;
-        }
-        
         if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
         {
+            if (currentHour >= 21f || currentHour < 6f)
+            {
+                if (currentBehavior != NPCBehavior.GoHome)
+                {
+                    SetBehavior(NPCBehavior.GoHome);
+                }
+                return;
+            }
+
+            
             if (npcInfo.NPCBehaviourType != NPCScriptableObject.NPCBehaviourTypes.Stationary)
             {
                 SetBehavior(GetRandomBehavior());
-                
             }
             else
             {

@@ -433,27 +433,12 @@ public class NPCMovement : MonoBehaviour
         else
         {
             HandleGoTo(npcBrain.npcHouse.position);
+
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                NPCManager.Instance.DisableNPC(gameObject);
+            }
         }
-
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-        {
-            gameObject.SetActive(false);
-        } 
-    }
-
-    public void HandleLeaveHome()
-    {
-        /*Vector3 safeSpawn = npcBrain.npcHouse.position + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(safeSpawn, out hit, 2f, NavMesh.AllAreas))
-        {*/
-            gameObject.SetActive(true);
-            /*
-            GetComponent<NavMeshAgent>().Warp(hit.position); 
-            */
-            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
-            //return;
-        //} 
     }
 
     private StoreType GetRandomStore()
@@ -562,11 +547,12 @@ public class NPCMovement : MonoBehaviour
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
             {
                 agent.Warp(entrance.position);
-                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
                 isAtMarket = false;
                 isAtBodymod = false;
                 isAtMedical = false;
                 currentStore = StoreType.None;
+
+                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
             }
         }
     }
@@ -646,6 +632,10 @@ public class NPCMovement : MonoBehaviour
         else
         {
             headBone.localRotation = defaultHeadLocalRotation;
+            if (agent.isStopped)
+            {
+                agent.isStopped = false;
+            }
         }
     }
 
