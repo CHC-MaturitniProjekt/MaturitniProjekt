@@ -98,7 +98,7 @@ public class Movement : MonoBehaviour
     {
         if (!PlayerManager.Instance.isDisabled)
         {
-            if (isGrounded)
+            if (isGrounded && !camController.isInConvo)
             {
                 Jump();
             }
@@ -146,7 +146,12 @@ public class Movement : MonoBehaviour
 
         if (!isSitting)
         {
-            animator.SetFloat("X", rb.linearVelocity.magnitude);
+            float currentSpeed = rb.linearVelocity.magnitude;
+
+            float targetSpeed = isSprinting ? currentSpeed : Mathf.Min(currentSpeed, 1f);
+
+            float lerpedSpeed = Mathf.Lerp(animator.GetFloat("X"), targetSpeed, Time.fixedDeltaTime * 5f);
+            animator.SetFloat("X", lerpedSpeed);
         }
     }
 
