@@ -50,6 +50,11 @@ public class NPCBrain : MonoBehaviour
         NPCCycles();
     }
 
+    public int GetNPCID()
+    {
+        return npcId;
+    }
+
     public NPCScriptableObject GetNPCSO()
     {
         return npcInfo;

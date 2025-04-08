@@ -1,16 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class SaveManager : MonoBehaviour
 {
     private VolumeManager volumeManager;
     private Movement playerMovement;
     private CameraController camController;
+    private NPCManager npcManager;
     
     private float playerSprintTime;
     private float playerSprintRecoveryT;
@@ -27,18 +24,19 @@ public class SaveManager : MonoBehaviour
         pickUpScript = FindFirstObjectByType<PickUp>();
         playerMovement = FindFirstObjectByType<Movement>();
         time = FindFirstObjectByType<TimeManager>();
+        npcManager = FindFirstObjectByType<NPCManager>();
         
         LoadGame();
     }
 
     public void SaveGame()
     {
-        SaveSystem.SavePlayer(playerMovement, pickUpScript, time, camController);
+        SaveSystem.SaveData(playerMovement, pickUpScript, time, camController, npcManager);
     }
 
     public void LoadGame()
     {
-        PlayerData data = SaveSystem.LoadPlayer();
+        SaveData data = SaveSystem.LoadData();
 
         if (data == null)
         {
@@ -72,11 +70,34 @@ public class SaveManager : MonoBehaviour
                 item.transform.rotation = itemData.rotation;
             }
         }
+        
+        foreach (var npcData in data.npcs)
+        {
+            var npc = npcManager.GetNPCByID(npcData.npcID);
+            if (npc != null)
+            {
+                npc.transform.position = npcData.position;
+                npc.transform.rotation = npcData.rotation;
+                npc.GetComponent<NPCBrain>().SetBehavior(npcData.npcBehavior);
+                if (npcData.isActive)
+                {
+                    npcManager.EnableNPC(npc);
+                }
+                else
+                {
+                    npcManager.DisableNPC(npc);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("NPC not found: " + npcData.npcID);
+            }
+        }        
     }
 
-    public void ResetPlayer()
+    public void ResetData()
     {
-        SaveSystem.ResetPlayer();
+        SaveSystem.ResetData();
     }
 
     public void SetMouseSensitivity()

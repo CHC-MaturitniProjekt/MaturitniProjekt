@@ -33,6 +33,26 @@ public class NPCManager : MonoBehaviour
         }
     }
     
+    public List<GameObject> GetAllNPCs()
+    {
+        return allNPCs;
+    }
+
+    public GameObject GetNPCByID(int npcID)
+    {
+        foreach (var npc in allNPCs)
+        {
+            if (npc != null && npc.TryGetComponent(out NPCBrain brain))
+            {
+                if (brain.GetNPCID() == npcID)
+                {
+                    return npc;
+                }
+            }
+        }
+        return null;
+    }
+    
     public void RegisterNPC(GameObject npc)
     {
         if (!allNPCs.Contains(npc))
@@ -79,6 +99,15 @@ public class NPCManager : MonoBehaviour
         {
             npc.GetComponent<NavMeshAgent>().enabled = false;
             npc.SetActive(false);
+        }
+    }
+    
+    public void EnableNPC(GameObject npc)
+    {
+        if (npc != null && !npc.activeSelf)
+        {
+            npc.GetComponent<NavMeshAgent>().enabled = true;
+            npc.SetActive(true);
         }
     }
 }
