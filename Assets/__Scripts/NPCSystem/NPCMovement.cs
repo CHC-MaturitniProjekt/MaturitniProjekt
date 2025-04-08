@@ -1,22 +1,47 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class NPCMovement : MonoBehaviour
 {
     [Header("Navigation Settings")]
     [SerializeField] private Transform[] waypoints;
     [SerializeField] private float waypointWaitTime = 2f;
+    private int lastWaypointIndex = -1;
+    private float waypointArrivalTime = -1f;
     
     [Header("Player Interaction")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float detectionRadius = 10f;
     [SerializeField] private float detectionAngle = 80f;
     [SerializeField] private float stopDistance = 2f;
+    private Quaternion defaultHeadLocalRotation;
 
     [Header("References")]
     [SerializeField] private Transform headBone;
+
+    [Header("Store interactions")] 
+    [Header("Market")]
+    [SerializeField] private Transform marketEntrance;
+    [SerializeField] private Transform marketExit;
+    [SerializeField] private Transform markerCounter;
+    public bool isAtMarket = false;
+    [Header("Medical")]
+    [SerializeField] private Transform medicalEntrance;
+    [SerializeField] private Transform medicalExit;
+    [SerializeField] private Transform medicalCounter;
+    public bool isAtMedical = false;
+    [Header("BodyMods")]
+    [SerializeField] private Transform bodymodEntrance;
+    [SerializeField] private Transform bodymodExit;
+    [SerializeField] private Transform bodymodCounter;
+    public bool isAtBodymod = false;
+    
+    public enum StoreType { None, Market, Medical, BodyMod }
+    public StoreType currentStore = StoreType.None;
     
     private NavMeshAgent agent;
     private NPCState state;
@@ -25,6 +50,19 @@ public class NPCMovement : MonoBehaviour
     private int currentWaypointIndex;
     private bool isWaiting;
 
+    private List<string> canSitOn = new List<string>();
+    private GameObject currentSittableObject;
+
+    private GameObject currentSeat;
+    private Quaternion originalRotation;
+    private Coroutine sitRoutine;
+    
+    private Vector3 lastPosition;
+    private float stuckCheckInterval = 1f;
+    private float stuckThreshold = 0.1f;
+    private float pathTimeout = 10f;
+    private float lastPathCalculationTime;
+    
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -38,6 +76,53 @@ public class NPCMovement : MonoBehaviour
         if (waypoints.Length > 0)
         {
             SetNextWaypointDestination();
+        }
+
+        AssertParams();
+        lastPosition = transform.position;
+        lastPathCalculationTime = Time.time;
+        defaultHeadLocalRotation = headBone.localRotation;
+        StartCoroutine(StuckCheckRoutine());
+    }
+
+    private void AssertParams()
+    {
+        var npcSO = npcBrain.GetNPCSO();
+        switch (npcSO.NPCBehaviourType)
+        {
+            case NPCScriptableObject.NPCBehaviourTypes.Homeless:
+                canSitOn.Add("GroundSit");
+                break;
+            case NPCScriptableObject.NPCBehaviourTypes.Basic:
+            case NPCScriptableObject.NPCBehaviourTypes.Fancy:
+                canSitOn.Add("Bench");
+                canSitOn.Add("Sofa");
+                break;
+            case NPCScriptableObject.NPCBehaviourTypes.Stationary:
+                break;
+        }
+    }
+    
+    private IEnumerator StuckCheckRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(stuckCheckInterval);
+        
+            if (state.IsOverriden || isWaiting || state.IsRunningAway) 
+                continue;
+            
+            float distanceMoved = Vector3.Distance(transform.position, lastPosition);
+            lastPosition = transform.position;
+        
+            if (distanceMoved < stuckThreshold && agent.hasPath && !agent.isStopped)
+            {
+                if (Time.time - lastPathCalculationTime > pathTimeout)
+                {
+                    HandleWander();
+                    lastPathCalculationTime = Time.time;
+                }
+            }
         }
     }
 
@@ -74,18 +159,112 @@ public class NPCMovement : MonoBehaviour
             Debug.LogWarning("No waypoints set for wandering!");
             return;
         }
-        
-        HandleGoTo(waypoints[currentWaypointIndex].position);
-
-        if (ShouldWaitAtWaypoint())
+    
+        if (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
         {
-            StartCoroutine(WaitAtWaypointRoutine());
+            waypointArrivalTime = -1f;
+            return;
         }
+        
+        if (waypointArrivalTime < 0f)
+        {
+            waypointArrivalTime = Time.time;
+            return;
+        }
+        
+        if (Time.time - waypointArrivalTime < waypointWaitTime)
+        {
+            return;
+        }
+    
+        waypointArrivalTime = -1f;
+
+        if (agent.isStopped) agent.isStopped = false;
+    
+        if (Random.value < 0.2f)
+        {
+            HandleSit();
+            StartCoroutine(SitForRandomTime());
+            return;
+        }
+    
+        Vector3 newDestination;
+        int attempts = 0;
+        const int maxAttempts = 10;
+        const float minWanderDistance = 5f;
+        const float randomRadius = 10f;
+
+        do
+        {
+            Transform randomWaypoint = waypoints[Random.Range(0, waypoints.Length)];
+            if (NavMesh.SamplePosition(randomWaypoint.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                newDestination = hit.position;
+            }
+            else
+            {
+                newDestination = randomWaypoint.position;
+            }
+
+            attempts++;
+        } 
+        while (Vector3.Distance(transform.position, newDestination) < minWanderDistance && 
+               attempts < maxAttempts);
+
+        if (attempts >= maxAttempts)
+        {
+            do
+            {
+                Vector3 randomDirection = Random.insideUnitSphere * randomRadius;
+                randomDirection += transform.position;
+                if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                {
+                    newDestination = hit.position;
+                }
+                else
+                {
+                    newDestination = randomDirection;
+                }
+
+                attempts++;
+            }
+            while (Vector3.Distance(transform.position, newDestination) < minWanderDistance &&
+                   attempts < maxAttempts);
+        }
+
+        lastPathCalculationTime = Time.time;
+
+        HandleGoTo(newDestination);
+    }
+    
+    private IEnumerator SitForRandomTime()
+    {
+        yield return new WaitForSeconds(Random.Range(3f, 7f));
+        InterruptSit();
     }
     
     public void HandleGoTo(Vector3 pos, bool behaviourGoTo = false)
     {
-        agent.SetDestination(pos);
+        lastPathCalculationTime = Time.time;
+    
+        NavMeshPath path = new NavMeshPath();
+        if (agent.CalculatePath(pos, path) && path.status == NavMeshPathStatus.PathComplete)
+        {
+            agent.SetDestination(pos);
+        }
+        else
+        {
+            if (NavMesh.SamplePosition(pos, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+            {
+                agent.SetDestination(hit.position);
+            }
+            else
+            {
+                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
+                return;
+            }
+        }
+
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance && behaviourGoTo)
         {
             npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
@@ -95,6 +274,279 @@ public class NPCMovement : MonoBehaviour
     public void HandleIdle()
     {
         agent.isStopped = true;
+        StartCoroutine(IdleTimeoutRoutine());
+    }
+    
+    private IEnumerator IdleTimeoutRoutine()
+    { 
+        NPCBrain.NPCBehavior tempBehavior = npcBrain.GetCurrentBehavior();
+        yield return new WaitForSeconds(7f);
+        agent.isStopped = false;
+        if (npcBrain.GetCurrentBehavior() == NPCBrain.NPCBehavior.Idle)
+        {
+            npcBrain.SetBehavior(tempBehavior);
+        }
+    }
+
+    public void HandleSit()
+    {
+        if (sitRoutine != null) return;
+
+        GameObject closestObject = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (string tag in canSitOn)
+        {
+            GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
+            foreach (GameObject obj in objects)
+            {
+                if (NPCManager.Instance.IsSeatReserved(obj.transform)) continue;
+                
+                float distance = Vector3.Distance(transform.position, obj.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestObject = obj;
+                }
+            }
+        }
+
+        if (closestObject == null)
+        {
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+            return;
+        }
+
+        bool reserved = false;
+        if (!NPCManager.Instance.IsSeatReserved(closestObject.transform))
+        {
+            reserved = NPCManager.Instance.ReserveSeat(closestObject.transform, gameObject);
+        }
+        if (!reserved)
+        {
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+            return;
+        }
+
+        currentSeat = closestObject;
+        HandleGoTo(closestObject.transform.position);
+        sitRoutine = StartCoroutine(ArrivedAtSpot(closestObject));
+    }
+
+    private IEnumerator ArrivedAtSpot(GameObject seatObject)
+    {
+        while (Vector3.Distance(transform.position, seatObject.transform.position) > agent.stoppingDistance)
+        {
+            yield return null;
+        }
+        
+        agent.isStopped = true;
+
+        agent.updatePosition = false;
+        agent.updateRotation = false;
+        
+        animation.SetMovementSpeed(0);
+        originalRotation = transform.rotation;
+        
+        Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
+        
+        transform.position = sitPosition.position;
+        transform.rotation = sitPosition.rotation;
+        
+        string sitAnim = "";
+        switch (seatObject.tag)
+        {
+            case "Sofa":
+                sitAnim = "isSofaSitting";
+                break;
+            case "Bench":
+                sitAnim = "isBenchSitting";
+                break;
+            case "GroundSit":
+                sitAnim = "isGroundSitting";
+                break;
+            case "Layable":
+                sitAnim = "isBedSitting";
+                break;
+        }
+        animation.Sit(sitAnim);
+        
+        float minSitTime = 3f;
+        float sitStartTime = Time.time;
+        while (Time.time - sitStartTime < minSitTime)
+        {
+            yield return null;
+        }
+        
+        while (npcBrain.GetCurrentBehavior() == NPCBrain.NPCBehavior.Sit && !state.IsOverriden)
+        {
+            float distanceFromSeat = Vector3.Distance(transform.position, seatObject.transform.position);
+            if (distanceFromSeat > 0.5f)
+                break;
+            yield return null;
+        }
+        
+        animation.ResetSit(sitAnim);
+        transform.rotation = originalRotation;
+        
+        agent.updatePosition = true;
+        agent.updateRotation = true;
+        agent.isStopped = false;
+        
+        if (currentSeat != null)
+        {
+            NPCManager.Instance.ReleaseSeat(currentSeat.transform);
+            currentSeat = null;
+        }
+        
+        sitRoutine = null;
+        npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+    }
+
+    public void InterruptSit()
+    {
+        if (sitRoutine != null)
+        {
+            StopCoroutine(sitRoutine);
+            sitRoutine = null;
+
+            animation.ResetSit("isGroundSitting");
+            transform.rotation = originalRotation;
+            agent.isStopped = false;
+            
+            if (currentSeat != null)
+            {
+                NPCManager.Instance.ReleaseSeat(currentSeat.transform);
+                currentSeat = null;
+            }
+        }
+    }
+    
+    public void HandleGoHome()
+    {
+        if (npcBrain.npcHouse == null) return;
+
+        HandleGoTo(npcBrain.npcHouse.position);
+
+        if (!agent.pathPending && agent.remainingDistance <= 1f)
+        {
+            gameObject.SetActive(false);
+        } 
+    }
+
+    private StoreType GetRandomStore()
+    {
+        return new List<StoreType>
+        {
+            StoreType.Market,
+            StoreType.Medical,
+            StoreType.BodyMod
+        }[Random.Range(0, 3)];
+    }
+    
+    public void HandleGoToStore(StoreType storeType = StoreType.None)
+    {
+        Transform exit = null;
+        Transform entrance = null;
+        
+        StoreType selectedStore = storeType != StoreType.None ? storeType : GetRandomStore();
+
+        switch (selectedStore)
+        {
+            case StoreType.Market:
+                exit = marketExit;
+                entrance = marketEntrance;
+                break;
+            case StoreType.Medical:
+                exit = medicalExit;
+                entrance = medicalEntrance;
+                break;
+            case StoreType.BodyMod:
+                exit = bodymodExit;
+                entrance = bodymodEntrance;
+                break;
+        }
+    
+        if (entrance == null) return;
+        
+        HandleGoTo(entrance.position);
+
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            agent.Warp(exit.position);
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+
+            isAtMarket = selectedStore == StoreType.Market;
+            isAtMedical = selectedStore == StoreType.Medical;
+            isAtBodymod = selectedStore == StoreType.BodyMod;
+            currentStore = selectedStore;
+        }
+
+        if (npcBrain.isShopkeeper)
+        {
+            GetBehindCounter();
+        }
+    }
+
+    private void GetBehindCounter()
+    {
+        Transform counterWaypoint = null;
+
+        switch (currentStore)
+        {
+            case StoreType.Market:
+                counterWaypoint = markerCounter;
+                break;
+            case StoreType.Medical:
+                counterWaypoint = medicalCounter;
+                break;
+            case StoreType.BodyMod:
+                counterWaypoint = bodymodCounter;
+                break;
+        }
+
+        if (counterWaypoint != null)
+        {
+            agent.stoppingDistance = 0.3f;
+            HandleGoTo(counterWaypoint.position);
+        }
+    }
+    
+    public void HandleExitStore()
+    {
+        Transform exit = null;
+        Transform entrance = null;
+
+        switch (currentStore)
+        {
+            case StoreType.Market:
+                exit = marketExit;
+                entrance = marketEntrance;
+                break;
+            case StoreType.Medical:
+                exit = medicalExit;
+                entrance = medicalEntrance;
+                break;
+            case StoreType.BodyMod:
+                exit = bodymodExit;
+                entrance = bodymodEntrance;
+                break;
+        }
+
+        if (exit != null && entrance != null)
+        {
+            HandleGoTo(exit.position);
+
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                agent.Warp(entrance.position);
+                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+                isAtMarket = false;
+                isAtBodymod = false;
+                isAtMedical = false;
+                currentStore = StoreType.None;
+            }
+        }
     }
 
     public void HandleFollowPlayer()
@@ -132,63 +584,47 @@ public class NPCMovement : MonoBehaviour
 
     public void HandleLookAt()
     {
-        if (state.IsRunningAway) return;
-        
-        Vector3 directionToPlayer = playerTransform.position - headBone.position;
-        float angleToPlayer = Vector3.SignedAngle(headBone.forward, directionToPlayer, Vector3.up);
+        if (!playerTransform) return;
+    
+        float distance = Vector3.Distance(transform.position, playerTransform.position);
 
-        npcBrain.SetBehavior(NPCBrain.NPCBehavior.Idle);
-        
-        if (Mathf.Abs(angleToPlayer) > 80)
+        if (distance < stopDistance)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+            agent.isStopped = true;
+            headBone.LookAt(playerTransform.position, Vector3.up);
+            headBone.Rotate(30, 0, 0);
+            return;
+        }
+    
+        Vector3 bodyDirection = playerTransform.position - transform.position;
+        bodyDirection.y = 0f;
+        float bodyAngle = Vector3.Angle(transform.forward, bodyDirection);
+        if (!state.IsSitting && npcBrain.GetCurrentBehavior() != NPCBrain.NPCBehavior.Wander && bodyAngle > 20f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(bodyDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         }
-        else
-        {
-            headBone.LookAt(playerTransform.position); 
-            headBone.Rotate(30, 0, 0);
-        }
+    
+        headBone.LookAt(playerTransform.position, Vector3.up);
+        headBone.Rotate(30, 0, 0);
     }
 
     private void DetectPlayer()
     {
+        if (!playerTransform) return;
+
         Vector3 dirToPlayer = playerTransform.position - transform.position;
         float distance = dirToPlayer.magnitude;
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
-        
-        state.IsLookingAtPlayer = distance < detectionRadius && angle < detectionAngle;
-        
-        if (distance > detectionRadius)
-        {
-            agent.isStopped = false;
-            return;
-        } 
-        
-        if (distance < detectionRadius && angle < detectionAngle && !state.IsRunningAway)
+
+        if (distance < detectionRadius && angle < detectionAngle)
         {
             HandleLookAt();
         }
-        
-        state.IsLookingAtPlayer = false;
-
-    }
-
-    private bool ShouldWaitAtWaypoint()
-    {
-        return !agent.pathPending && 
-               agent.remainingDistance <= agent.stoppingDistance &&
-               !isWaiting;
-    }
-
-    private IEnumerator WaitAtWaypointRoutine()
-    {
-        isWaiting = true;
-        yield return new WaitForSeconds(waypointWaitTime);
-        
-        currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-        SetNextWaypointDestination();
-        isWaiting = false;
+        else
+        {
+            headBone.localRotation = defaultHeadLocalRotation;
+        }
     }
 
     private IEnumerator RunAwayTimerRoutine()

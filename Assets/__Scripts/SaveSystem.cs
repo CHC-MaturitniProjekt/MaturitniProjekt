@@ -78,7 +78,7 @@ public static class SaveSystem
     private static string Encrypt(string plainText, string key)
     {
         byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-        Array.Resize(ref keyBytes, 32); // Ensure the key is 32 bytes long
+        Array.Resize(ref keyBytes, 32);
         using (Aes aes = Aes.Create())
         {
             aes.Key = keyBytes;
@@ -108,7 +108,7 @@ public static class SaveSystem
         Array.Copy(fullCipher, iv.Length, cipher, 0, cipher.Length);
 
         byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-        Array.Resize(ref keyBytes, 32); // Ensure the key is 32 bytes long
+        Array.Resize(ref keyBytes, 32);
         using (Aes aes = Aes.Create())
         {
             aes.Key = keyBytes;

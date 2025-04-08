@@ -3,40 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class NPCBrain : MonoBehaviour
 {
-    [SerializeField] private NPCState state;
-    [SerializeField] private NPCMovement movement;
+    private NPCState state;
+    private NPCMovement movement;
     [SerializeField] private NPCBehavior currentBehavior;
     [SerializeField] private NPCScriptableObject npcInfo;
-
-    private List<Transform> waypoints;
-
+    [SerializeField] private int npcId;
+    public bool isShopkeeper;
+    public Transform npcHouse;
+    
     private CameraController playerCam;
     private TimeManager timeManager;
-    private WaypointManager waypointManager;
     private Transform currentWaypoint;
     public NPCBehavior AfterDialogueBehavior {get; set;}
-
-    private NPCBehavior tempBehaviour;
+    
+    private TextureAnimation textureAnimation;
+    
     private void Awake()
     {
         state = GetComponent<NPCState>();
         movement = GetComponent<NPCMovement>();
         playerCam = FindFirstObjectByType<CameraController>();
         timeManager = FindAnyObjectByType<TimeManager>();
-        waypointManager = FindAnyObjectByType<WaypointManager>();
-    }
 
-    private void Start()
-    {
-        waypoints = npcInfo.NPCWayPointNames
-            .Select(name => WaypointManager.Instance.GetWaypoint(name))
-            .Where(transform => transform != null)
-            .ToList();
-    }
+        textureAnimation = GetComponent<TextureAnimation>();
 
+        if (npcId is 3 or 8 or 9)
+        {
+            isShopkeeper = true;
+        }
+    }
+    
     private void Update()
     {
         if (state.IsOverriden) return;
@@ -71,27 +72,130 @@ public class NPCBrain : MonoBehaviour
             case NPCBehavior.Idle:
                 movement.HandleIdle();
                 break;
+            case NPCBehavior.Sit:
+                movement.HandleSit();
+                break;
+            case NPCBehavior.GoHome:
+                movement.HandleGoHome();
+                break;
+            case NPCBehavior.GoToStore:
+                movement.HandleGoToStore();
+                break;
+            case NPCBehavior.GoToMarket:
+                movement.HandleGoToStore(NPCMovement.StoreType.Market);
+                break;
+            case NPCBehavior.GoToBodyMod:
+                movement.HandleGoToStore(NPCMovement.StoreType.BodyMod);
+                break;
+            case NPCBehavior.GoToMedical:
+                movement.HandleGoToStore(NPCMovement.StoreType.Medical);
+                break;
+            case NPCBehavior.ExitStore:
+                movement.HandleExitStore();
+                break;
         }
     }
     
-    private void NPCCycles() 
+    private void NPCCycles()
     {
-        switch (timeManager.GetWorldTime())
+        float currentHour = timeManager.GetWorldTime()/60f;
+        float activeValue = npcInfo.NPCActiveTimeCurve.Evaluate(currentHour);
+        
+        if (currentHour >= 22f || currentHour < 6f)
         {
-            case 480:
-                break;
-            case 840: 
-                SetBehavior(NPCBehavior.GoTo);
-                currentWaypoint = waypointManager.GetWaypoint("DumWaypoint");
-                break;
-            case 1140:
+            if (currentBehavior != NPCBehavior.GoHome)
+            {
+                SetBehavior(NPCBehavior.GoHome);
+            }
+            return;
+        }
+        
+        if (currentHour >= 6f && currentHour < 22f && currentBehavior == NPCBehavior.GoHome)
+        {
+            Vector3 safeSpawn = npcHouse.position + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(safeSpawn, out hit, 2f, NavMesh.AllAreas))
+            {
+                gameObject.SetActive(true);
+                GetComponent<NavMeshAgent>().Warp(hit.position);
                 SetBehavior(NPCBehavior.Wander);
-                break;
-            default:
-                break;
+                return;
+            } 
+        }
+        
+        if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
+        {
+            if (npcInfo.NPCBehaviourType != NPCScriptableObject.NPCBehaviourTypes.Stationary)
+            {
+                SetBehavior(GetRandomBehavior());
+                
+            }
+            else
+            {
+                switch (npcId)
+                {
+                    case 8:     //market
+                        SetBehavior(NPCBehavior.GoToMarket);
+                        break;
+                    case 9:     //medical
+                        SetBehavior(NPCBehavior.GoToMedical);
+                        break;
+                    case 3:     //bodymods
+                        SetBehavior(NPCBehavior.GoToBodyMod);
+                        break;
+                }
+            }
         }
     }
     
+    private NPCBehavior GetRandomBehavior()
+    {
+        if (movement.currentStore != NPCMovement.StoreType.None)
+        {
+            List<(NPCBehavior behavior, float weight)> inStoreBehaviors = new List<(NPCBehavior, float)>
+            {
+                (NPCBehavior.Idle, 0.3f),
+                (NPCBehavior.Wander, 0.4f),
+                (NPCBehavior.ExitStore, 0.3f)
+            };
+            
+            float inStoreTotalWeight = inStoreBehaviors.Sum(b => b.weight);
+            float inStoreRandomValue = Random.Range(0, inStoreTotalWeight);
+
+            foreach (var behavior in inStoreBehaviors)
+            {
+                if (inStoreRandomValue < behavior.weight)
+                {
+                    return behavior.behavior;
+                }
+                inStoreRandomValue -= behavior.weight;
+            }
+
+            return NPCBehavior.Idle;
+        }
+
+        List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
+        {
+            (NPCBehavior.Idle, 0.15f),
+            (NPCBehavior.Wander, 0.5f),
+            (NPCBehavior.Sit, 0.2f),
+            (NPCBehavior.GoToStore, 0.15f)
+        };
+
+        float totalWeight = behaviors.Sum(b => b.weight);
+        float randomValue = Random.Range(0, totalWeight);
+        
+        foreach (var behavior in behaviors)
+        {
+            if (randomValue < behavior.weight)
+            {
+                return behavior.behavior;
+            }
+            randomValue -= behavior.weight;
+        }
+
+        return NPCBehavior.Idle;
+    }
 
     private void HandleWanderBehavior()
     {
@@ -110,45 +214,52 @@ public class NPCBrain : MonoBehaviour
     
     public void StartConversation()
     {
-         tempBehaviour = currentBehavior;
          playerCam.isInConvo = true;
+         textureAnimation.PlayAnimation(TextureAnimation.AnimationType.Speaking);
     }
     
     public void EndConversation()
     {
         currentBehavior = AfterDialogueBehavior;
-        
         playerCam.isInConvo = false;
-
+        textureAnimation.PlayAnimation(TextureAnimation.AnimationType.Blinking);
     }
 
     public void SetBehavior(NPCBehavior newBehavior, float duration = 0)
     {
+        if (currentBehavior == NPCBehavior.Sit && newBehavior != NPCBehavior.Sit)
+        {
+            movement.InterruptSit();
+        }
+
         if (duration > 0 && currentBehavior != NPCBehavior.GoTo)
         {
             StartCoroutine(OverrideBehaviorRoutine(newBehavior, duration));
             return;
         }
-        
-        currentBehavior = newBehavior;
-        if (newBehavior == NPCBehavior.RunAway) 
-        {
-            state.IsRunningAway = true;
-        }
-        else 
-        {
-            state.IsRunningAway = false;
-        }
-    }
 
+        currentBehavior = newBehavior;
+        state.IsRunningAway = newBehavior == NPCBehavior.RunAway;
+    }
+    
+    public NPCBehavior GetCurrentBehavior()
+    {
+        return currentBehavior;
+    }
+    
     private IEnumerator OverrideBehaviorRoutine(NPCBehavior tempBehavior, float duration)
     {
+        if (currentBehavior == NPCBehavior.Sit && tempBehavior != NPCBehavior.Sit)
+        {
+            movement.InterruptSit();
+        }
+
         var originalBehavior = currentBehavior;
         state.IsOverriden = true;
         currentBehavior = tempBehavior;
-        
+
         yield return new WaitForSeconds(duration);
-        
+
         currentBehavior = originalBehavior;
         state.IsOverriden = false;
     }
@@ -160,6 +271,13 @@ public class NPCBrain : MonoBehaviour
         RunAway,
         Idle,
         LookAtPlayer,
-        GoTo
+        GoTo,
+        Sit,
+        GoHome,
+        GoToMarket,
+        GoToMedical,
+        GoToBodyMod,
+        GoToStore,
+        ExitStore
     }
 }

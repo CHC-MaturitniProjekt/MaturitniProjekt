@@ -15,52 +15,58 @@ public class TextureAnimation : MonoBehaviour
     [SerializeField] private float minBlinkTime;
     [SerializeField] private float maxBlinkTime;
     [SerializeField] private int framesPerAnimation;
-    [SerializeField] private int numberOfAnimations;
 
     private Material faceBaseTexture;
     private Vector2 textureOffset;
-    private int currentFrame;
-    private AnimationType currentAnimation;
+    private Coroutine animationCoroutine;
 
     void Start()
     {
         faceBaseTexture = skinnedMeshRenderer.material;
         textureOffset = faceBaseTexture.mainTextureOffset;
-        
-        currentAnimation = AnimationType.Blinking;
-        
-        faceBaseTexture.mainTextureOffset = new Vector2(0, 0);
-        StartCoroutine(AnimateTexture());
+
+        PlayAnimation(AnimationType.Blinking);
     }
 
-    private IEnumerator AnimateTexture()
+    public void PlayAnimation(AnimationType animation)
     {
+        if (animationCoroutine != null)
+            StopCoroutine(animationCoroutine);
+
+        animationCoroutine = StartCoroutine(AnimateTexture(animation));
+    }
+
+    private IEnumerator AnimateTexture(AnimationType animationType)
+    {
+        int currentFrame = 0;
+
         while (true)
         {
-            textureOffset.x = ((framesPerAnimation - 1 - currentFrame) % framesPerAnimation) * XOffsetPX;
-            textureOffset.y = (int)currentAnimation * YOffsetPX;
+            if (framesPerAnimation <= 0)
+            {
+                Debug.LogWarning("framesPerAnimation is 0 or less. Skipping animation.");
+                yield break;
+            }
+
+            int frameIndex = animationType == AnimationType.Blinking
+                ? (framesPerAnimation - 1 - currentFrame)
+                : currentFrame;
+
+            textureOffset.x = frameIndex * XOffsetPX;
+            textureOffset.y = ((animationType == AnimationType.Blinking) ? 0 : 1) * YOffsetPX;
+
             faceBaseTexture.mainTextureOffset = textureOffset;
 
             currentFrame = (currentFrame + 1) % framesPerAnimation;
 
-            if (currentAnimation == AnimationType.Blinking && currentFrame == 1)
+            float waitTime = animationType switch
             {
-                yield return new WaitForSeconds(0.2f);
-            }
-            else if (currentAnimation == AnimationType.Speaking)
-            {
-                yield return new WaitForSeconds(0.5f);
-            }
-            else
-            {
-                yield return new WaitForSeconds(Random.Range(minBlinkTime, maxBlinkTime));
-            }
-        }
-    }
+                AnimationType.Blinking when currentFrame == 1 => 0.2f,
+                AnimationType.Speaking => 0.5f,
+                _ => Random.Range(minBlinkTime, maxBlinkTime)
+            };
 
-    public void SetAnimation(AnimationType animation)
-    {
-        currentAnimation = animation;
-        currentFrame = 0;
+            yield return new WaitForSeconds(waitTime);
+        }
     }
 }

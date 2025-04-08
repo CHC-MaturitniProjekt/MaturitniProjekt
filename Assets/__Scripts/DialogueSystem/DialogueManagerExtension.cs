@@ -2,18 +2,10 @@ using System;
 using UnityEngine;
 using PixelCrushers.DialogueSystem;
 using Unity.VisualScripting;
+using DialogueActor = PixelCrushers.DialogueSystem.Wrappers.DialogueActor;
 
 public class DialogueManagerExtension : MonoBehaviour
 {
-    private CameraManager cameraManager;
-    private NPCBrain npcBrain;
-    
-    private void Start()
-    {
-        cameraManager = FindObjectOfType<CameraManager>();
-        npcBrain = FindObjectOfType<NPCBrain>();
-    }
-
     private void Update()
     {
         if (DialogueManager.instance.isConversationActive)
@@ -40,15 +32,28 @@ public class DialogueManagerExtension : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        npcBrain.StartConversation();
+        
+        var actorBrain = actor.GetComponent<NPCBrain>();
+        if (actorBrain != null)
+        {
+            actorBrain.StartConversation();
+        }
+        else
+        {
+            Debug.LogWarning("NPCBrain not found on actor: " + actor.name);
+        }
     }
 
     private void OnConversationEnd(Transform actor)
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        npcBrain.EndConversation();
+        
+        var actorBrain = actor.GetComponent<NPCBrain>();
+        if (actorBrain != null)
+        {
+            actorBrain.EndConversation();
+        }
     }
     
-    //DialogueManager.instance.StopConversation();
 }

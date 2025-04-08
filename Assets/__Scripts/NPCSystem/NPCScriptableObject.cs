@@ -31,6 +31,7 @@ public class NPCScriptableObject : ScriptableObject
     public NPCDialogueTypes NPCDialogueType;
     public List<string> NPCWayPointNames = new List<string>();
     public List<string> NPCCompletedDialogues = new List<string>();
-    public int NPCId;
+    public AnimationCurve NPCActiveTimeCurve;
+    public float NPCRandomness; 
 
 }
