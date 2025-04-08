@@ -37,7 +37,7 @@ public class DownState : PickUpInteractionState
     }
     public override PickUpInteractionStateMachine.EPickUpInteractionState GetNextState()
     {
-        if (_elapsedTime >= _resetDuration && Context.Rb.velocity != Vector3.zero)
+        if (_elapsedTime >= _resetDuration && Context.Rb.linearVelocity != Vector3.zero)
         {
             //return PickUpInteractionStateMachine.EPickUpInteractionState.Search;
         }

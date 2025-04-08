@@ -126,7 +126,7 @@ public class Movement : MonoBehaviour
         float moveSpeed;
         if (isSprinting && !isCrouched && !isSitting)
         {
-            moveSpeed = Mathf.Lerp(rb.velocity.magnitude, sprintSpeed, Time.fixedDeltaTime * 5f);
+            moveSpeed = Mathf.Lerp(rb.linearVelocity.magnitude, sprintSpeed, Time.fixedDeltaTime * 5f);
         }
         /*else if (isCrouched && !isSprinting)
         {
@@ -138,15 +138,15 @@ public class Movement : MonoBehaviour
         }*/
         else
         {
-            moveSpeed = Mathf.Lerp(rb.velocity.magnitude, speed, Time.fixedDeltaTime * 5f);
+            moveSpeed = Mathf.Lerp(rb.linearVelocity.magnitude, speed, Time.fixedDeltaTime * 5f);
         }
 
         Vector3 movement = GetMovementInfo(moveSpeed);
-        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z);
+        rb.linearVelocity = new Vector3(movement.x, rb.linearVelocity.y, movement.z);
 
         if (!isSitting)
         {
-            animator.SetFloat("X", rb.velocity.magnitude);
+            animator.SetFloat("X", rb.linearVelocity.magnitude);
         }
     }
 
@@ -228,10 +228,10 @@ public class Movement : MonoBehaviour
     {
         isJumping = true;
 
-        Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         Vector3 preservedSpeed = horizontalVelocity.normalized * Mathf.Min(horizontalVelocity.magnitude, speed);
 
-        rb.velocity = new Vector3(preservedSpeed.x, jumpForce, preservedSpeed.z);
+        rb.linearVelocity = new Vector3(preservedSpeed.x, jumpForce, preservedSpeed.z);
     }
 
     /*private void Crouch()

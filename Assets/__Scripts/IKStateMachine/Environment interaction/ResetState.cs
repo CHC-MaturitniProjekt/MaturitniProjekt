@@ -34,7 +34,7 @@ public class ResetState : EnvironmentInteractionState
     }
     public override EnvironmentInteractionStateMachine.EEnvironmentInteractionState GetNextState()
     {
-        if (_elapsedTime >= _resetDuration && Context.Rb.velocity != Vector3.zero)
+        if (_elapsedTime >= _resetDuration && Context.Rb.linearVelocity != Vector3.zero)
         {
             return EnvironmentInteractionStateMachine.EEnvironmentInteractionState.Search;
         }

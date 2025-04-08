@@ -1,30 +1,57 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 
 public class SyntaxHighlighter : MonoBehaviour
 {
-    public TMP_InputField inputField;
-    public TextMeshProUGUI syntaxHighlighter;
+    [Header("References")]
+    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private TextMeshProUGUI syntaxHighlighter;
+    [SerializeField] private SyntaxHighlighterSO syntaxHighlighterSO;
+    [Header("Settings")]
+    [SerializeField] private Color numberColor;
+    [SerializeField] private Color debugHighlightColor = Color.red;
+
+    private int debugLineIndex = -1;
 
     private void Start()
     {
         inputField.onValueChanged.AddListener(UpdateSyntaxHighlighting);
     }
 
+    public void SetDebugLine(int index)
+    {
+        debugLineIndex = index;
+        UpdateSyntaxHighlighting(inputField.text);
+    }
+
     void UpdateSyntaxHighlighting(string text)
     {
-        string highlightedText = text;
+        string[] lines = text.Split('\n');
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
 
-        // Příklad pro C# klíčová slova
-        highlightedText = Regex.Replace(highlightedText, @"\b(public|private|void|class|new|if|else)\b", "<color=#ff6600>$1</color>");
+            line = Regex.Replace(line, @"(?<!<color=#[A-Fa-f0-9]{6}>)(\b\d+(\.\d+)?\b)", $"<color=#{ColorUtility.ToHtmlStringRGB(numberColor)}>$1</color>");
 
-        // Další pravidla (čísla, stringy, komentáře)
-        highlightedText = Regex.Replace(highlightedText, @"(\"".*?\"")", "<color=#00ff00>$1</color>"); // stringy
-        highlightedText = Regex.Replace(highlightedText, @"(//.*?$)", "<color=#808080>$1</color>", RegexOptions.Multiline); // komentáře
+            foreach (var syntaxWord in syntaxHighlighterSO.words)
+            {
+                string colorHex = ColorUtility.ToHtmlStringRGB(syntaxWord.color);
+                foreach (var word in syntaxWord.words)
+                {
+                    line = Regex.Replace(line, $@"\b({word})\b", $"<color=#{colorHex}>$1</color>");
+                }
+            }
 
-        syntaxHighlighter.text = highlightedText;
+            if (i == debugLineIndex)
+            {
+                string colorHex = ColorUtility.ToHtmlStringRGBA(debugHighlightColor);
+                line = $"<mark=#{colorHex}>{line}</mark>";
+            }
+
+            lines[i] = line;
+        }
+
+        syntaxHighlighter.text = string.Join("\n", lines);
     }
 }
