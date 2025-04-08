@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
-using UnityEngine.Experimental.Rendering.RenderGraphModule;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -129,7 +128,7 @@ public class CustomPostProcessPass : ScriptableRenderPass
         var bloomMaterial = m_bloomMaterial;
         bloomMaterial.SetVector("_Params", new Vector4(scatter, clamp, threshold, thresholdKnee));
         CoreUtils.SetKeyword(bloomMaterial, ShaderKeywordStrings.BloomHQ, m_Bloom.highQualityFiltering.value);
-        CoreUtils.SetKeyword(bloomMaterial, ShaderKeywordStrings.UseRGBM, m_UseRGBM);
+        CoreUtils.SetKeyword(bloomMaterial, ShaderKeywordStrings._ENABLE_ALPHA_OUTPUT, m_UseRGBM);
 
         // Prefilter
         var desc = GetCompatibleDescriptor(tw, th, hdrFormat);

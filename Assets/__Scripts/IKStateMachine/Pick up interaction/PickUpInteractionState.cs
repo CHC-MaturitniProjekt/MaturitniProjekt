@@ -27,7 +27,7 @@ public abstract class PickUpInteractionState : BaseState<PickUpInteractionStateM
         }
         
         bool isMovingAway = CheckIsMovingAway();
-        bool isPlayerJumping = Mathf.Round(Context.Rb.velocity.y) >= 1;
+        bool isPlayerJumping = Mathf.Round(Context.Rb.linearVelocity.y) >= 1;
         
         if (isMovingAway || isPlayerJumping)
         {
