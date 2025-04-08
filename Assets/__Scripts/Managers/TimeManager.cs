@@ -19,7 +19,7 @@ public class TimeManager : MonoBehaviour
     {
         DontDestroyOnLoad(timeManager);
         
-        SetWorldTime(480f);
+        SetWorldTime(1000f);
     }
 
     public void SetWorldTime(float time)

@@ -426,12 +426,34 @@ public class NPCMovement : MonoBehaviour
     {
         if (npcBrain.npcHouse == null) return;
 
-        HandleGoTo(npcBrain.npcHouse.position);
+        if (isAtBodymod || isAtMarket || isAtMedical)
+        {
+            HandleExitStore();
+        }
+        else
+        {
+            HandleGoTo(npcBrain.npcHouse.position);
+        }
 
-        if (!agent.pathPending && agent.remainingDistance <= 1f)
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             gameObject.SetActive(false);
         } 
+    }
+
+    public void HandleLeaveHome()
+    {
+        /*Vector3 safeSpawn = npcBrain.npcHouse.position + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(safeSpawn, out hit, 2f, NavMesh.AllAreas))
+        {*/
+            gameObject.SetActive(true);
+            /*
+            GetComponent<NavMeshAgent>().Warp(hit.position); 
+            */
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+            //return;
+        //} 
     }
 
     private StoreType GetRandomStore()

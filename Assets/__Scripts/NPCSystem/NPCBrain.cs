@@ -101,6 +101,11 @@ public class NPCBrain : MonoBehaviour
         float currentHour = timeManager.GetWorldTime()/60f;
         float activeValue = npcInfo.NPCActiveTimeCurve.Evaluate(currentHour);
         
+        if (currentHour >= 6f && currentHour < 22f && currentBehavior == NPCBehavior.GoHome)
+        {
+            movement.HandleLeaveHome();
+        }
+        
         if (currentHour >= 22f || currentHour < 6f)
         {
             if (currentBehavior != NPCBehavior.GoHome)
@@ -108,19 +113,6 @@ public class NPCBrain : MonoBehaviour
                 SetBehavior(NPCBehavior.GoHome);
             }
             return;
-        }
-        
-        if (currentHour >= 6f && currentHour < 22f && currentBehavior == NPCBehavior.GoHome)
-        {
-            Vector3 safeSpawn = npcHouse.position + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(safeSpawn, out hit, 2f, NavMesh.AllAreas))
-            {
-                gameObject.SetActive(true);
-                GetComponent<NavMeshAgent>().Warp(hit.position);
-                SetBehavior(NPCBehavior.Wander);
-                return;
-            } 
         }
         
         if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
