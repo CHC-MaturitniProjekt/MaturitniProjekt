@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : MonoBehaviour
+public class DoorStabilizer : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private HingeJoint hinge;
+    
     void Start()
     {
-        
+        hinge = GetComponent<HingeJoint>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        // Apply slight force to stabilize the door
+        if (Mathf.Abs(hinge.angle) > 5f)
+        {
+            float torque = -hinge.angle * 0.5f; // Light damping
+            hinge.GetComponent<Rigidbody>().AddTorque(transform.up * torque);
+        }
     }
 }

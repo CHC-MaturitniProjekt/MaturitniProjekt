@@ -98,7 +98,7 @@ public class Movement : MonoBehaviour
     {
         if (!PlayerManager.Instance.isDisabled)
         {
-            if (isGrounded && !camController.isInConvo)
+            if (isGrounded)
             {
                 Jump();
             }
@@ -247,8 +247,7 @@ public class Movement : MonoBehaviour
     private void GroundCheck()
     {
         bool wasGrounded = isGrounded;
-        isGrounded = Physics.Raycast(rb.position, Vector3.down, 0.3f);
-
+        isGrounded = Physics.Raycast(rb.position + Vector3.up * 0.1f, Vector3.down, 0.3f);
         if (isGrounded && !wasGrounded)
         {
             isJumping = false;
