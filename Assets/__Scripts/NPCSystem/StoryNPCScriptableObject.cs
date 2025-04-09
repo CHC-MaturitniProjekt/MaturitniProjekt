@@ -11,7 +11,6 @@ public class StoryNPCScriptableObject : ScriptableObject
     {
         Homeless,
         Fancy,
-        Basic,
         Stationary
     }
     public enum NPCDialogueTypes

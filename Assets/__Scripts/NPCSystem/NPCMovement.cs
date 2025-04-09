@@ -93,7 +93,6 @@ public class NPCMovement : MonoBehaviour
             case NPCScriptableObject.NPCBehaviourTypes.Homeless:
                 canSitOn.Add("GroundSit");
                 break;
-            case NPCScriptableObject.NPCBehaviourTypes.Basic:
             case NPCScriptableObject.NPCBehaviourTypes.Fancy:
                 canSitOn.Add("Bench");
                 canSitOn.Add("Sofa");
