@@ -159,4 +159,18 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
         if (context.started)
             PcOnStep?.Invoke();
     }
+
+    public event Action PcOnUndo;
+    public void OnUndo(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            PcOnUndo?.Invoke();
+    }
+
+    public event Action PcOnRedo;
+    public void OnRedo(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            PcOnRedo?.Invoke();
+    }
 }

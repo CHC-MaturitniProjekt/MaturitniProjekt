@@ -433,7 +433,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""name"": ""Exit"",
                     ""type"": ""Button"",
                     ""id"": ""7533d3f0-2a48-4f95-a91c-a21a37f55a53"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -452,6 +452,24 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""34581cdd-9155-463c-b818-fbe16a214ebf"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Undo"",
+                    ""type"": ""Button"",
+                    ""id"": ""5b4d656e-8ebd-470d-a96a-085b8cba48a5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Redo"",
+                    ""type"": ""Button"",
+                    ""id"": ""7f402c4b-b934-4b33-8340-a3269e41e4e4"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -490,6 +508,72 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""action"": ""pcLeftClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""8811e1bf-7948-47ee-b42b-f545e761c6a8"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Undo"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""1c067dd1-869c-49eb-806f-93318ac0f9e7"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Undo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""b4a2891b-8a5d-4c55-8065-0c376d16505f"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Undo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""87b06b76-d0c1-404c-a640-8565de214681"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Redo"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""527e2a81-3cef-456f-86f6-230f9c1ca2f5"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Redo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""e44b6376-031e-4f2b-a804-380866fb8757"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Redo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -514,6 +598,8 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_PC_Exit = m_PC.FindAction("Exit", throwIfNotFound: true);
         m_PC_Step = m_PC.FindAction("Step", throwIfNotFound: true);
         m_PC_pcLeftClick = m_PC.FindAction("pcLeftClick", throwIfNotFound: true);
+        m_PC_Undo = m_PC.FindAction("Undo", throwIfNotFound: true);
+        m_PC_Redo = m_PC.FindAction("Redo", throwIfNotFound: true);
     }
 
     ~@Inputs()
@@ -804,6 +890,8 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_PC_Exit;
     private readonly InputAction m_PC_Step;
     private readonly InputAction m_PC_pcLeftClick;
+    private readonly InputAction m_PC_Undo;
+    private readonly InputAction m_PC_Redo;
     /// <summary>
     /// Provides access to input actions defined in input action map "PC".
     /// </summary>
@@ -827,6 +915,14 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PC/pcLeftClick".
         /// </summary>
         public InputAction @pcLeftClick => m_Wrapper.m_PC_pcLeftClick;
+        /// <summary>
+        /// Provides access to the underlying input action "PC/Undo".
+        /// </summary>
+        public InputAction @Undo => m_Wrapper.m_PC_Undo;
+        /// <summary>
+        /// Provides access to the underlying input action "PC/Redo".
+        /// </summary>
+        public InputAction @Redo => m_Wrapper.m_PC_Redo;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -862,6 +958,12 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @pcLeftClick.started += instance.OnPcLeftClick;
             @pcLeftClick.performed += instance.OnPcLeftClick;
             @pcLeftClick.canceled += instance.OnPcLeftClick;
+            @Undo.started += instance.OnUndo;
+            @Undo.performed += instance.OnUndo;
+            @Undo.canceled += instance.OnUndo;
+            @Redo.started += instance.OnRedo;
+            @Redo.performed += instance.OnRedo;
+            @Redo.canceled += instance.OnRedo;
         }
 
         /// <summary>
@@ -882,6 +984,12 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @pcLeftClick.started -= instance.OnPcLeftClick;
             @pcLeftClick.performed -= instance.OnPcLeftClick;
             @pcLeftClick.canceled -= instance.OnPcLeftClick;
+            @Undo.started -= instance.OnUndo;
+            @Undo.performed -= instance.OnUndo;
+            @Undo.canceled -= instance.OnUndo;
+            @Redo.started -= instance.OnRedo;
+            @Redo.performed -= instance.OnRedo;
+            @Redo.canceled -= instance.OnRedo;
         }
 
         /// <summary>
@@ -1028,5 +1136,19 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPcLeftClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Undo" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnUndo(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Redo" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRedo(InputAction.CallbackContext context);
     }
 }
