@@ -18,7 +18,6 @@ public class CodeStorage : MonoBehaviour
         EnsureDirectoryExists();
         string path = Path.Combine(ScriptsDirectory, name + ".tbs");
         File.WriteAllText(path, code);
-        Debug.Log($"Code saved to {path}");
     }
 
     public string LoadCodeNamed(string name)
@@ -28,7 +27,6 @@ public class CodeStorage : MonoBehaviour
         {
             return File.ReadAllText(path);
         }
-        Debug.LogWarning($"Script '{name}' not found.");
         return "";
     }
 
@@ -49,7 +47,6 @@ public class CodeStorage : MonoBehaviour
         if (File.Exists(path))
         {
             File.Delete(path);
-            Debug.Log($"Script '{name}' deleted.");
         }
     }
 }
