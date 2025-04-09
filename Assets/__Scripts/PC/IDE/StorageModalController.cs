@@ -20,7 +20,7 @@ public class StorageModalController : MonoBehaviour
     {
         NONE,
         SAVE,
-        LOAD
+        LOAD,
     }
 
     public void modalInitialization(ModalType type)
@@ -69,14 +69,32 @@ public class StorageModalController : MonoBehaviour
         closeModal();
     }
 
+    private void onDeleteFileClick(string fileName)
+    {
+        codeStorage.DeleteScript(fileName);
+        foreach (Transform child in fileSelectParent)
+        {
+            Destroy(child.gameObject);
+        }
+        loadFiles();
+    }
+
     private void spawnFileSelectObject(string fileName)
     {
         GameObject temp = Instantiate(fileSelectPrefab, fileSelectParent);
-        temp.GetComponentInChildren<TextMeshProUGUI>().text = fileName;
-        Button button = temp.GetComponent<Button>();
-        if (button != null)
+        temp.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>().text = fileName;
+
+        Button selectButton = temp.transform.GetChild(0).GetComponent<Button>();
+        Button deleteButton = temp.transform.GetChild(1).GetComponent<Button>();
+
+        if (selectButton != null)
         {
-            button.onClick.AddListener(() => onLoadFileClick(fileName));
+            selectButton.onClick.AddListener(() => onLoadFileClick(fileName));
+        }
+
+        if (deleteButton != null)
+        {
+            deleteButton.onClick.AddListener(() => onDeleteFileClick(fileName));
         }
     }
 
