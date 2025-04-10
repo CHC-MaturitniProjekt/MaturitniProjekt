@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,6 +38,9 @@ public class NPCMovement : MonoBehaviour
     [SerializeField] private Transform bodymodExit;
     [SerializeField] private Transform bodymodCounter;
     public bool isAtBodymod = false;
+
+    [Header("Story npcs")] [SerializeField]
+    private List<Transform> assignedSeats;
     
     public enum StoreType { None, Market, Medical, BodyMod }
     public StoreType currentStore = StoreType.None;
@@ -47,6 +49,7 @@ public class NPCMovement : MonoBehaviour
     private NPCState state;
     private NPCAnimation animation;
     private NPCBrain npcBrain;
+    private Rigidbody npcRb;
     private int currentWaypointIndex;
     private bool isWaiting;
 
@@ -69,6 +72,7 @@ public class NPCMovement : MonoBehaviour
         state = GetComponent<NPCState>();
         animation = GetComponent<NPCAnimation>();
         npcBrain = GetComponent<NPCBrain>();
+        npcRb = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -291,47 +295,69 @@ public class NPCMovement : MonoBehaviour
     {
         if (sitRoutine != null) return;
 
-        GameObject closestObject = null;
-        float closestDistance = Mathf.Infinity;
-
-        foreach (string tag in canSitOn)
+        GameObject targetSeat = null;
+        if (assignedSeats != null && assignedSeats.Count > 0)
         {
-            GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
-            foreach (GameObject obj in objects)
+            float closestDistance = Mathf.Infinity;
+            foreach (var seat in assignedSeats)
             {
-                if (NPCManager.Instance.IsSeatReserved(obj.transform)) continue;
-                
-                float distance = Vector3.Distance(transform.position, obj.transform.position);
+                if (seat == null || NPCManager.Instance.IsSeatReserved(seat)) continue;
+
+                float distance = Vector3.Distance(transform.position, seat.position);
                 if (distance < closestDistance)
                 {
                     closestDistance = distance;
-                    closestObject = obj;
+                    targetSeat = seat.gameObject;
                 }
+            }
+
+            if (targetSeat == null)
+            {
+                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+                return;
+            }
+
+            NPCManager.Instance.ReserveSeat(targetSeat.transform, gameObject);
+        }
+        else
+        {
+            float closestDistance = Mathf.Infinity;
+
+            foreach (string tag in canSitOn)
+            {
+                GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
+                foreach (GameObject obj in objects)
+                {
+                    if (NPCManager.Instance.IsSeatReserved(obj.transform)) continue;
+
+                    float distance = Vector3.Distance(transform.position, obj.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        targetSeat = obj;
+                    }
+                }
+            }
+
+            if (targetSeat == null)
+            {
+                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+                return;
+            }
+
+            bool reserved = NPCManager.Instance.ReserveSeat(targetSeat.transform, gameObject);
+            if (!reserved && !npcBrain.GetNPCSO().storyImportant)
+            {
+                npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+                return;
             }
         }
 
-        if (closestObject == null)
-        {
-            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
-            return;
-        }
-
-        bool reserved = false;
-        if (!NPCManager.Instance.IsSeatReserved(closestObject.transform))
-        {
-            reserved = NPCManager.Instance.ReserveSeat(closestObject.transform, gameObject);
-        }
-        if (!reserved)
-        {
-            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
-            return;
-        }
-
-        currentSeat = closestObject;
-        HandleGoTo(closestObject.transform.position);
-        sitRoutine = StartCoroutine(ArrivedAtSpot(closestObject));
+        currentSeat = targetSeat;
+        HandleGoTo(targetSeat.transform.position);
+        sitRoutine = StartCoroutine(ArrivedAtSpot(targetSeat));
     }
-
+    
     private IEnumerator ArrivedAtSpot(GameObject seatObject)
     {
         while (Vector3.Distance(transform.position, seatObject.transform.position) > agent.stoppingDistance)
@@ -343,6 +369,9 @@ public class NPCMovement : MonoBehaviour
 
         agent.updatePosition = false;
         agent.updateRotation = false;
+        npcRb.useGravity = false;
+        state.IsSitting = true;
+        seatObject.GetComponent<MeshCollider>().enabled = false;
         
         animation.SetMovementSpeed(0);
         originalRotation = transform.rotation;
@@ -377,6 +406,11 @@ public class NPCMovement : MonoBehaviour
             yield return null;
         }
         
+        if (npcBrain.GetNPCSO().storyImportant)
+        {
+            yield break;
+        }
+        
         while (npcBrain.GetCurrentBehavior() == NPCBrain.NPCBehavior.Sit && !state.IsOverriden)
         {
             float distanceFromSeat = Vector3.Distance(transform.position, seatObject.transform.position);
@@ -391,6 +425,10 @@ public class NPCMovement : MonoBehaviour
         agent.updatePosition = true;
         agent.updateRotation = true;
         agent.isStopped = false;
+        npcRb.useGravity = true;
+        state.IsSitting = false;
+        seatObject.GetComponent<MeshCollider>().enabled = true;
+
         
         if (currentSeat != null)
         {

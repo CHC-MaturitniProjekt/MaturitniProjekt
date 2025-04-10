@@ -11,7 +11,9 @@ public class NPCScriptableObject : ScriptableObject
     {
         Homeless,
         Fancy,
-        Stationary
+        Stationary,
+        Quan,
+        Elliot
     }
     public enum NPCDialogueTypes
     {
@@ -26,11 +28,18 @@ public class NPCScriptableObject : ScriptableObject
         Generic
     }
     public string NPCName;
+    public bool storyImportant;
     public NPCBehaviourTypes NPCBehaviourType;
     public NPCDialogueTypes NPCDialogueType;
     public List<string> NPCWayPointNames = new List<string>();
     public List<string> NPCCompletedDialogues = new List<string>();
     public AnimationCurve NPCActiveTimeCurve;
-    public float NPCRandomness; 
+    [Range(0f, 1f)] public float NPCRandomness;
+
+    [Header("Quan and Elliot settings")] 
+    public bool isObtained;
+    public bool hasDailySchedule;
+    [Range(0f, 24f)] public float activeHourStart = 10f;
+    [Range(0f, 24f)] public float activeHourEnd = 18f;
 
 }

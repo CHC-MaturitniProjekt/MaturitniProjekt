@@ -67,7 +67,7 @@ public class NPCManager : MonoBehaviour
     public bool ReserveSeat(Transform seat, GameObject npc)
     {
         if (IsSeatReserved(seat)) return false;
-
+        
         reservedSeats.Add(seat, npc);
         return true;
     }

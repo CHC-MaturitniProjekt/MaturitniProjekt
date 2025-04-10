@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class NPCBrain : MonoBehaviour
@@ -111,10 +109,43 @@ public class NPCBrain : MonoBehaviour
         float currentHour = timeManager.GetWorldTime()/60f;
         float activeValue = npcInfo.NPCActiveTimeCurve.Evaluate(currentHour);
         
+        if (npcInfo.storyImportant)
+        {
+            if (npcInfo.NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
+            {
+                SetBehavior(NPCBehavior.Sit);
+                return;
+            }
+
+            if (npcInfo.NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Elliot && npcInfo.hasDailySchedule)
+            {
+                if (currentHour >= npcInfo.activeHourStart && currentHour <= npcInfo.activeHourEnd)
+                {
+                    if (!gameObject.activeSelf)
+                    {
+                        gameObject.SetActive(true);
+                        SetBehavior(NPCBehavior.Wander);
+                    }
+                }
+                else
+                {
+                    if (gameObject.activeSelf)
+                    {
+                        SetBehavior(NPCBehavior.GoHome);
+                    }
+                }
+                return;
+            }
+            return;
+        }
+
+        
         if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
         {
             if (currentHour >= 21f || currentHour < 6f)
             {
+                if (!npcHouse) return;
+                
                 if (currentBehavior != NPCBehavior.GoHome)
                 {
                     SetBehavior(NPCBehavior.GoHome);

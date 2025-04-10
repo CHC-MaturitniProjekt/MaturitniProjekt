@@ -54,7 +54,7 @@ public class NyxInteract : InteractAction
         DialogueManager.StartConversation(questName, gameObject.transform);
         
         NPCBrain npcBrain = this.GetComponent<NPCBrain>();
-        if (npcBrain != null)
+        if (npcBrain != null && npcBrain.GetCurrentBehavior() != NPCBrain.NPCBehavior.Sit)
         {
             npcBrain.SetBehavior(NPCBrain.NPCBehavior.LookAtPlayer);
         }
