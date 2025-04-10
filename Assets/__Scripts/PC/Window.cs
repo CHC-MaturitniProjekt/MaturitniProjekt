@@ -85,7 +85,25 @@ public class Window : MonoBehaviour
                 cursorImage.sprite = resizeCursors;
                 break;
         }
+
+        AlignPivotToSprite(cursorImage);
     }
+
+    void AlignPivotToSprite(Image image)
+    {
+        if (image == null || image.sprite == null) return;
+
+        RectTransform rectTransform = image.rectTransform;
+        Sprite sprite = image.sprite;
+
+        Vector2 normalizedPivot = new Vector2(
+            sprite.pivot.x / sprite.rect.width,
+            sprite.pivot.y / sprite.rect.height
+        );
+
+        rectTransform.pivot = normalizedPivot;
+    }
+
 
     private void OnPcLeftClickStart()
     {
