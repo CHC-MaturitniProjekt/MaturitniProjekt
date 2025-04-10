@@ -24,6 +24,12 @@ public class Lexer
 
             string word = Clean(ReadWord()).ToUpper();
 
+            if (string.IsNullOrEmpty(word))
+            {
+                SkipWhitespaceAndNewlines();
+                continue;
+            }
+
             if (Enum.TryParse<OpCode>(word, out var opcode))
             {
                 List<string> operands = new List<string>();

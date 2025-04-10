@@ -41,6 +41,11 @@ public class VirtualMachine
         return instructionPointer < program.Count;
     }
 
+    public Dictionary<string, int> getRegisters()
+    {
+        return registers;
+    }
+
     public void Tick()
     {
         Debug.Log("TICK");

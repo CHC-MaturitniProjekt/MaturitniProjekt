@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 class TobanScriptManager : MonoBehaviour
 {
@@ -9,15 +11,29 @@ class TobanScriptManager : MonoBehaviour
     [SerializeField] private InputReader input;
 
     [Header("References")]
-    [SerializeField] private TextMeshProUGUI codeText;
+    [SerializeField] private TMP_InputField codeTextInput;
     [SerializeField] private Transform LogParrent;
     [SerializeField] private GameObject errorLogPrefab;
     [SerializeField] private GameObject printLogPrefab;
     [SerializeField] private TextMeshProUGUI debugButton;
     [SerializeField] private SyntaxHighlighter syntaxHighlighter;
+    [SerializeField] private RegisterViewController registerViewController;
+    [SerializeField] private GameObject registerViewParent;
+    [SerializeField] private CodeStorage codeStorage;
+    [SerializeField] private StorageModalController storageModalController;
 
     private VirtualMachine debugVm;
-    public int debugVmCurrentStep;
+    private int debugVmCurrentStep;
+
+    public void onSaveClick()
+    {
+        storageModalController.modalInitialization(StorageModalController.ModalType.SAVE);
+    }
+
+    public void onLoadClick()
+    {
+        storageModalController.modalInitialization(StorageModalController.ModalType.LOAD);
+    }
 
     public void onStartDebugClick()
     {
@@ -33,7 +49,7 @@ class TobanScriptManager : MonoBehaviour
 
         try
         {
-            Lexer lexer = new Lexer(codeText.text);
+            Lexer lexer = new Lexer(codeTextInput.text);
             List<Instruction> tokens = lexer.Tokenize();
             debugVm.LoadProgram(tokens);
             debugVm.OnError += printErrorLog;
@@ -41,6 +57,8 @@ class TobanScriptManager : MonoBehaviour
             VirtualMachineRunner.Instance.Initialize(debugVm);
             debugVmCurrentStep = 0;
             syntaxHighlighter.SetDebugLine(debugVmCurrentStep);
+            registerViewParent.SetActive(true);
+            registerViewController.updateRegisters(debugVm.getRegisters());
         }
         catch (Exception err)
         {
@@ -56,6 +74,7 @@ class TobanScriptManager : MonoBehaviour
             VirtualMachineRunner.Instance.Step();
             debugVmCurrentStep = VirtualMachineRunner.Instance.getCurrentInstruction();
             syntaxHighlighter.SetDebugLine(debugVmCurrentStep);
+            registerViewController.updateRegisters(debugVm.getRegisters());
             if (!VirtualMachineRunner.Instance.HasInstructions())
                 stopDebug();
         }
@@ -68,6 +87,8 @@ class TobanScriptManager : MonoBehaviour
         debugVmCurrentStep = -1;
         debugButton.text = "Debug";
         syntaxHighlighter.SetDebugLine(debugVmCurrentStep);
+        registerViewController.resetRegisters();
+        registerViewParent.SetActive(false);
     }
 
     public void onPlayClick()
@@ -76,7 +97,7 @@ class TobanScriptManager : MonoBehaviour
             return;
 
         VirtualMachine vm = new VirtualMachine();
-        Lexer lexer = new Lexer(codeText.text);
+        Lexer lexer = new Lexer(codeTextInput.text);
 
         try
         {
