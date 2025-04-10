@@ -406,16 +406,18 @@ public class NPCMovement : MonoBehaviour
             yield return null;
         }
         
-        if (npcBrain.GetNPCSO().storyImportant)
-        {
-            yield break;
-        }
-        
         while (npcBrain.GetCurrentBehavior() == NPCBrain.NPCBehavior.Sit && !state.IsOverriden)
         {
             float distanceFromSeat = Vector3.Distance(transform.position, seatObject.transform.position);
             if (distanceFromSeat > 0.5f)
+            {
                 break;
+            }
+
+            if (npcBrain.GetNPCSO().NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
+            {
+                Debug.Log(distanceFromSeat);
+            }
             yield return null;
         }
         
@@ -449,7 +451,11 @@ public class NPCMovement : MonoBehaviour
 
             animation.ResetSit("isGroundSitting");
             transform.rotation = originalRotation;
+            agent.updatePosition = true;
+            agent.updateRotation = true;
             agent.isStopped = false;
+            npcRb.useGravity = true;
+            state.IsSitting = false;
             
             if (currentSeat != null)
             {
