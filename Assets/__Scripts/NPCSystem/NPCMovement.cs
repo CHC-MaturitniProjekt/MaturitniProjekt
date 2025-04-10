@@ -38,6 +38,7 @@ public class NPCMovement : MonoBehaviour
     [SerializeField] private Transform bodymodExit;
     [SerializeField] private Transform bodymodCounter;
     public bool isAtBodymod = false;
+    private StoreType selectedStore;
 
     [Header("Story npcs")] [SerializeField]
     private List<Transform> assignedSeats;
@@ -357,34 +358,25 @@ public class NPCMovement : MonoBehaviour
         HandleGoTo(targetSeat.transform.position);
         sitRoutine = StartCoroutine(ArrivedAtSpot(targetSeat));
     }
-    
     private IEnumerator ArrivedAtSpot(GameObject seatObject)
     {
         while (Vector3.Distance(transform.position, seatObject.transform.position) > agent.stoppingDistance)
         {
             yield return null;
         }
-        
-        agent.isStopped = true;
 
+        agent.isStopped = true;
         agent.updatePosition = false;
         agent.updateRotation = false;
-        npcRb.useGravity = false;
+
         state.IsSitting = true;
-        seatObject.GetComponent<MeshCollider>().enabled = false;
-        if (npcBrain.GetNPCSO().NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
-        {
-            npcRb.isKinematic = true;
-        }
-        
         animation.SetMovementSpeed(0);
         originalRotation = transform.rotation;
-        
+
         Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
-        
         transform.position = sitPosition.position;
         transform.rotation = sitPosition.rotation;
-        
+
         string sitAnim = "";
         switch (seatObject.tag)
         {
@@ -401,43 +393,41 @@ public class NPCMovement : MonoBehaviour
                 sitAnim = "isBedSitting";
                 break;
         }
+
         animation.Sit(sitAnim);
-        
-        float minSitTime = 3f;
-        float sitStartTime = Time.time;
-        while (Time.time - sitStartTime < minSitTime)
-        {
-            yield return null;
-        }
+
+        Vector3 lastSitPos = transform.position;
+        float pushThreshold = 0.2f;
         
         while (npcBrain.GetCurrentBehavior() == NPCBrain.NPCBehavior.Sit && !state.IsOverriden)
         {
-            float distanceFromSeat = Vector3.Distance(transform.position, seatObject.transform.position);
-            if (distanceFromSeat > 0.5f)
+            float movedDist = Vector3.Distance(transform.position, lastSitPos);
+            if (movedDist > pushThreshold)
+            {
                 break;
+            }
             yield return null;
         }
-        
+
         animation.ResetSit(sitAnim);
         transform.rotation = originalRotation;
-        
+
         agent.updatePosition = true;
         agent.updateRotation = true;
         agent.isStopped = false;
-        npcRb.useGravity = true;
         state.IsSitting = false;
-        seatObject.GetComponent<MeshCollider>().enabled = true;
+
         if (npcBrain.GetNPCSO().NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
         {
-            npcRb.isKinematic = false;
+            npcRb.isKinematic = true;
         }
-        
+
         if (currentSeat != null)
         {
             NPCManager.Instance.ReleaseSeat(currentSeat.transform);
             currentSeat = null;
         }
-        
+
         sitRoutine = null;
         npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
     }
@@ -449,15 +439,24 @@ public class NPCMovement : MonoBehaviour
             StopCoroutine(sitRoutine);
             sitRoutine = null;
 
+            animation.ResetSit("isSofaSitting");
+            animation.ResetSit("isBenchSitting");
+            animation.ResetSit("isBedSitting");
             animation.ResetSit("isGroundSitting");
+
             transform.rotation = originalRotation;
+            agent.updatePosition = true;
+            agent.updateRotation = true;
             agent.isStopped = false;
-            
+            state.IsSitting = false;
+
             if (currentSeat != null)
             {
                 NPCManager.Instance.ReleaseSeat(currentSeat.transform);
                 currentSeat = null;
             }
+
+            npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
         }
     }
     
@@ -495,8 +494,8 @@ public class NPCMovement : MonoBehaviour
         Transform exit = null;
         Transform entrance = null;
         
-        StoreType selectedStore = storeType != StoreType.None ? storeType : GetRandomStore();
-
+        selectedStore = storeType != StoreType.None ? storeType : GetRandomStore();
+        
         switch (selectedStore)
         {
             case StoreType.Market:
@@ -590,6 +589,7 @@ public class NPCMovement : MonoBehaviour
                 isAtBodymod = false;
                 isAtMedical = false;
                 currentStore = StoreType.None;
+                selectedStore = StoreType.None;
 
                 npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
             }

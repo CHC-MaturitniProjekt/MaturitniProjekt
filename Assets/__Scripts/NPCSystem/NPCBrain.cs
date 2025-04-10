@@ -202,12 +202,19 @@ public class NPCBrain : MonoBehaviour
             return NPCBehavior.Idle;
         }
 
-        List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
+        /*List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
         {
             (NPCBehavior.Idle, 0.15f),
             (NPCBehavior.Wander, 0.5f),
             (NPCBehavior.Sit, 0.2f),
             (NPCBehavior.GoToStore, 0.15f)
+        };*/
+        List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
+        {
+            (NPCBehavior.Idle, 0.05f),
+            (NPCBehavior.Wander, 0.05f),
+            (NPCBehavior.Sit, 1f),
+            (NPCBehavior.GoToStore, 0f)
         };
 
         float totalWeight = behaviors.Sum(b => b.weight);
