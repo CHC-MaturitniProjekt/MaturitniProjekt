@@ -53,7 +53,7 @@ public class FileManagerController : MonoBehaviour
 
     private void onRightClickStart()
     {
-        if (!IsPointerOverUIByTag("File") && !IsPointerOverUIByTag("Folder"))
+        if (!IsPointerOverUIByTag("File") && !IsPointerOverUIByTag("Folder") && IsPointerOverUI(gameObject))
         {
             currentFileName = "";
             showRightClickModal();

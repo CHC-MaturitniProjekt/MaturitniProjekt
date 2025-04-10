@@ -1,3 +1,4 @@
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -88,7 +89,7 @@ public class Window : MonoBehaviour
 
     private void OnPcLeftClickStart()
     {
-        var results = new System.Collections.Generic.List<RaycastResult>();
+        var results = new List<RaycastResult>();
         var eventData = new PointerEventData(EventSystem.current)
         {
             position = Input.mousePosition
@@ -96,18 +97,38 @@ public class Window : MonoBehaviour
 
         EventSystem.current.RaycastAll(eventData, results);
 
-        foreach (var result in results)
+        if (results.Count == 0) return; // Pokud nic nebylo kliknuto, ukonči
+
+        RaycastResult topmostObject = results[0];
+
+        // Pokud klikám na jiný objekt než tohle okno nebo jeho child, tak return
+        if (!(topmostObject.gameObject == gameObject || topmostObject.gameObject.transform.IsChildOf(transform)))
         {
-            if (result.gameObject == tabObject)
-            {
-                isDragging = true;
-                dragOffset = windowTransform.position - cursorTransform.position;
-                break;
-            }
+            return;
         }
 
-        if (!isDragging)
-            CheckForResizeStart();
+        // Zjistíme, zda už nějaké jiné okno právě resizuje
+        if (IsAnyOtherWindowResizing())
+        {
+            return; // Pokud ano, nebudeme tohle posouvat nahoru
+        }
+
+        // Pokud kliknu na topbar (hlavičku okna)
+        if (topmostObject.gameObject == tabObject)
+        {
+            transform.SetAsLastSibling();
+            isDragging = true;
+            dragOffset = windowTransform.position - cursorTransform.position;
+        }
+        else
+        {
+            // Pokud kliknu na okraj, zkusíme resize
+            if (!CheckForResizeStart())
+            {
+                // Pokud to nebyl resize a žádné jiné okno neresizuje, posuneme nahoru
+                transform.SetAsLastSibling();
+            }
+        }
     }
 
     private void OnPcLeftClickEnd()
@@ -116,8 +137,7 @@ public class Window : MonoBehaviour
         isResizing = false;
     }
 
-
-    private void CheckForResizeStart()
+    private bool CheckForResizeStart()
     {
         Vector2 localMousePosition;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -141,9 +161,37 @@ public class Window : MonoBehaviour
                 canvas.worldCamera,
                 out initialMousePosition
             );
+            return true;
         }
+
+        return false;
     }
 
+    // Kontrola, zda nějaké jiné okno právě neprovádí resize
+    private bool IsAnyOtherWindowResizing()
+    {
+        Window[] allWindows = FindObjectsByType<Window>(FindObjectsSortMode.None);
+        foreach (Window window in allWindows)
+        {
+            if (window != this) // Pokud jiné okno resizuje
+            {
+                Vector2 localMousePosition;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    window.GetComponent<RectTransform>(),
+                    Input.mousePosition,
+                    canvas.worldCamera,
+                    out localMousePosition
+                );
+
+                Rect rect = windowTransform.rect;
+                currentDirection = GetResizeDirection(localMousePosition, rect);
+
+                if(currentDirection != ResizeDirection.None)
+                    return true;
+            }
+        }
+        return false;
+    }
     private void HandleResize()
     {
             Vector2 currentMousePosition;
@@ -227,20 +275,20 @@ public class Window : MonoBehaviour
 
     private ResizeDirection GetResizeDirection(Vector2 localPos, Rect rect)
     {
-        if (localPos.x >= rect.xMin - resizeMargin && localPos.x <= rect.xMin + resizeMargin) // Lev� okraj
+        if (localPos.x >= rect.xMin - resizeMargin && localPos.x <= rect.xMin + resizeMargin) // Levý okraj
         {
             if (localPos.y >= rect.yMax - resizeMargin && localPos.y <= rect.yMax + resizeMargin) return ResizeDirection.TopLeft;
             if (localPos.y >= rect.yMin - resizeMargin && localPos.y <= rect.yMin + resizeMargin) return ResizeDirection.BottomLeft;
             return ResizeDirection.Left;
         }
-        if (localPos.x >= rect.xMax - resizeMargin && localPos.x <= rect.xMax + resizeMargin) // Prav� okraj
+        if (localPos.x >= rect.xMax - resizeMargin && localPos.x <= rect.xMax + resizeMargin) // Pravý okraj
         {
             if (localPos.y >= rect.yMax - resizeMargin && localPos.y <= rect.yMax + resizeMargin) return ResizeDirection.TopRight;
             if (localPos.y >= rect.yMin - resizeMargin && localPos.y <= rect.yMin + resizeMargin) return ResizeDirection.BottomRight;
             return ResizeDirection.Right;
         }
-        if (localPos.y >= rect.yMax - resizeMargin && localPos.y <= rect.yMax + resizeMargin) return ResizeDirection.Top; // Horn� okraj
-        if (localPos.y >= rect.yMin - resizeMargin && localPos.y <= rect.yMin + resizeMargin) return ResizeDirection.Bottom; // Spodn� okraj
+        if (localPos.y >= rect.yMax - resizeMargin && localPos.y <= rect.yMax + resizeMargin) return ResizeDirection.Top; // Horní okraj
+        if (localPos.y >= rect.yMin - resizeMargin && localPos.y <= rect.yMin + resizeMargin) return ResizeDirection.Bottom; // Spodní okraj
 
         return ResizeDirection.None;
     }
