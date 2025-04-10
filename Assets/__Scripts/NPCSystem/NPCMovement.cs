@@ -372,6 +372,10 @@ public class NPCMovement : MonoBehaviour
         npcRb.useGravity = false;
         state.IsSitting = true;
         seatObject.GetComponent<MeshCollider>().enabled = false;
+        if (npcBrain.GetNPCSO().NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
+        {
+            npcRb.isKinematic = true;
+        }
         
         animation.SetMovementSpeed(0);
         originalRotation = transform.rotation;
@@ -423,7 +427,10 @@ public class NPCMovement : MonoBehaviour
         npcRb.useGravity = true;
         state.IsSitting = false;
         seatObject.GetComponent<MeshCollider>().enabled = true;
-
+        if (npcBrain.GetNPCSO().NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
+        {
+            npcRb.isKinematic = false;
+        }
         
         if (currentSeat != null)
         {
@@ -621,32 +628,29 @@ public class NPCMovement : MonoBehaviour
             StartCoroutine(RunAwayTimerRoutine());
         }
     }
-
+    
     public void HandleLookAt()
     {
         if (!playerTransform) return;
-    
+
         float distance = Vector3.Distance(transform.position, playerTransform.position);
 
-        if (distance < stopDistance)
-        {
-            agent.isStopped = true;
-            headBone.LookAt(playerTransform.position, Vector3.up);
-            headBone.Rotate(30, 0, 0);
-            return;
-        }
-    
-        Vector3 bodyDirection = playerTransform.position - transform.position;
-        bodyDirection.y = 0f;
-        float bodyAngle = Vector3.Angle(transform.forward, bodyDirection);
-        if (!state.IsSitting && npcBrain.GetCurrentBehavior() != NPCBrain.NPCBehavior.Wander && bodyAngle > 20f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(bodyDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-        }
-    
         headBone.LookAt(playerTransform.position, Vector3.up);
         headBone.Rotate(30, 0, 0);
+
+        if (distance >= detectionRadius) return;
+
+        Vector3 directionToPlayer = playerTransform.position - transform.position;
+        directionToPlayer.y = 0f;
+
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+        float velocityMagnitude = agent.velocity.magnitude;
+
+        if (!state.IsSitting && velocityMagnitude < 0.1f && angleToPlayer > 20f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+        }
     }
 
     private void DetectPlayer()
