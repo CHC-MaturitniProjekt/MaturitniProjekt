@@ -451,7 +451,16 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""name"": ""pcLeftClick"",
                     ""type"": ""Button"",
                     ""id"": ""34581cdd-9155-463c-b818-fbe16a214ebf"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""pcRightClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""2a83a77f-85e5-4f0c-8c0a-44d11beafd62"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -506,6 +515,17 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""pcLeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de5268f0-c761-4a5b-8ccc-56fa0db7a8a6"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""pcRightClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -598,6 +618,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_PC_Exit = m_PC.FindAction("Exit", throwIfNotFound: true);
         m_PC_Step = m_PC.FindAction("Step", throwIfNotFound: true);
         m_PC_pcLeftClick = m_PC.FindAction("pcLeftClick", throwIfNotFound: true);
+        m_PC_pcRightClick = m_PC.FindAction("pcRightClick", throwIfNotFound: true);
         m_PC_Undo = m_PC.FindAction("Undo", throwIfNotFound: true);
         m_PC_Redo = m_PC.FindAction("Redo", throwIfNotFound: true);
     }
@@ -890,6 +911,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_PC_Exit;
     private readonly InputAction m_PC_Step;
     private readonly InputAction m_PC_pcLeftClick;
+    private readonly InputAction m_PC_pcRightClick;
     private readonly InputAction m_PC_Undo;
     private readonly InputAction m_PC_Redo;
     /// <summary>
@@ -915,6 +937,10 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PC/pcLeftClick".
         /// </summary>
         public InputAction @pcLeftClick => m_Wrapper.m_PC_pcLeftClick;
+        /// <summary>
+        /// Provides access to the underlying input action "PC/pcRightClick".
+        /// </summary>
+        public InputAction @pcRightClick => m_Wrapper.m_PC_pcRightClick;
         /// <summary>
         /// Provides access to the underlying input action "PC/Undo".
         /// </summary>
@@ -958,6 +984,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @pcLeftClick.started += instance.OnPcLeftClick;
             @pcLeftClick.performed += instance.OnPcLeftClick;
             @pcLeftClick.canceled += instance.OnPcLeftClick;
+            @pcRightClick.started += instance.OnPcRightClick;
+            @pcRightClick.performed += instance.OnPcRightClick;
+            @pcRightClick.canceled += instance.OnPcRightClick;
             @Undo.started += instance.OnUndo;
             @Undo.performed += instance.OnUndo;
             @Undo.canceled += instance.OnUndo;
@@ -984,6 +1013,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @pcLeftClick.started -= instance.OnPcLeftClick;
             @pcLeftClick.performed -= instance.OnPcLeftClick;
             @pcLeftClick.canceled -= instance.OnPcLeftClick;
+            @pcRightClick.started -= instance.OnPcRightClick;
+            @pcRightClick.performed -= instance.OnPcRightClick;
+            @pcRightClick.canceled -= instance.OnPcRightClick;
             @Undo.started -= instance.OnUndo;
             @Undo.performed -= instance.OnUndo;
             @Undo.canceled -= instance.OnUndo;
@@ -1136,6 +1168,13 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPcLeftClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "pcRightClick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPcRightClick(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Undo" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

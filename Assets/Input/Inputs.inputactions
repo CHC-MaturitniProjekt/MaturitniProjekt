@@ -365,7 +365,16 @@
                     "name": "pcLeftClick",
                     "type": "Button",
                     "id": "34581cdd-9155-463c-b818-fbe16a214ebf",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "pcRightClick",
+                    "type": "Button",
+                    "id": "2a83a77f-85e5-4f0c-8c0a-44d11beafd62",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -420,6 +429,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "pcLeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de5268f0-c761-4a5b-8ccc-56fa0db7a8a6",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "pcRightClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

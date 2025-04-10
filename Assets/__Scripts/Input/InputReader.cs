@@ -147,6 +147,20 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
         }
     }
 
+    public event Action PcRightClickStart;
+    public event Action PcRightClickEnd;
+    public void OnPcRightClick(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            PcRightClickStart?.Invoke();
+        }
+        if (context.canceled)
+        {
+            PcRightClickEnd?.Invoke();
+        }
+    }
+
     public event Action PcOnExit;
     public void OnExit(InputAction.CallbackContext context)
     {
