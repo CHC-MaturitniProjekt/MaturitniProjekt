@@ -202,24 +202,28 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
     public event Action TobberOnUp;
     public void OnUp(InputAction.CallbackContext context)
     {
-        TobberOnUp?.Invoke();
+        if (context.started)
+            TobberOnUp?.Invoke();
     }
 
     public event Action TobberOnDown;
     public void OnDown(InputAction.CallbackContext context)
     {
-        TobberOnDown?.Invoke();
+        if (context.started)
+            TobberOnDown?.Invoke();
     }
 
     public event Action TobberOnEnter;
     public void OnEnter(InputAction.CallbackContext context)
     {
-        TobberOnEnter?.Invoke();
+        if (context.started)
+            TobberOnEnter?.Invoke();
     }
 
     public event Action TobberOnBack;
     public void OnBack(InputAction.CallbackContext context)
     {
-        TobberOnBack?.Invoke();
+        if (context.started)
+            TobberOnBack?.Invoke();
     }
 }
