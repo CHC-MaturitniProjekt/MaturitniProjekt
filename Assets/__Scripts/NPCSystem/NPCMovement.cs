@@ -84,10 +84,10 @@ public class NPCMovement : MonoBehaviour
         }
 
         AssertParams();
-        lastPosition = transform.position;
+        /*lastPosition = transform.position;
         lastPathCalculationTime = Time.time;
         defaultHeadLocalRotation = headBone.localRotation;
-        StartCoroutine(StuckCheckRoutine());
+        StartCoroutine(StuckCheckRoutine());*/
     }
 
     private void AssertParams()

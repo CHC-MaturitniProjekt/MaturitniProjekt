@@ -26,7 +26,7 @@ public class SaveManager : MonoBehaviour
         time = FindFirstObjectByType<TimeManager>();
         npcManager = FindFirstObjectByType<NPCManager>();
         
-        LoadGame();
+        //LoadGame();
     }
 
     public void SaveGame()
