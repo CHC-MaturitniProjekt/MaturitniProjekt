@@ -79,7 +79,7 @@ public class NPCMovement : MonoBehaviour
     private void Start()
     {
         currentWaypointIndex = Random.Range(0, waypoints.Length);
-        agent.avoidancePriority = Random.Range(20, 80);
+        agent.avoidancePriority = Random.Range(50, 65);
         
         if (waypoints.Length > 0)
         {
@@ -240,7 +240,6 @@ public class NPCMovement : MonoBehaviour
         }
 
         lastPathCalculationTime = Time.time;
-
         HandleGoTo(newDestination);
     }
     
