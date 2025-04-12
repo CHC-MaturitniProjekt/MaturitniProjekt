@@ -78,16 +78,19 @@ public class NPCMovement : MonoBehaviour
 
     private void Start()
     {
+        currentWaypointIndex = Random.Range(0, waypoints.Length);
+        agent.avoidancePriority = Random.Range(20, 80);
+        
         if (waypoints.Length > 0)
         {
             SetNextWaypointDestination();
         }
 
         AssertParams();
-        /*lastPosition = transform.position;
+        lastPosition = transform.position;
         lastPathCalculationTime = Time.time;
         defaultHeadLocalRotation = headBone.localRotation;
-        StartCoroutine(StuckCheckRoutine());*/
+        StartCoroutine(StuckCheckRoutine());
     }
 
     private void AssertParams()
