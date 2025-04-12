@@ -15,14 +15,16 @@ public class VirtualMachine
     private Dictionary<string, int> registers = new Dictionary<string, int>
     {
         { "R0", 0 }, { "R1", 0 }, { "R2", 0 }, { "R3", 0 }, { "R4", 0 },
-        { "R5", 0 }, { "R6", 0 }, { "R7", 0 }, { "R8", 0 }, { "R9", 0 }
+        { "R5", 0 }, { "R6", 0 }, { "R7", 0 }, { "R8", 0 }, { "R9", 0 },
     };
+    private int CMP = 0;
     private List<Instruction> program = new();
     private int instructionPointer = 0;
     private Dictionary<string, int> labels = new();
 
     public event Action<string> OnError;
     public event Action<string> OnPrint;
+    public event Action OnTick;
 
     public void LoadProgram(List<Instruction> instructions)
     {
@@ -48,7 +50,6 @@ public class VirtualMachine
 
     public void Tick()
     {
-        Debug.Log("TICK");
         if (instructionPointer < 0 || instructionPointer >= program.Count)
         {
             OnError?.Invoke($"Invalid instruction pointer: {instructionPointer}");
@@ -57,6 +58,7 @@ public class VirtualMachine
 
         ExecuteInstruction(program[instructionPointer]);
         instructionPointer++;
+       // OnTick.Invoke();
     }
 
     public int currentInstruction()
@@ -192,11 +194,11 @@ public class VirtualMachine
                     break;
 
                 case OpCode.COMPARE:
-                    registers["CMP"] = registers[instr.Operands[0]] - registers[instr.Operands[1]];
+                    CMP = registers[instr.Operands[0]] - registers[instr.Operands[1]];
                     break;
 
                 case OpCode.JUMP_IF_EQUAL:
-                    if (registers["CMP"] == 0)
+                    if (CMP == 0)
                     {
                         int jumpTarget = GetJumpOperandValue(instr.Operands[0]);
                         if (jumpTarget < 0 || jumpTarget >= program.Count)
@@ -211,7 +213,7 @@ public class VirtualMachine
                     break;
 
                 case OpCode.JUMP_IF_NOT_EQUAL:
-                    if (registers["CMP"] != 0)
+                    if (CMP != 0)
                     {
                         int jumpTarget = GetJumpOperandValue(instr.Operands[0]);
                         if (jumpTarget < 0 || jumpTarget >= program.Count)
@@ -226,7 +228,7 @@ public class VirtualMachine
                     break;
 
                 case OpCode.JUMP_IF_GREATER:
-                    if (registers["CMP"] > 0)
+                    if (CMP > 0)
                     {
                         int jumpTarget = GetJumpOperandValue(instr.Operands[0]);
                         if (jumpTarget < 0 || jumpTarget >= program.Count)
@@ -241,7 +243,7 @@ public class VirtualMachine
                     break;
 
                 case OpCode.JUMP_IF_LESS:
-                    if (registers["CMP"] < 0)
+                    if (CMP < 0)
                     {
                         int jumpTarget = GetJumpOperandValue(instr.Operands[0]);
                         if (jumpTarget < 0 || jumpTarget >= program.Count)

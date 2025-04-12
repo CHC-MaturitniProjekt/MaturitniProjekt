@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,9 @@ public class TobberController : MonoBehaviour
     [SerializeField] private RectTransform itemParent;
     [SerializeField] private VerticalLayoutGroup layoutGroup;
     [SerializeField] private RegisterViewController registerViewController;
+    [SerializeField] private GameObject MenuObject;
+    [SerializeField] private GameObject ScriptIsRunningObject;
+
 
     [Header("Settings")]
     [SerializeField] private int itemsOnPage = 5;
@@ -161,7 +165,7 @@ public class TobberController : MonoBehaviour
                 break;
 
             case MenuState.Scripts:
-                Debug.Log($"Run script: {loadedScripts[selectedIndex]}");
+                ScriptStart();
                 break;
 
             case MenuState.Modules:
@@ -172,7 +176,37 @@ public class TobberController : MonoBehaviour
 
     private void ScriptStart()
     {
+        MenuObject.SetActive(false);
+        ScriptIsRunningObject.SetActive(true);
 
+        string code = "";
+        string path = Path.Combine(TobberDirectory, loadedScripts[selectedIndex] + ".tbs");
+        if (File.Exists(path))
+        {
+            code = File.ReadAllText(path);
+        }
+
+        VirtualMachine vm = new VirtualMachine();
+        Lexer lexer = new Lexer(code);
+
+        List<Instruction> tokens = lexer.Tokenize();
+        vm.LoadProgram(tokens);
+        vm.OnTick += Vm_OnTick;
+        VirtualMachineRunner.Instance.Initialize(vm);
+        VirtualMachineRunner.Instance.OnEnd += Instance_OnEnd;
+        VirtualMachineRunner.Instance.Run();
+    }
+
+    private void Instance_OnEnd()
+    {
+
+        MenuObject.SetActive(true);
+        ScriptIsRunningObject.SetActive(false);
+    }
+
+    private void Vm_OnTick()
+    {
+        registerViewController.updateRegisters(VirtualMachineRunner.Instance.getRegisters());
     }
 
     private void GoBack()

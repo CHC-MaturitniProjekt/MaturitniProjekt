@@ -48,7 +48,7 @@ public class CodeStorage : MonoBehaviour
 
     public string loadFromTobber(string name)
     {
-        string path = Path.Combine(TobberDirectory, name);
+        string path = Path.Combine(TobberDirectory, name + ".tbs");
         if (File.Exists(path))
         {
             return File.ReadAllText(path);

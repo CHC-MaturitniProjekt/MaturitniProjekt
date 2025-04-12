@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Michsky.UI.Heat.UIGradient;
 
 public class VirtualMachineRunner : MonoBehaviour
 {
@@ -8,6 +10,7 @@ public class VirtualMachineRunner : MonoBehaviour
     private float tickInterval = 0.1f;
     private float tickTimer = 0f;
     private bool isRunning = false;
+    public event Action OnEnd;
 
     public static VirtualMachineRunner Instance
     {
@@ -59,6 +62,7 @@ public class VirtualMachineRunner : MonoBehaviour
 
             if (!vm.HasInstructions())
             {
+               // OnEnd.Invoke();
                 isRunning = false;
                 break;
             }
