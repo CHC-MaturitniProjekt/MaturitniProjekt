@@ -13,6 +13,8 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private int npcId;
     public bool isShopkeeper;
     public Transform npcHouse;
+    public NPCMovement.StoreType selectedStore = NPCMovement.StoreType.None;
+
     
     private CameraController playerCam;
     private TimeManager timeManager;
@@ -87,7 +89,7 @@ public class NPCBrain : MonoBehaviour
                 movement.HandleGoHome();
                 break;
             case NPCBehavior.GoToStore:
-                movement.HandleGoToStore();
+                movement.HandleGoToStore(selectedStore);
                 break;
             case NPCBehavior.GoToMarket:
                 movement.HandleGoToStore(NPCMovement.StoreType.Market);
@@ -217,12 +219,26 @@ public class NPCBrain : MonoBehaviour
         {
             if (randomValue < behavior.weight)
             {
+                if (behavior.behavior == NPCBehavior.GoToStore)
+                {
+                    selectedStore = GetRandomStore();
+                }
                 return behavior.behavior;
             }
             randomValue -= behavior.weight;
         }
 
         return NPCBehavior.Idle;
+    }
+    
+    private NPCMovement.StoreType GetRandomStore()
+    {
+        return new List<NPCMovement.StoreType>
+        {
+            NPCMovement.StoreType.Market,
+            NPCMovement.StoreType.Medical,
+            NPCMovement.StoreType.BodyMod
+        }[Random.Range(0, 3)];
     }
 
     private void HandleWanderBehavior()

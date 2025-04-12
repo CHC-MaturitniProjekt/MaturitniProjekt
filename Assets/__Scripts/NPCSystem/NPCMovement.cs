@@ -481,24 +481,14 @@ public class NPCMovement : MonoBehaviour
             }
         }
     }
-
-    private StoreType GetRandomStore()
-    {
-        return new List<StoreType>
-        {
-            StoreType.Market,
-            StoreType.Medical,
-            StoreType.BodyMod
-        }[Random.Range(0, 3)];
-    }
     
     public void HandleGoToStore(StoreType storeType = StoreType.None)
     {
         Transform exit = null;
         Transform entrance = null;
-        
-        selectedStore = storeType != StoreType.None ? storeType : GetRandomStore();
-        
+
+        selectedStore = storeType != StoreType.None ? storeType : npcBrain.selectedStore;
+
         switch (selectedStore)
         {
             case StoreType.Market:
@@ -514,12 +504,12 @@ public class NPCMovement : MonoBehaviour
                 entrance = bodymodEntrance;
                 break;
         }
-    
+
         if (entrance == null) return;
-        
+
         HandleGoTo(entrance.position);
 
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        if (!agent.pathPending && agent.remainingDistance <= 0.5f)
         {
             agent.Warp(exit.position);
             npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
@@ -585,7 +575,7 @@ public class NPCMovement : MonoBehaviour
         {
             HandleGoTo(exit.position);
 
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            if (!agent.pathPending && agent.remainingDistance <= 0.5f)
             {
                 agent.Warp(entrance.position);
                 isAtMarket = false;
