@@ -1,17 +1,27 @@
-using NUnit.Framework;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TobberController : MonoBehaviour
 {
+    private enum MenuState
+    {
+        Main,
+        Scripts,
+        Modules
+    }
+
     [Header("Input")]
     [SerializeField] private InputReader input;
 
-    [Header("References")]
+    [Header("UI References")]
     [SerializeField] private GameObject itemPrefab;
-    [SerializeField] private GameObject itemParent;
+    [SerializeField] private RectTransform itemParent;
+    [SerializeField] private VerticalLayoutGroup layoutGroup;
+    [SerializeField] private RegisterViewController registerViewController;
 
     [Header("Settings")]
     [SerializeField] private int itemsOnPage = 5;
@@ -19,109 +29,157 @@ public class TobberController : MonoBehaviour
     [SerializeField] private Color textColor;
     [SerializeField] private Color highlightColor;
 
-    [Header("Lists")]
-    [SerializeField] private List<string> MainMenu;
+    private List<string> mainMenu = new List<string> { "Scripts", "Modules" };
+    private List<string> loadedScripts = new List<string>();
+    private List<string> modules = new List<string> { "Lock", "Camera" };
 
-    private int currentSelectedIndex = 0;
-    private int scrollIndex;
-    private List<GameObject> currentListOfItems = new List<GameObject>();
+    private MenuState currentState = MenuState.Main;
+
+    private int selectedIndex = 0;
+    private int scrollIndex = 0;
+    private List<GameObject> itemObjects = new List<GameObject>();
+
+    private string TobberDirectory => Path.Combine(Application.persistentDataPath, "Tobber");
 
     void Start()
     {
-        input.TobberOnUp += onButtonUp;
-        input.TobberOnDown += onButtonDown;
-        input.TobberOnEnter += onButtonEnter;
-        input.TobberOnBack += onButtonBack;
+        input.TobberOnUp += MoveUp;
+        input.TobberOnDown += MoveDown;
+        input.TobberOnEnter += SelectItem;
+        input.TobberOnBack += GoBack;
         input.TobberInputEnable();
 
-        loadList(MainMenu);
-        updateSelection();
+        LoadMenu(mainMenu, MenuState.Main);
     }
 
-    private void loadList(List<string> list)
+    private void LoadMenu(List<string> items, MenuState newState)
     {
-        foreach (Transform child in itemParent.transform)
+        currentState = newState;
+        ClearMenu();
+
+        foreach (var item in items)
+        {
+            GameObject newItem = Instantiate(itemPrefab, itemParent);
+            newItem.GetComponentInChildren<TMP_Text>().text = item;
+            itemObjects.Add(newItem);
+        }
+
+        selectedIndex = 0;
+        scrollIndex = 0;
+        UpdateSelection();
+    }
+
+    private void ClearMenu()
+    {
+        foreach (Transform child in itemParent)
         {
             Destroy(child.gameObject);
         }
-        currentListOfItems.Clear();
-
-        foreach (var item in list)
-        {
-            GameObject temp = Instantiate(itemPrefab, itemParent.transform);
-            temp.GetComponentInChildren<TMP_Text>().text = item;
-            currentListOfItems.Add(temp);
-        }
+        itemObjects.Clear();
     }
 
-    private void updateSelection()
+    private void UpdateSelection()
     {
-        if (currentListOfItems == null) return;
-
-        for(int i = 0; i < currentListOfItems.Count; i++)
+        for (int i = 0; i < itemObjects.Count; i++)
         {
-            if(i == currentSelectedIndex)
+            Image bgImage = itemObjects[i].GetComponent<Image>();
+            Image icon = itemObjects[i].transform.GetChild(0).GetComponent<Image>();
+            TMP_Text text = itemObjects[i].transform.GetChild(1).GetComponent<TMP_Text>();
+
+            if (i == selectedIndex)
             {
-                currentListOfItems[i].GetComponent<Image>().color = highlightColor;
-                currentListOfItems[i].transform.GetChild(0).GetComponent<Image>().color = backgroundColor;
-                currentListOfItems[i].transform.GetChild(1).GetComponent<TMP_Text>().color = backgroundColor;
+                bgImage.color = highlightColor;
+                icon.color = backgroundColor;
+                text.color = backgroundColor;
             }
             else
             {
-                currentListOfItems[i].GetComponent<Image>().color = backgroundColor;
-                currentListOfItems[i].transform.GetChild(0).GetComponent<Image>().color = highlightColor;
-                currentListOfItems[i].transform.GetChild(1).GetComponent<TMP_Text>().color = textColor;
+                bgImage.color = backgroundColor;
+                icon.color = highlightColor;
+                text.color = textColor;
             }
         }
-    }
-    
-    private void applyScroll()
-    {
-        Vector3 temp = itemParent.GetComponent<RectTransform>().anchoredPosition;
-        temp.y = scrollIndex * (itemPrefab.GetComponent<RectTransform>().rect.height + itemParent.GetComponent<VerticalLayoutGroup>().spacing);
-        itemParent.GetComponent<RectTransform>().anchoredPosition = temp; 
+
+        ApplyScroll();
     }
 
-
-    private void onButtonBack()
+    private void ApplyScroll()
     {
-        throw new System.NotImplementedException();
+        float itemHeight = itemPrefab.GetComponent<RectTransform>().rect.height + layoutGroup.spacing;
+        itemParent.anchoredPosition = new Vector2(0, scrollIndex * itemHeight);
     }
 
-    private void onButtonEnter()
+    private void MoveDown()
     {
-        throw new System.NotImplementedException();
+        if (selectedIndex < itemObjects.Count - 1)
+        {
+            selectedIndex++;
+            if (selectedIndex >= scrollIndex + itemsOnPage)
+                scrollIndex++;
+            UpdateSelection();
+        }
     }
 
-    private void onButtonDown()
+    private void MoveUp()
     {
-        currentSelectedIndex++;
-        if (currentSelectedIndex > currentListOfItems.Count - 1)
-            currentSelectedIndex = currentListOfItems.Count - 1;
-
-        if (currentSelectedIndex > scrollIndex + (itemsOnPage - 2))
-            scrollIndex++;
-
-        if (currentSelectedIndex == currentListOfItems.Count - 1)
-            scrollIndex--;
-
-        updateSelection();
-        applyScroll();
+        if (selectedIndex > 0)
+        {
+            selectedIndex--;
+            if (selectedIndex < scrollIndex)
+                scrollIndex--;
+            UpdateSelection();
+        }
     }
 
-    private void onButtonUp()
+    private void LoadScripts()
     {
-        currentSelectedIndex--;
-        if (currentSelectedIndex < 0)
-            currentSelectedIndex = 0;
+        loadedScripts = new List<string>();
+        if (Directory.Exists(TobberDirectory))
+        {
+            string[] files = Directory.GetFiles(TobberDirectory);
+            loadedScripts = files.Select(Path.GetFileNameWithoutExtension).ToList();
+        }
+    }
 
-        if (currentSelectedIndex == scrollIndex)
-            scrollIndex--;
+    private void SelectItem()
+    {
+        if (selectedIndex >= itemObjects.Count) return;
 
-        if (currentSelectedIndex == 0)
-            scrollIndex++;
+        switch (currentState)
+        {
+            case MenuState.Main:
+                string selected = mainMenu[selectedIndex];
+                if (selected == "Scripts")
+                {
+                    LoadScripts();
+                    LoadMenu(loadedScripts, MenuState.Scripts);
+                }
+                else if (selected == "Modules")
+                {
+                    LoadMenu(modules, MenuState.Modules);
+                }
+                break;
 
-        updateSelection();
-        applyScroll();
+            case MenuState.Scripts:
+                Debug.Log($"Run script: {loadedScripts[selectedIndex]}");
+                break;
+
+            case MenuState.Modules:
+                Debug.Log($"Activate module: {modules[selectedIndex]}");
+                break;
+        }
+    }
+
+    private void ScriptStart()
+    {
+
+    }
+
+    private void GoBack()
+    {
+        if (currentState != MenuState.Main)
+        {
+            LoadMenu(mainMenu, MenuState.Main);
+        }
     }
 }

@@ -35,6 +35,11 @@ class TobanScriptManager : MonoBehaviour
         storageModalController.modalInitialization(StorageModalController.ModalType.LOAD);
     }
 
+    public void onUploadClick()
+    {
+        storageModalController.modalInitialization(StorageModalController.ModalType.TOBBER);
+    }
+
     public void onStartDebugClick()
     {
         if (debugVm != null)

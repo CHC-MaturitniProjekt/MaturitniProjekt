@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +6,7 @@ public class VirtualMachineRunner : MonoBehaviour
     private static VirtualMachineRunner instance;
     private VirtualMachine vm;
     private float tickInterval = 0.1f;
+    private float tickTimer = 0f;
     private bool isRunning = false;
 
     public static VirtualMachineRunner Instance
@@ -36,11 +36,8 @@ public class VirtualMachineRunner : MonoBehaviour
             Debug.LogError("VirtualMachine is not initialized!");
             return;
         }
-        if (!isRunning)
-        {
-            isRunning = true;
-            StartCoroutine(RunVM());
-        }
+        isRunning = true;
+        tickTimer = 0f;
     }
 
     public void Stop()
@@ -48,46 +45,44 @@ public class VirtualMachineRunner : MonoBehaviour
         isRunning = false;
     }
 
-    private IEnumerator RunVM()
+    void Update()
     {
-        while (isRunning)
-        {
-            if (vm == null || !isRunning)
-                yield break;
+        if (!isRunning || vm == null || !vm.HasInstructions())
+            return;
 
-            if (vm.HasInstructions())
-            {
-                vm.Tick();
-                yield return new WaitForSeconds(tickInterval);
-            }
-            else
+        tickTimer += Time.deltaTime;
+
+        while (tickTimer >= tickInterval)
+        {
+            vm.Tick();
+            tickTimer -= tickInterval;
+
+            if (!vm.HasInstructions())
             {
                 isRunning = false;
+                break;
             }
         }
     }
 
     public Dictionary<string, int> getRegisters()
     {
-        return vm.getRegisters();
+        return vm?.getRegisters();
     }
 
     public int getCurrentInstruction()
     {
-        return vm.currentInstruction();
+        return vm?.currentInstruction() ?? -1;
     }
 
     public bool HasInstructions()
     {
-        return vm.HasInstructions();
+        return vm?.HasInstructions() ?? false;
     }
 
     public void Step()
     {
-        if (vm == null)
-            return;
-
-        if (vm.HasInstructions())
+        if (vm != null && vm.HasInstructions())
         {
             vm.Tick();
         }
