@@ -12,7 +12,8 @@ public class TobberController : MonoBehaviour
     {
         Main,
         Scripts,
-        Modules
+        Modules,
+        RunningScript
     }
 
     [Header("Input")]
@@ -25,6 +26,7 @@ public class TobberController : MonoBehaviour
     [SerializeField] private RegisterViewController registerViewController;
     [SerializeField] private GameObject MenuObject;
     [SerializeField] private GameObject ScriptIsRunningObject;
+    [SerializeField] private TextMeshProUGUI LogText;
 
 
     [Header("Settings")]
@@ -115,6 +117,8 @@ public class TobberController : MonoBehaviour
 
     private void MoveDown()
     {
+        if (currentState == MenuState.RunningScript) return;
+
         if (selectedIndex < itemObjects.Count - 1)
         {
             selectedIndex++;
@@ -126,6 +130,8 @@ public class TobberController : MonoBehaviour
 
     private void MoveUp()
     {
+        if (currentState == MenuState.RunningScript) return;
+
         if (selectedIndex > 0)
         {
             selectedIndex--;
@@ -147,6 +153,12 @@ public class TobberController : MonoBehaviour
 
     private void SelectItem()
     {
+        if (currentState == MenuState.RunningScript) 
+        {
+            Instance_OnEnd();
+            return;
+        }
+
         if (selectedIndex >= itemObjects.Count) return;
 
         switch (currentState)
@@ -178,6 +190,9 @@ public class TobberController : MonoBehaviour
     {
         MenuObject.SetActive(false);
         ScriptIsRunningObject.SetActive(true);
+        currentState = MenuState.RunningScript;
+        registerViewController.resetRegisters();
+        LogText.text = "";
 
         string code = "";
         string path = Path.Combine(TobberDirectory, loadedScripts[selectedIndex] + ".tbs");
@@ -192,6 +207,8 @@ public class TobberController : MonoBehaviour
         List<Instruction> tokens = lexer.Tokenize();
         vm.LoadProgram(tokens);
         vm.OnTick += Vm_OnTick;
+        vm.OnError += onError;
+        vm.OnPrint += onLog;
         VirtualMachineRunner.Instance.Initialize(vm);
         VirtualMachineRunner.Instance.OnEnd += Instance_OnEnd;
         VirtualMachineRunner.Instance.Run();
@@ -201,7 +218,22 @@ public class TobberController : MonoBehaviour
     {
 
         MenuObject.SetActive(true);
+        currentState = MenuState.Scripts;
         ScriptIsRunningObject.SetActive(false);
+        VirtualMachineRunner.Instance.Stop();
+    }
+
+    private void onError(string err)
+    {
+        MenuObject.SetActive(true);
+        currentState = MenuState.Scripts;
+        ScriptIsRunningObject.SetActive(false);
+        VirtualMachineRunner.Instance.Stop();
+    }
+
+    private void onLog(string msg)
+    {
+        LogText.text = msg;
     }
 
     private void Vm_OnTick()
@@ -211,6 +243,8 @@ public class TobberController : MonoBehaviour
 
     private void GoBack()
     {
+        if (currentState == MenuState.RunningScript) return;
+
         if (currentState != MenuState.Main)
         {
             LoadMenu(mainMenu, MenuState.Main);

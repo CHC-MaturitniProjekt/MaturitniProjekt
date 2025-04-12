@@ -58,7 +58,7 @@ public class VirtualMachine
 
         ExecuteInstruction(program[instructionPointer]);
         instructionPointer++;
-       // OnTick.Invoke();
+        OnTick?.Invoke();
     }
 
     public int currentInstruction()

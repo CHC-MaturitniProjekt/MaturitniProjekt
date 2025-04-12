@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static Michsky.UI.Heat.UIGradient;
 
 public class VirtualMachineRunner : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class VirtualMachineRunner : MonoBehaviour
     private float tickInterval = 0.1f;
     private float tickTimer = 0f;
     private bool isRunning = false;
+
     public event Action OnEnd;
 
     public static VirtualMachineRunner Instance
@@ -18,9 +18,13 @@ public class VirtualMachineRunner : MonoBehaviour
         {
             if (instance == null)
             {
-                GameObject obj = new GameObject("VirtualMachineRunner");
-                instance = obj.AddComponent<VirtualMachineRunner>();
-                DontDestroyOnLoad(obj);
+                instance = FindObjectOfType<VirtualMachineRunner>();
+                if (instance == null)
+                {
+                    GameObject obj = new GameObject("VirtualMachineRunner");
+                    instance = obj.AddComponent<VirtualMachineRunner>();
+                    DontDestroyOnLoad(obj);
+                }
             }
             return instance;
         }
@@ -28,8 +32,15 @@ public class VirtualMachineRunner : MonoBehaviour
 
     public void Initialize(VirtualMachine virtualMachine, float interval = 0.1f)
     {
+        if (isRunning)
+        {
+            Debug.LogWarning("Trying to initialize while VM is running. Ignoring.");
+            return;
+        }
+
         vm = virtualMachine;
         tickInterval = interval;
+        tickTimer = 0f;
     }
 
     public void Run()
@@ -39,6 +50,13 @@ public class VirtualMachineRunner : MonoBehaviour
             Debug.LogError("VirtualMachine is not initialized!");
             return;
         }
+
+        if (isRunning)
+        {
+            Debug.LogWarning("VirtualMachine is already running.");
+            return;
+        }
+
         isRunning = true;
         tickTimer = 0f;
     }
@@ -46,6 +64,7 @@ public class VirtualMachineRunner : MonoBehaviour
     public void Stop()
     {
         isRunning = false;
+        vm = null;
     }
 
     void Update()
@@ -62,8 +81,9 @@ public class VirtualMachineRunner : MonoBehaviour
 
             if (!vm.HasInstructions())
             {
-               // OnEnd.Invoke();
                 isRunning = false;
+                OnEnd?.Invoke(); // ✅ správné spuštění eventu
+                vm = null;
                 break;
             }
         }
@@ -89,6 +109,13 @@ public class VirtualMachineRunner : MonoBehaviour
         if (vm != null && vm.HasInstructions())
         {
             vm.Tick();
+
+            if (!vm.HasInstructions())
+            {
+                isRunning = false;
+                OnEnd?.Invoke();
+                vm = null;
+            }
         }
     }
 }
