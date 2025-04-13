@@ -89,6 +89,11 @@ public class VirtualMachineRunner : MonoBehaviour
         }
     }
 
+    public void setIpnutRegister(Dictionary<string, int> register)
+    {
+        vm?.setInputRegisters(register);
+    }
+
     public Dictionary<string, int> getRegisters()
     {
         return vm?.getRegisters();

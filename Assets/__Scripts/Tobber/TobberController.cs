@@ -13,7 +13,9 @@ public class TobberController : MonoBehaviour
         Main,
         Scripts,
         Modules,
-        RunningScript
+        RunningScript,
+        ModulNotFound,
+        FatalError
     }
 
     [Header("Input")]
@@ -27,21 +29,25 @@ public class TobberController : MonoBehaviour
     [SerializeField] private GameObject MenuObject;
     [SerializeField] private GameObject ScriptIsRunningObject;
     [SerializeField] private TextMeshProUGUI LogText;
-
+    [SerializeField] private TobberModule tobberModule;
+    [SerializeField] private GameObject ModuleNotFoundScreen;
+    [SerializeField] private GameObject FatalErrorScreen;
 
     [Header("Settings")]
     [SerializeField] private int itemsOnPage = 5;
     [SerializeField] private Color backgroundColor;
     [SerializeField] private Color textColor;
     [SerializeField] private Color highlightColor;
+    [SerializeField] private Color moduleSelectColor;
 
     private List<string> mainMenu = new List<string> { "Scripts", "Modules" };
     private List<string> loadedScripts = new List<string>();
-    private List<string> modules = new List<string> { "Lock", "Camera" };
+    private List<string> modules = new List<string> { "KeyPad", "Camera" };
 
     private MenuState currentState = MenuState.Main;
 
     private int selectedIndex = 0;
+    private int? selectedModuleIndex = null;
     private int scrollIndex = 0;
     private List<GameObject> itemObjects = new List<GameObject>();
 
@@ -88,6 +94,7 @@ public class TobberController : MonoBehaviour
     {
         for (int i = 0; i < itemObjects.Count; i++)
         {
+            bool isModuleSelected = currentState == MenuState.Modules && selectedModuleIndex.HasValue && selectedModuleIndex.Value == i;
             Image bgImage = itemObjects[i].GetComponent<Image>();
             Image icon = itemObjects[i].transform.GetChild(0).GetComponent<Image>();
             TMP_Text text = itemObjects[i].transform.GetChild(1).GetComponent<TMP_Text>();
@@ -104,7 +111,16 @@ public class TobberController : MonoBehaviour
                 icon.color = highlightColor;
                 text.color = textColor;
             }
+
+            if(isModuleSelected)
+            {
+                bgImage.color = moduleSelectColor;
+                icon.color = highlightColor;
+                text.color = textColor;
+            }
         }
+
+
 
         ApplyScroll();
     }
@@ -159,6 +175,22 @@ public class TobberController : MonoBehaviour
             return;
         }
 
+        if(currentState == MenuState.ModulNotFound)
+        {
+            MenuObject.SetActive(true);
+            ModuleNotFoundScreen.SetActive(false);
+            currentState = MenuState.Scripts;
+            return;
+        }
+
+        if (currentState == MenuState.FatalError)
+        {
+            MenuObject.SetActive(true);
+            FatalErrorScreen.SetActive(false);
+            currentState = MenuState.Scripts;
+            return;
+        }
+
         if (selectedIndex >= itemObjects.Count) return;
 
         switch (currentState)
@@ -177,11 +209,32 @@ public class TobberController : MonoBehaviour
                 break;
 
             case MenuState.Scripts:
+                if(selectedModuleIndex != null)
+                {
+                    bool objectFound = tobberModule.FindModule(modules[selectedModuleIndex.Value]);
+                    if(!objectFound)
+                    {
+                        currentState = MenuState.ModulNotFound;
+                        MenuObject.SetActive(false);
+                        ModuleNotFoundScreen.SetActive(true);
+                        return;
+                    }
+
+                }
                 ScriptStart();
                 break;
 
             case MenuState.Modules:
-                Debug.Log($"Activate module: {modules[selectedIndex]}");
+                if (selectedModuleIndex.HasValue && selectedModuleIndex.Value == selectedIndex)
+                {
+                    selectedModuleIndex = null;
+                }
+                else
+                {
+                    selectedModuleIndex = selectedIndex;
+                }
+
+                UpdateSelection();
                 break;
         }
     }
@@ -209,9 +262,15 @@ public class TobberController : MonoBehaviour
         vm.OnTick += Vm_OnTick;
         vm.OnError += onError;
         vm.OnPrint += onLog;
+        vm.OnOutput += OnOutput;
         VirtualMachineRunner.Instance.Initialize(vm);
         VirtualMachineRunner.Instance.OnEnd += Instance_OnEnd;
         VirtualMachineRunner.Instance.Run();
+    }
+
+    public void OnOutput(int[] output)
+    {
+        tobberModule.setInput(output);
     }
 
     private void Instance_OnEnd()
@@ -225,10 +284,12 @@ public class TobberController : MonoBehaviour
 
     private void onError(string err)
     {
-        MenuObject.SetActive(true);
-        currentState = MenuState.Scripts;
         ScriptIsRunningObject.SetActive(false);
+        FatalErrorScreen.SetActive(true);
+        currentState = MenuState.FatalError;
         VirtualMachineRunner.Instance.Stop();
+
+        FatalErrorScreen.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = err;
     }
 
     private void onLog(string msg)
@@ -238,6 +299,13 @@ public class TobberController : MonoBehaviour
 
     private void Vm_OnTick()
     {
+        int[] register = tobberModule.getOutput();
+        Dictionary<string, int> outputArray = new Dictionary<string,int>();
+        for (int i = 0; i < register.Length; i++)
+        {
+            outputArray.Add($"I{i}", register[i]);
+        }
+        VirtualMachineRunner.Instance.setIpnutRegister(outputArray);
         registerViewController.updateRegisters(VirtualMachineRunner.Instance.getRegisters());
     }
 

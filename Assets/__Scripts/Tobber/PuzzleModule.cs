@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-abstract class PuzzleModule : MonoBehaviour
+public abstract class PuzzleModule : MonoBehaviour
 {
     public int[] inputPorts = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     public int[] outputPorts = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
