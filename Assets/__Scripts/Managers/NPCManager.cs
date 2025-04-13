@@ -27,7 +27,7 @@ public class NPCManager : MonoBehaviour
     {
         float currentHour = timeManager.GetWorldTime()/60f;
         
-        if (currentHour >= 6f && currentHour < 21f)
+        if (currentHour >= 6f && currentHour < 18f)
         {
             EnableNPCS();
         }

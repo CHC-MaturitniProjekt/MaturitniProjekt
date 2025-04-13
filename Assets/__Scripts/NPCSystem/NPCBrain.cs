@@ -33,7 +33,7 @@ public class NPCBrain : MonoBehaviour
 
         textureAnimation = GetComponent<TextureAnimation>();
 
-        if (npcId is 3 or 8 or 9)
+        if (npcId is 3 or 8 or 9 or 4)
         {
             isShopkeeper = true;
         }
@@ -148,7 +148,7 @@ public class NPCBrain : MonoBehaviour
         
         if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
         {
-            if (currentHour >= 21f || currentHour < 6f)
+            if (currentHour >= 18f || currentHour < 6f)
             {
                 if (!npcHouse) return;
                 
@@ -177,8 +177,8 @@ public class NPCBrain : MonoBehaviour
                     case 3:     //bodymods
                         SetBehavior(NPCBehavior.GoToBodyMod);
                         break;
-                    case 4:
-                        SetBehavior(NPCBehavior.GoTo);
+                    case 4:     //policie
+                        SetBehavior(NPCBehavior.GoToHole);
                         break;
                 }
             }

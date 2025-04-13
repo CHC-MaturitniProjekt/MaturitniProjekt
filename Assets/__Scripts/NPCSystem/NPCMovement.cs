@@ -363,11 +363,8 @@ public class NPCMovement : MonoBehaviour
     }
     private IEnumerator ArrivedAtSpot(GameObject seatObject)
     {
-        Debug.Log("Arrived at seat");
-
         while (Vector3.Distance(transform.position, seatObject.transform.position) > agent.stoppingDistance + 0.5f)
         {
-            Debug.Log($"Distance to seat: {Vector3.Distance(transform.position, seatObject.transform.position)} | Stopping distance: {agent.stoppingDistance}");
             yield return null;
         }
 
@@ -375,7 +372,6 @@ public class NPCMovement : MonoBehaviour
         agent.updatePosition = false;
         agent.updateRotation = false;
 
-        Debug.Log("Is sitting");
         state.IsSitting = true;
         animation.SetMovementSpeed(0);
         originalRotation = transform.rotation;
@@ -386,11 +382,7 @@ public class NPCMovement : MonoBehaviour
         }
 
         Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
-        Debug.Log($"Using sit position object: {sitPosition.gameObject.name}");
         
-        Debug.Log($"Sit position: {sitPosition.position}");
-        Debug.Log($"Seat object: {sitPosition.name}, Seat position: {sitPosition.position}");
-
         transform.position = sitPosition.position;
         transform.rotation = sitPosition.rotation;
 
@@ -404,15 +396,12 @@ public class NPCMovement : MonoBehaviour
         }
 
         animation.Sit(sitAnim);
-        Debug.Log($"Playing sit animation: {sitAnim}");
 
         while(animation.CurrentAnimationCompleted() == false)
         {
             transform.position = sitPosition.position;
             yield return null;
         }
-        Debug.Log($"Completed animation: {sitAnim}");
-
 
         Vector3 lastSitPos = transform.position;
         float pushThreshold = 0.2f;
@@ -422,7 +411,6 @@ public class NPCMovement : MonoBehaviour
             float movedDist = Vector3.Distance(transform.position, lastSitPos);
             if (movedDist > pushThreshold)
             {
-                Debug.Log("NPC pushed away");
                 break;
             }
             yield return null;
