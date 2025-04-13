@@ -382,6 +382,7 @@ public class NPCMovement : MonoBehaviour
         }
 
         Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
+
         
         transform.position = sitPosition.position;
         transform.rotation = sitPosition.rotation;
@@ -397,10 +398,13 @@ public class NPCMovement : MonoBehaviour
 
         animation.Sit(sitAnim);
 
-        while(animation.CurrentAnimationCompleted() == false)
+        transform.position = sitPosition.position;
+        float tempTimer = 1f;
+        while (tempTimer > 0)
         {
+            yield return new WaitForSeconds(0.1f);
+            tempTimer -= 0.1f;
             transform.position = sitPosition.position;
-            yield return null;
         }
 
         Vector3 lastSitPos = transform.position;
