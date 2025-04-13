@@ -79,7 +79,7 @@ public class NPCMovement : MonoBehaviour
     private void Start()
     {
         currentWaypointIndex = Random.Range(0, waypoints.Length);
-        agent.avoidancePriority = Random.Range(50, 65);
+        agent.avoidancePriority = npcBrain.GetNPCSO().NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Stationary ? 80 : Random.Range(50, 65);
         
         if (waypoints.Length > 0)
         {
@@ -362,18 +362,28 @@ public class NPCMovement : MonoBehaviour
     }
     private IEnumerator ArrivedAtSpot(GameObject seatObject)
     {
+        Debug.Log("arrived at seat");
+        
         while (Vector3.Distance(transform.position, seatObject.transform.position) > agent.stoppingDistance)
         {
+            Debug.Log($"Distance to seat: {Vector3.Distance(transform.position, seatObject.transform.position)}  " + agent.stoppingDistance);
             yield return null;
         }
 
         agent.isStopped = true;
         agent.updatePosition = false;
         agent.updateRotation = false;
-
+        
+        Debug.Log("is sitting");
+        
         state.IsSitting = true;
         animation.SetMovementSpeed(0);
         originalRotation = transform.rotation;
+        
+        if (npcRb != null)
+        {
+            npcRb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+        }
 
         Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
         transform.position = sitPosition.position;
@@ -397,6 +407,7 @@ public class NPCMovement : MonoBehaviour
         }
 
         animation.Sit(sitAnim);
+        Debug.Log(sitAnim);
 
         Vector3 lastSitPos = transform.position;
         float pushThreshold = 0.2f;
@@ -410,6 +421,7 @@ public class NPCMovement : MonoBehaviour
             }
             yield return null;
         }
+        Debug.Log("pushed away");
 
         animation.ResetSit(sitAnim);
         transform.rotation = originalRotation;
@@ -418,6 +430,10 @@ public class NPCMovement : MonoBehaviour
         agent.updateRotation = true;
         agent.isStopped = false;
         state.IsSitting = false;
+        if (npcRb != null)
+        {
+            npcRb.constraints = RigidbodyConstraints.FreezeRotation;
+        }
 
         if (npcBrain.GetNPCSO().NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
         {
@@ -451,6 +467,11 @@ public class NPCMovement : MonoBehaviour
             agent.updateRotation = true;
             agent.isStopped = false;
             state.IsSitting = false;
+            
+            if (npcRb != null)
+            {
+                npcRb.constraints = RigidbodyConstraints.FreezeRotation;
+            }
 
             if (currentSeat != null)
             {
