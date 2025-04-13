@@ -385,10 +385,11 @@ public class NPCMovement : MonoBehaviour
         }
 
         Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
-
+        Debug.Log($"Using sit position object: {sitPosition.gameObject.name}");
+        
         // Logging transform info
         Debug.Log($"Sit position: {sitPosition.position}");
-        Debug.Log($"Seat object: {seatObject.name}, Seat position: {seatObject.transform.position}");
+        Debug.Log($"Seat object: {sitPosition.name}, Seat position: {seatObject.transform.position}");
 
         // Apply position and rotation
         transform.position = sitPosition.position;
