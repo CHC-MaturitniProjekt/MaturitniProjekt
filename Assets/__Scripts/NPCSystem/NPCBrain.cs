@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class NPCBrain : MonoBehaviour
@@ -15,6 +13,8 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private int npcId;
     public bool isShopkeeper;
     public Transform npcHouse;
+    public NPCMovement.StoreType selectedStore = NPCMovement.StoreType.None;
+
     
     private CameraController playerCam;
     private TimeManager timeManager;
@@ -37,12 +37,22 @@ public class NPCBrain : MonoBehaviour
             isShopkeeper = true;
         }
     }
-    
+
+    private void Start()
+    {
+        NPCManager.Instance.RegisterNPC(gameObject);
+    }
+
     private void Update()
     {
         if (state.IsOverriden) return;
         UpdateBehavior();
         NPCCycles();
+    }
+
+    public int GetNPCID()
+    {
+        return npcId;
     }
 
     public NPCScriptableObject GetNPCSO()
@@ -79,7 +89,7 @@ public class NPCBrain : MonoBehaviour
                 movement.HandleGoHome();
                 break;
             case NPCBehavior.GoToStore:
-                movement.HandleGoToStore();
+                movement.HandleGoToStore(selectedStore);
                 break;
             case NPCBehavior.GoToMarket:
                 movement.HandleGoToStore(NPCMovement.StoreType.Market);
@@ -101,34 +111,54 @@ public class NPCBrain : MonoBehaviour
         float currentHour = timeManager.GetWorldTime()/60f;
         float activeValue = npcInfo.NPCActiveTimeCurve.Evaluate(currentHour);
         
-        if (currentHour >= 22f || currentHour < 6f)
+        if (npcInfo.storyImportant)
         {
-            if (currentBehavior != NPCBehavior.GoHome)
+            if (npcInfo.NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Quan)
             {
-                SetBehavior(NPCBehavior.GoHome);
+                SetBehavior(NPCBehavior.Sit);
+                return;
+            }
+
+            if (npcInfo.NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Elliot && npcInfo.hasDailySchedule)
+            {
+                if (currentHour >= npcInfo.activeHourStart && currentHour <= npcInfo.activeHourEnd)
+                {
+                    if (!gameObject.activeSelf)
+                    {
+                        gameObject.SetActive(true);
+                        SetBehavior(NPCBehavior.Wander);
+                    }
+                }
+                else
+                {
+                    if (gameObject.activeSelf)
+                    {
+                        SetBehavior(NPCBehavior.GoHome);
+                    }
+                }
+                return;
             }
             return;
         }
-        
-        if (currentHour >= 6f && currentHour < 22f && currentBehavior == NPCBehavior.GoHome)
-        {
-            Vector3 safeSpawn = npcHouse.position + new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(safeSpawn, out hit, 2f, NavMesh.AllAreas))
-            {
-                gameObject.SetActive(true);
-                GetComponent<NavMeshAgent>().Warp(hit.position);
-                SetBehavior(NPCBehavior.Wander);
-                return;
-            } 
-        }
+
         
         if (Random.value < npcInfo.NPCRandomness * (activeValue / 2) * Time.deltaTime)
         {
+            if (currentHour >= 21f || currentHour < 6f)
+            {
+                if (!npcHouse) return;
+                
+                if (currentBehavior != NPCBehavior.GoHome)
+                {
+                    SetBehavior(NPCBehavior.GoHome);
+                }
+                return;
+            }
+
+            
             if (npcInfo.NPCBehaviourType != NPCScriptableObject.NPCBehaviourTypes.Stationary)
             {
                 SetBehavior(GetRandomBehavior());
-                
             }
             else
             {
@@ -174,12 +204,14 @@ public class NPCBrain : MonoBehaviour
             return NPCBehavior.Idle;
         }
 
+        return NPCBehavior.Sit;
+
         List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
         {
-            (NPCBehavior.Idle, 0.15f),
+            (NPCBehavior.Idle, 0.2f),
             (NPCBehavior.Wander, 0.5f),
             (NPCBehavior.Sit, 0.2f),
-            (NPCBehavior.GoToStore, 0.15f)
+            (NPCBehavior.GoToStore, 0.1f)
         };
 
         float totalWeight = behaviors.Sum(b => b.weight);
@@ -189,12 +221,26 @@ public class NPCBrain : MonoBehaviour
         {
             if (randomValue < behavior.weight)
             {
+                if (behavior.behavior == NPCBehavior.GoToStore)
+                {
+                    selectedStore = GetRandomStore();
+                }
                 return behavior.behavior;
             }
             randomValue -= behavior.weight;
         }
 
         return NPCBehavior.Idle;
+    }
+    
+    private NPCMovement.StoreType GetRandomStore()
+    {
+        return new List<NPCMovement.StoreType>
+        {
+            NPCMovement.StoreType.Market,
+            NPCMovement.StoreType.Medical,
+            NPCMovement.StoreType.BodyMod
+        }[Random.Range(0, 3)];
     }
 
     private void HandleWanderBehavior()

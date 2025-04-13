@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class NPCManager : MonoBehaviour
 {
     public static NPCManager Instance { get; private set; }
-
-    private HashSet<GameObject> registeredNPCs = new HashSet<GameObject>();
     private Dictionary<Transform, GameObject> reservedSeats = new Dictionary<Transform, GameObject>();
+
+    private TimeManager timeManager;
+    private List<GameObject> allNPCs = new List<GameObject>();
 
     private void Awake()
     {
@@ -18,6 +20,43 @@ public class NPCManager : MonoBehaviour
         }
 
         Instance = this;
+        timeManager = FindFirstObjectByType<TimeManager>();
+    }
+
+    private void Update()
+    {
+        float currentHour = timeManager.GetWorldTime()/60f;
+        
+        if (currentHour >= 6f && currentHour < 21f)
+        {
+            EnableNPCS();
+        }
+    }
+    
+    public List<GameObject> GetAllNPCs()
+    {
+        return allNPCs;
+    }
+
+    public GameObject GetNPCByID(int npcID)
+    {
+        foreach (var npc in allNPCs)
+        {
+            if (npc != null && npc.TryGetComponent(out NPCBrain brain))
+            {
+                if (brain.GetNPCID() == npcID)
+                {
+                    return npc;
+                }
+            }
+        }
+        return null;
+    }
+    
+    public void RegisterNPC(GameObject npc)
+    {
+        if (!allNPCs.Contains(npc))
+            allNPCs.Add(npc);
     }
 
     public bool IsSeatReserved(Transform seat)
@@ -28,7 +67,7 @@ public class NPCManager : MonoBehaviour
     public bool ReserveSeat(Transform seat, GameObject npc)
     {
         if (IsSeatReserved(seat)) return false;
-
+        
         reservedSeats.Add(seat, npc);
         return true;
     }
@@ -38,6 +77,37 @@ public class NPCManager : MonoBehaviour
         if (reservedSeats.ContainsKey(seat))
         {
             reservedSeats.Remove(seat);
+        }
+    }
+
+    private void EnableNPCS()
+    {
+        foreach (var npc in allNPCs)
+        {
+            if (npc != null && !npc.activeSelf)
+            {
+                npc.SetActive(true);
+                npc.GetComponent<NavMeshAgent>().enabled = true;
+                npc.GetComponent<NPCBrain>().SetBehavior(NPCBrain.NPCBehavior.Wander);
+            }
+        }
+    }
+
+    public void DisableNPC(GameObject npc)
+    {
+        if (npc != null && npc.activeSelf)
+        {
+            npc.GetComponent<NavMeshAgent>().enabled = false;
+            npc.SetActive(false);
+        }
+    }
+    
+    public void EnableNPC(GameObject npc)
+    {
+        if (npc != null && !npc.activeSelf)
+        {
+            npc.GetComponent<NavMeshAgent>().enabled = true;
+            npc.SetActive(true);
         }
     }
 }

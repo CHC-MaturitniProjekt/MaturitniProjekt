@@ -11,13 +11,25 @@ public static class SaveSystem
     private static readonly string savePath = Application.persistentDataPath + "/savedata.json";
     private static readonly string encryptionKey = "testovaci-klic"; // Toban dej sem potom treba GUID z db
 
-    public static bool SavePlayer(Movement player, PickUp pickUp, TimeManager time, CameraController cameraController)
+    public static bool SaveData(Movement player, PickUp pickUp, TimeManager time, CameraController cameraController, NPCManager npcManager)
     {
         try
         {
             GameObject[] interactableObjects = GameObject.FindGameObjectsWithTag("Item");
-            List<ItemInteract> items = interactableObjects.Select(obj => obj.GetComponent<ItemInteract>()).Where(item => item != null).ToList();
-            PlayerData data = new PlayerData(player, pickUp, time, items, cameraController);
+            List<ItemInteract> items = interactableObjects.Select(obj => obj.GetComponent<ItemInteract>())
+                .Where(item => item != null)
+                .ToList();
+            var allNPCs = npcManager.GetAllNPCs();
+            List<NPCData> npcData = allNPCs
+                .Where(npc => npc != null)
+                .Select(npc =>
+                {
+                    var npcBrain = npc.GetComponent<NPCBrain>();
+                    return new NPCData(npcBrain.GetNPCID(), npc.transform.position, npc.transform.rotation, npcBrain.GetCurrentBehavior(), npcBrain.isActiveAndEnabled);
+                })
+                .ToList();
+
+            SaveData data = new SaveData(player, pickUp, time, items, cameraController, npcData);
             string jsonData = JsonUtility.ToJson(data, true);
             string encryptedData = Encrypt(jsonData, encryptionKey);
             File.WriteAllText(savePath, encryptedData);
@@ -30,7 +42,7 @@ public static class SaveSystem
         }
     }
 
-    public static PlayerData LoadPlayer()
+    public static SaveData LoadData()
     {
         if (!File.Exists(savePath))
         {
@@ -42,7 +54,7 @@ public static class SaveSystem
         {
             string encryptedData = File.ReadAllText(savePath);
             string jsonData = Decrypt(encryptedData, encryptionKey);
-            PlayerData data = JsonUtility.FromJson<PlayerData>(jsonData);
+            SaveData data = JsonUtility.FromJson<SaveData>(jsonData);
             return data;
         }
         catch (Exception ex)
@@ -52,11 +64,11 @@ public static class SaveSystem
         }
     }
 
-    public static bool ResetPlayer()
+    public static bool ResetData()
     {
         try
         {
-            PlayerData data = new PlayerData();
+            SaveData data = new SaveData();
             string jsonData = JsonUtility.ToJson(data, true);
             string encryptedData = Encrypt(jsonData, encryptionKey);
             File.WriteAllText(savePath, encryptedData);

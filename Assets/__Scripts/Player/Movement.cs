@@ -146,7 +146,12 @@ public class Movement : MonoBehaviour
 
         if (!isSitting)
         {
-            animator.SetFloat("X", rb.linearVelocity.magnitude);
+            float currentSpeed = rb.linearVelocity.magnitude;
+
+            float targetSpeed = isSprinting ? currentSpeed : Mathf.Min(currentSpeed, 1f);
+
+            float lerpedSpeed = Mathf.Lerp(animator.GetFloat("X"), targetSpeed, Time.fixedDeltaTime * 5f);
+            animator.SetFloat("X", lerpedSpeed);
         }
     }
 
@@ -242,8 +247,7 @@ public class Movement : MonoBehaviour
     private void GroundCheck()
     {
         bool wasGrounded = isGrounded;
-        isGrounded = Physics.Raycast(rb.position, Vector3.down, 0.3f);
-
+        isGrounded = Physics.Raycast(rb.position + Vector3.up * 0.1f, Vector3.down, 0.3f);
         if (isGrounded && !wasGrounded)
         {
             isJumping = false;

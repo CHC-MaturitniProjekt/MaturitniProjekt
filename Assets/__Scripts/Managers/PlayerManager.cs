@@ -80,7 +80,6 @@ public class PlayerManager : MonoBehaviour
 
     public void PickUpItem(GameObject item)
     {
-        
         pickUpScript.CarryItem(item);
     }
 

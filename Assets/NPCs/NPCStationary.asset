@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: NPCStationary
   m_EditorClassIdentifier: 
   NPCName: Testik
-  NPCBehaviourType: 3
+  storyImportant: 0
+  NPCBehaviourType: 2
   NPCDialogueType: 7
   NPCWayPointNames:
   - DumWaypoint
@@ -52,3 +53,7 @@ MonoBehaviour:
     m_PostInfinity: 0
     m_RotationOrder: 4
   NPCRandomness: 0.5
+  isObtained: 0
+  hasDailySchedule: 0
+  activeHourStart: 10
+  activeHourEnd: 18

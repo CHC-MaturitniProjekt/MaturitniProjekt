@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,33 +9,41 @@ public class PickUp : MonoBehaviour
     [SerializeField] private InputReader input;
 
     [SerializeField] private Transform itemHolster;
+    [SerializeField] private Transform dropPoint;
+    
     [SerializeField] private float itemScale = 0.5f;
     [SerializeField] private float throwForce = 8f;
 
     public bool isHoldingItem = false;
+    private Animator animator;
     public GameObject currentItem;
     private int itemIndex;
     private GameObject[] items;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+        animator.SetLayerWeight(animator.GetLayerIndex("Holding"), isHoldingItem ? 1 : 0);
+    }
 
     void Start()
     {
         input.DropEvent += OnDrop;
     }
-    
-    
 
     private void OnDrop()
     {
         if (!isHoldingItem) return;
 
         DropItem(currentItem);
-
     }
 
     public void CarryItem(GameObject item)
     {
         if (isHoldingItem) return;
-
+        
+        animator.SetLayerWeight(animator.GetLayerIndex("Holding"),1);
+        
         PrepareItem(item);
         isHoldingItem = true;
     }
@@ -42,11 +51,19 @@ public class PickUp : MonoBehaviour
     private void PrepareItem(GameObject item)
     {
         currentItem = item;
-        item.transform.SetParent(itemHolster);
+
+        item.transform.SetParent(itemHolster, false);
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
-        item.transform.localScale = Vector3.one * itemScale;
 
+        Vector3 rigScale = itemHolster.lossyScale;
+        Vector3 correctedScale = (Vector3.one * itemScale);
+        correctedScale.x /= rigScale.x;
+        correctedScale.y /= rigScale.y;
+        correctedScale.z /= rigScale.z;
+
+        item.transform.localScale = correctedScale;
+        
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -61,12 +78,16 @@ public class PickUp : MonoBehaviour
         }
     }
 
-    public void DropItem(GameObject item)
+    private void DropItem(GameObject item)
     {
         if (!isHoldingItem) return;
 
         item.transform.SetParent(null);
+        item.transform.position = dropPoint.position;
+        item.transform.rotation = dropPoint.rotation;
         item.transform.localScale = Vector3.one;
+
+        animator.SetLayerWeight(animator.GetLayerIndex("Holding"), 0);
 
         Rigidbody rb = item.GetComponent<Rigidbody>();
         if (rb != null)
@@ -74,7 +95,7 @@ public class PickUp : MonoBehaviour
             rb.isKinematic = false;
             rb.freezeRotation = false;
 
-            Vector3 launchDirection = itemHolster.right;
+            Vector3 launchDirection = dropPoint.forward;
             rb.AddForce(launchDirection * throwForce, ForceMode.Impulse);
         }
 

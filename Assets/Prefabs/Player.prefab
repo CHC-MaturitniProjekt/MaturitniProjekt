@@ -280,6 +280,7 @@ SpriteRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -664,7 +665,7 @@ Transform:
   m_GameObject: {fileID: 4828721698245237836}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.01473883, y: -0.029999733, z: -0.0000037169084}
+  m_LocalPosition: {x: 0.01372409, y: -0.03004396, z: 0.00103168}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -815,7 +816,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7371946447482873456}
   m_LocalRotation: {x: -0, y: 0.7376628, z: -0, w: 0.6751694}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.165}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -823,8 +824,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 95.065, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2, y: 2}
+  m_AnchoredPosition: {x: -0.0146, y: 0}
+  m_SizeDelta: {x: 2.3314, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1787671416751372321
 MeshRenderer:
@@ -845,6 +846,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1057,22 +1059,22 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -17.194
+      value: 154.71272
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.755
+      value: -225.878
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -14.662
+      value: -773.23926
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.0000005215406
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
@@ -1082,7 +1084,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
@@ -1097,7 +1099,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
@@ -2093,6 +2095,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Solace
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f9b5702edc145b428c71583e0b24c98,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1348759518114389863, guid: 9f9b5702edc145b428c71583e0b24c98,
         type: 3}
@@ -3245,10 +3252,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.23659077
-  m_Height: 1.6916724
+  m_Radius: 0.20981216
+  m_Height: 1.6781551
   m_Direction: 1
-  m_Center: {x: 0.00034067035, y: 0.7974059, z: 2.6635017e-18}
+  m_Center: {x: 0.00034067035, y: 0.8571134, z: 0.087463796}
 --- !u!54 &8117013849216091714
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3299,6 +3306,7 @@ MonoBehaviour:
   maxRecoveryDelay: 2
   sprintRecoveryTime: 2
   jumpForce: 8
+  isSitting: 0
 --- !u!114 &1617573261026005845
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3312,6 +3320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerBody: {fileID: 7443964978158074195}
+  head: {fileID: 3920186249977994197}
   cam: {fileID: 8920400748727550142}
   input: {fileID: 11400000, guid: b427b816c52e6a540b5cb9955695b966, type: 2}
   fov: 90
