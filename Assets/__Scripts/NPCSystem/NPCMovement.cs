@@ -362,66 +362,63 @@ public class NPCMovement : MonoBehaviour
     }
     private IEnumerator ArrivedAtSpot(GameObject seatObject)
     {
-        Debug.Log("arrived at seat");
-        
-        while (Vector3.Distance(transform.position, seatObject.transform.position) > agent.stoppingDistance)
+        Debug.Log("Arrived at seat");
+
+        while (Vector3.Distance(transform.position, seatObject.transform.position) > agent.stoppingDistance + 0.5f)
         {
-            Debug.Log($"Distance to seat: {Vector3.Distance(transform.position, seatObject.transform.position)}  " + agent.stoppingDistance);
+            Debug.Log($"Distance to seat: {Vector3.Distance(transform.position, seatObject.transform.position)} | Stopping distance: {agent.stoppingDistance}");
             yield return null;
         }
 
         agent.isStopped = true;
         agent.updatePosition = false;
         agent.updateRotation = false;
-        
-        Debug.Log("is sitting");
-        
+
+        Debug.Log("Is sitting");
         state.IsSitting = true;
         animation.SetMovementSpeed(0);
         originalRotation = transform.rotation;
-        
+
         if (npcRb != null)
         {
             npcRb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
         }
 
         Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
+
+        // Logging transform info
+        Debug.Log($"Sit position: {sitPosition.position}");
+        Debug.Log($"Seat object: {seatObject.name}, Seat position: {seatObject.transform.position}");
+
+        // Apply position and rotation
         transform.position = sitPosition.position;
         transform.rotation = sitPosition.rotation;
 
         string sitAnim = "";
         switch (seatObject.tag)
         {
-            case "Sofa":
-                sitAnim = "isSofaSitting";
-                break;
-            case "Bench":
-                sitAnim = "isBenchSitting";
-                break;
-            case "GroundSit":
-                sitAnim = "isGroundSitting";
-                break;
-            case "Layable":
-                sitAnim = "isBedSitting";
-                break;
+            case "Sofa": sitAnim = "isSofaSitting"; break;
+            case "Bench": sitAnim = "isBenchSitting"; break;
+            case "GroundSit": sitAnim = "isGroundSitting"; break;
+            case "Layable": sitAnim = "isBedSitting"; break;
         }
 
         animation.Sit(sitAnim);
-        Debug.Log(sitAnim);
+        Debug.Log($"Playing sit animation: {sitAnim}");
 
         Vector3 lastSitPos = transform.position;
-        float pushThreshold = 0.2f;
-        
+        float pushThreshold = 2f;
+
         while (npcBrain.GetCurrentBehavior() == NPCBrain.NPCBehavior.Sit && !state.IsOverriden)
         {
             float movedDist = Vector3.Distance(transform.position, lastSitPos);
             if (movedDist > pushThreshold)
             {
+                Debug.Log("NPC pushed away");
                 break;
             }
             yield return null;
         }
-        Debug.Log("pushed away");
 
         animation.ResetSit(sitAnim);
         transform.rotation = originalRotation;
@@ -430,6 +427,7 @@ public class NPCMovement : MonoBehaviour
         agent.updateRotation = true;
         agent.isStopped = false;
         state.IsSitting = false;
+
         if (npcRb != null)
         {
             npcRb.constraints = RigidbodyConstraints.FreezeRotation;

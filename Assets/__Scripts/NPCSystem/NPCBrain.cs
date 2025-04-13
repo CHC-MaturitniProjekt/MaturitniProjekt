@@ -204,6 +204,8 @@ public class NPCBrain : MonoBehaviour
             return NPCBehavior.Idle;
         }
 
+        return NPCBehavior.Sit;
+
         List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
         {
             (NPCBehavior.Idle, 0.2f),
