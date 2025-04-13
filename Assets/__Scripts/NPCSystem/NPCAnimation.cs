@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Splines;
 
 [RequireComponent(typeof(Animator))]
 public class NPCAnimation : MonoBehaviour
@@ -21,7 +22,13 @@ public class NPCAnimation : MonoBehaviour
         if (string.IsNullOrEmpty(animName)) return;
         animator.SetBool(animName, true);
     }
-    
+
+    public bool CurrentAnimationCompleted()
+    {
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        return stateInfo.normalizedTime >= 1f;
+    }
     public void ResetSit(string animName)
     {
         if (string.IsNullOrEmpty(animName)) return;

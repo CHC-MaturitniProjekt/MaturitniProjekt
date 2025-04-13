@@ -389,7 +389,7 @@ public class NPCMovement : MonoBehaviour
         
         // Logging transform info
         Debug.Log($"Sit position: {sitPosition.position}");
-        Debug.Log($"Seat object: {sitPosition.name}, Seat position: {seatObject.transform.position}");
+        Debug.Log($"Seat object: {sitPosition.name}, Seat position: {sitPosition.position}");
 
         // Apply position and rotation
         transform.position = sitPosition.position;
@@ -407,8 +407,17 @@ public class NPCMovement : MonoBehaviour
         animation.Sit(sitAnim);
         Debug.Log($"Playing sit animation: {sitAnim}");
 
+        while(animation.CurrentAnimationCompleted() == false)
+        {
+            transform.position = sitPosition.position;
+           // transform.rotation = sitPosition.rotation;
+            yield return null;
+        }
+        Debug.Log($"Completed animation: {sitAnim}");
+
+
         Vector3 lastSitPos = transform.position;
-        float pushThreshold = 2f;
+        float pushThreshold = 0.2f;
 
         while (npcBrain.GetCurrentBehavior() == NPCBrain.NPCBehavior.Sit && !state.IsOverriden)
         {
