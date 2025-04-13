@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class NPCBrain : MonoBehaviour
@@ -13,7 +14,7 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private int npcId;
     public bool isShopkeeper;
     public Transform npcHouse;
-    public NPCMovement.StoreType selectedStore = NPCMovement.StoreType.None;
+    [FormerlySerializedAs("selectedStore")] public NPCMovement.SpotType selectedSpot = NPCMovement.SpotType.None;
 
     
     private CameraController playerCam;
@@ -89,16 +90,19 @@ public class NPCBrain : MonoBehaviour
                 movement.HandleGoHome();
                 break;
             case NPCBehavior.GoToStore:
-                movement.HandleGoToStore(selectedStore);
+                movement.HandleGoToStore(selectedSpot);
                 break;
             case NPCBehavior.GoToMarket:
-                movement.HandleGoToStore(NPCMovement.StoreType.Market);
+                movement.HandleGoToStore(NPCMovement.SpotType.Market);
                 break;
             case NPCBehavior.GoToBodyMod:
-                movement.HandleGoToStore(NPCMovement.StoreType.BodyMod);
+                movement.HandleGoToStore(NPCMovement.SpotType.BodyMod);
                 break;
             case NPCBehavior.GoToMedical:
-                movement.HandleGoToStore(NPCMovement.StoreType.Medical);
+                movement.HandleGoToStore(NPCMovement.SpotType.Medical);
+                break;
+            case NPCBehavior.GoToHole:
+                movement.HandleGoTo(movement.holePos.position);
                 break;
             case NPCBehavior.ExitStore:
                 movement.HandleExitStore();
@@ -173,6 +177,9 @@ public class NPCBrain : MonoBehaviour
                     case 3:     //bodymods
                         SetBehavior(NPCBehavior.GoToBodyMod);
                         break;
+                    case 4:
+                        SetBehavior(NPCBehavior.GoTo);
+                        break;
                 }
             }
         }
@@ -180,7 +187,7 @@ public class NPCBrain : MonoBehaviour
     
     private NPCBehavior GetRandomBehavior()
     {
-        if (movement.currentStore != NPCMovement.StoreType.None)
+        if (movement.currentSpot != NPCMovement.SpotType.None)
         {
             List<(NPCBehavior behavior, float weight)> inStoreBehaviors = new List<(NPCBehavior, float)>
             {
@@ -204,8 +211,6 @@ public class NPCBrain : MonoBehaviour
             return NPCBehavior.Idle;
         }
 
-        return NPCBehavior.Sit;
-
         List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
         {
             (NPCBehavior.Idle, 0.2f),
@@ -223,7 +228,7 @@ public class NPCBrain : MonoBehaviour
             {
                 if (behavior.behavior == NPCBehavior.GoToStore)
                 {
-                    selectedStore = GetRandomStore();
+                    selectedSpot = GetRandomStore();
                 }
                 return behavior.behavior;
             }
@@ -233,13 +238,13 @@ public class NPCBrain : MonoBehaviour
         return NPCBehavior.Idle;
     }
     
-    private NPCMovement.StoreType GetRandomStore()
+    private NPCMovement.SpotType GetRandomStore()
     {
-        return new List<NPCMovement.StoreType>
+        return new List<NPCMovement.SpotType>
         {
-            NPCMovement.StoreType.Market,
-            NPCMovement.StoreType.Medical,
-            NPCMovement.StoreType.BodyMod
+            NPCMovement.SpotType.Market,
+            NPCMovement.SpotType.Medical,
+            NPCMovement.SpotType.BodyMod
         }[Random.Range(0, 3)];
     }
 
@@ -324,6 +329,7 @@ public class NPCBrain : MonoBehaviour
         GoToMedical,
         GoToBodyMod,
         GoToStore,
+        GoToHole,
         ExitStore
     }
 }

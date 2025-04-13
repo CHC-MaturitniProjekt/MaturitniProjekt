@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class NPCMovement : MonoBehaviour
@@ -38,13 +39,15 @@ public class NPCMovement : MonoBehaviour
     [SerializeField] private Transform bodymodExit;
     [SerializeField] private Transform bodymodCounter;
     public bool isAtBodymod = false;
-    private StoreType selectedStore;
+    private SpotType _selectedSpot;
+
+    public Transform holePos;
 
     [Header("Story npcs")] [SerializeField]
     private List<Transform> assignedSeats;
     
-    public enum StoreType { None, Market, Medical, BodyMod }
-    public StoreType currentStore = StoreType.None;
+    public enum SpotType { None, Market, Medical, BodyMod, Hole }
+    public SpotType currentSpot = SpotType.None;
     
     private NavMeshAgent agent;
     private NPCState state;
@@ -104,8 +107,6 @@ public class NPCMovement : MonoBehaviour
             case NPCScriptableObject.NPCBehaviourTypes.Fancy:
                 canSitOn.Add("Bench");
                 canSitOn.Add("Sofa");
-                break;
-            case NPCScriptableObject.NPCBehaviourTypes.Stationary:
                 break;
         }
     }
@@ -387,11 +388,9 @@ public class NPCMovement : MonoBehaviour
         Transform sitPosition = seatObject.transform.childCount > 0 ? seatObject.transform.GetChild(0) : seatObject.transform;
         Debug.Log($"Using sit position object: {sitPosition.gameObject.name}");
         
-        // Logging transform info
         Debug.Log($"Sit position: {sitPosition.position}");
         Debug.Log($"Seat object: {sitPosition.name}, Seat position: {sitPosition.position}");
 
-        // Apply position and rotation
         transform.position = sitPosition.position;
         transform.rotation = sitPosition.rotation;
 
@@ -410,7 +409,6 @@ public class NPCMovement : MonoBehaviour
         while(animation.CurrentAnimationCompleted() == false)
         {
             transform.position = sitPosition.position;
-           // transform.rotation = sitPosition.rotation;
             yield return null;
         }
         Debug.Log($"Completed animation: {sitAnim}");
@@ -510,24 +508,24 @@ public class NPCMovement : MonoBehaviour
         }
     }
     
-    public void HandleGoToStore(StoreType storeType = StoreType.None)
+    public void HandleGoToStore(SpotType spotType = SpotType.None)
     {
         Transform exit = null;
         Transform entrance = null;
 
-        selectedStore = storeType != StoreType.None ? storeType : npcBrain.selectedStore;
+        _selectedSpot = spotType != SpotType.None ? spotType : npcBrain.selectedSpot;
 
-        switch (selectedStore)
+        switch (_selectedSpot)
         {
-            case StoreType.Market:
+            case SpotType.Market:
                 exit = marketExit;
                 entrance = marketEntrance;
                 break;
-            case StoreType.Medical:
+            case SpotType.Medical:
                 exit = medicalExit;
                 entrance = medicalEntrance;
                 break;
-            case StoreType.BodyMod:
+            case SpotType.BodyMod:
                 exit = bodymodExit;
                 entrance = bodymodEntrance;
                 break;
@@ -542,10 +540,10 @@ public class NPCMovement : MonoBehaviour
             agent.Warp(exit.position);
             npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
 
-            isAtMarket = selectedStore == StoreType.Market;
-            isAtMedical = selectedStore == StoreType.Medical;
-            isAtBodymod = selectedStore == StoreType.BodyMod;
-            currentStore = selectedStore;
+            isAtMarket = _selectedSpot == SpotType.Market;
+            isAtMedical = _selectedSpot == SpotType.Medical;
+            isAtBodymod = _selectedSpot == SpotType.BodyMod;
+            currentSpot = _selectedSpot;
         }
 
         if (npcBrain.isShopkeeper)
@@ -558,15 +556,15 @@ public class NPCMovement : MonoBehaviour
     {
         Transform counterWaypoint = null;
 
-        switch (currentStore)
+        switch (currentSpot)
         {
-            case StoreType.Market:
+            case SpotType.Market:
                 counterWaypoint = markerCounter;
                 break;
-            case StoreType.Medical:
+            case SpotType.Medical:
                 counterWaypoint = medicalCounter;
                 break;
-            case StoreType.BodyMod:
+            case SpotType.BodyMod:
                 counterWaypoint = bodymodCounter;
                 break;
         }
@@ -583,17 +581,17 @@ public class NPCMovement : MonoBehaviour
         Transform exit = null;
         Transform entrance = null;
 
-        switch (currentStore)
+        switch (currentSpot)
         {
-            case StoreType.Market:
+            case SpotType.Market:
                 exit = marketExit;
                 entrance = marketEntrance;
                 break;
-            case StoreType.Medical:
+            case SpotType.Medical:
                 exit = medicalExit;
                 entrance = medicalEntrance;
                 break;
-            case StoreType.BodyMod:
+            case SpotType.BodyMod:
                 exit = bodymodExit;
                 entrance = bodymodEntrance;
                 break;
@@ -609,8 +607,8 @@ public class NPCMovement : MonoBehaviour
                 isAtMarket = false;
                 isAtBodymod = false;
                 isAtMedical = false;
-                currentStore = StoreType.None;
-                selectedStore = StoreType.None;
+                currentSpot = SpotType.None;
+                _selectedSpot = SpotType.None;
 
                 npcBrain.SetBehavior(NPCBrain.NPCBehavior.Wander);
             }
