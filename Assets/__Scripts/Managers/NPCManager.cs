@@ -23,13 +23,17 @@ public class NPCManager : MonoBehaviour
         timeManager = FindFirstObjectByType<TimeManager>();
     }
 
+    private float lastCheckedHour = -1f;
+
     private void Update()
     {
-        float currentHour = timeManager.GetWorldTime()/60f;
-        
-        if (currentHour >= 6f && currentHour < 18f)
+        float currentHour = timeManager.GetWorldTime() / 60f;
+
+        if (Mathf.Floor(currentHour) != Mathf.Floor(lastCheckedHour))
         {
-            EnableNPCS();
+            lastCheckedHour = currentHour;
+            EnableStandardNPCs(currentHour);
+            EnableScheduledNPCs(currentHour);
         }
     }
     
@@ -80,15 +84,49 @@ public class NPCManager : MonoBehaviour
         }
     }
 
-    private void EnableNPCS()
+    private void EnableStandardNPCs(float currentHour)
+    {
+        if (currentHour < 6f || currentHour >= 18f) return;
+
+        foreach (var npc in allNPCs)
+        {
+            if (npc == null || npc.activeSelf) continue;
+
+            var brain = npc.GetComponent<NPCBrain>();
+            if (brain == null) continue;
+
+            var so = brain.GetNPCSO();
+            if (so != null && so.storyImportant && so.hasDailySchedule)
+            {
+                continue;
+            }
+
+            npc.SetActive(true);
+            if (npc.TryGetComponent(out NavMeshAgent agent))
+                agent.enabled = true;
+
+            brain.SetBehavior(NPCBrain.NPCBehavior.Wander);
+        }
+    }
+
+    private void EnableScheduledNPCs(float currentHour)
     {
         foreach (var npc in allNPCs)
         {
-            if (npc != null && !npc.activeSelf)
+            if (npc == null) continue;
+
+            var brain = npc.GetComponent<NPCBrain>();
+            if (brain == null) continue;
+
+            var so = brain.GetNPCSO();
+            if (so == null || !so.storyImportant || !so.hasDailySchedule) continue;
+
+            bool shouldBeActive = currentHour >= so.activeHourStart && currentHour <= so.activeHourEnd;
+
+            if (shouldBeActive && !npc.activeSelf)
             {
-                npc.SetActive(true);
-                npc.GetComponent<NavMeshAgent>().enabled = true;
-                npc.GetComponent<NPCBrain>().SetBehavior(NPCBrain.NPCBehavior.Wander);
+                brain.SetBehavior(NPCBrain.NPCBehavior.Sit);
+                EnableNPC(npc);
             }
         }
     }
