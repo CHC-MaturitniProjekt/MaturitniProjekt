@@ -5,7 +5,6 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEditor.PackageManager;
 
 public class FirebaseClient
 {
@@ -401,9 +400,11 @@ public class FirebaseClient
                 }
                 catch (Exception ex)
                 {
+#if UNITY_EDITOR
                     if (UnityEditor.EditorApplication.isPlaying)
                         UnityEngine.Debug.LogError($"Error in StartListening: {ex.Message}");
                     await Task.Delay(5000); // Retry after delay
+#endif
                 }
             }
         });

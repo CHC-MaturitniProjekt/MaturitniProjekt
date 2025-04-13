@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using Assets.__Scripts.QuestSystem.NodeEditor;
 using System;
 using System.Collections;
@@ -44,22 +45,22 @@ public class QuestGraphView : GraphView
     {
         menu.AppendAction("Quest Node", action =>
         {
-            CreateNode(QuestNode.NodeTypes.MainQuestNode, mousePosition);
+            CreateNode(NodeTypes.MainQuestNode, mousePosition);
         });
 
         menu.AppendAction("Objective Node", action =>
         {
-            CreateNode(QuestNode.NodeTypes.ObjectiveNode, mousePosition);
+            CreateNode(NodeTypes.ObjectiveNode, mousePosition);
         });
 
         menu.AppendAction("Reward Node", action =>
         {
-            CreateNode(QuestNode.NodeTypes.RewardNode, mousePosition);
+            CreateNode(NodeTypes.RewardNode, mousePosition);
         });
 
         menu.AppendAction("Dialogue Node", action =>
         {
-            CreateNode(QuestNode.NodeTypes.DialogueNode, mousePosition);
+            CreateNode(NodeTypes.DialogueNode, mousePosition);
         });
     }
 
@@ -107,13 +108,13 @@ public class QuestGraphView : GraphView
             AssetDatabase.SaveAssets();
         }
 
-        if (!NodeExists(QuestNode.NodeTypes.Start))
+        if (!NodeExists(NodeTypes.Start))
         {
-            CreateNode(QuestNode.NodeTypes.Start);
+            CreateNode(NodeTypes.Start);
         }    
     }
     
-    private bool NodeExists(QuestNode.NodeTypes nodeType)
+    private bool NodeExists(NodeTypes nodeType)
     {
         foreach (var node in nodes.ToList())
         {
@@ -126,13 +127,13 @@ public class QuestGraphView : GraphView
     }
 
 
-    public void CreateNode(QuestNode.NodeTypes nodeType, Vector2 position = default)
+    public void CreateNode(NodeTypes nodeType, Vector2 position = default)
     {
         QuestNode node;
 
         switch (nodeType)
         {
-            case QuestNode.NodeTypes.MainQuestNode:
+            case NodeTypes.MainQuestNode:
                 node = new MainQuestNode
                 {
                     QuestID = 0,
@@ -145,7 +146,7 @@ public class QuestGraphView : GraphView
                 };
                 break;
 
-            case QuestNode.NodeTypes.ObjectiveNode:
+            case NodeTypes.ObjectiveNode:
                 node = new ObjectiveNode
                 {
                     title = "Objective Node",
@@ -154,7 +155,7 @@ public class QuestGraphView : GraphView
                 };
                 break;
 
-            case QuestNode.NodeTypes.RewardNode:
+            case NodeTypes.RewardNode:
                 node = new RewardNode
                 {
                     title = "Reward Node",
@@ -162,7 +163,7 @@ public class QuestGraphView : GraphView
                     RewardValue = 100
                 };
                 break;
-            case QuestNode.NodeTypes.DialogueNode:
+            case NodeTypes.DialogueNode:
                 node = new DialogueNode
                 {
                     DialogueName = "Dialogue",
@@ -172,7 +173,7 @@ public class QuestGraphView : GraphView
                     isSMS = false
                 };
                 break;
-            case QuestNode.NodeTypes.Start:
+            case NodeTypes.Start:
                 node = new StartQuestNode
                 {
                     title = "Start"
@@ -191,7 +192,7 @@ public class QuestGraphView : GraphView
         AddElement(node);
     }
     
-    public QuestNode CreateNode(QuestNode.NodeTypes nodeType, QuestNodeModel nodeData)
+    public QuestNode CreateNode(NodeTypes nodeType, QuestNodeModel nodeData)
     {
         QuestNode node;
         
@@ -267,3 +268,4 @@ public class QuestGraphView : GraphView
 }
 
 
+#endif

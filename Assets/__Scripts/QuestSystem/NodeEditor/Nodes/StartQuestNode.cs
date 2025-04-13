@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using Assets.__Scripts.QuestSystem.NodeEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,3 +26,4 @@ public class StartQuestNode : QuestNode
         RefreshPorts();
     }
 }
+#endif

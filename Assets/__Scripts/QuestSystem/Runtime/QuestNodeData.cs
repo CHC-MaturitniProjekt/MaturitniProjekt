@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 public class QuestNodeData
 {
     public string GUID;
-    public QuestNode.NodeTypes NodeType;
+    public NodeTypes NodeType;
     public string QuestName;
     public string QuestDescription;
     public string ObjectiveDescription;
@@ -17,4 +18,5 @@ public class QuestNodeData
     public Vector2 Position;
     public bool isOptional;
 }
+#endif
 

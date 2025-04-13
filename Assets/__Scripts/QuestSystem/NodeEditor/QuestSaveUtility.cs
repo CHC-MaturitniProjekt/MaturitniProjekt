@@ -1,14 +1,19 @@
-using Assets.__Scripts.QuestSystem.NodeEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
+
 using UnityEngine;
 using UnityEngine.UIElements;
-using Edge = UnityEditor.Experimental.GraphView.Edge;
 
+#if UNITY_EDITOR
+using Assets.__Scripts.QuestSystem.NodeEditor;
+using Edge = UnityEditor.Experimental.GraphView.Edge;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
+#endif
+
+#if UNITY_EDITOR
 public class QuestSaveUtility
 {
     private QuestGraphView _targetGraphView;
@@ -74,9 +79,9 @@ public class QuestSaveUtility
 
         ClearGraph();
         CreateNodes();
-        if (Nodes.FirstOrDefault(node => node.QuestType == QuestNode.NodeTypes.Start) == null)
+        if (Nodes.FirstOrDefault(node => node.QuestType ==NodeTypes.Start) == null)
         {
-            _targetGraphView.CreateNode(QuestNode.NodeTypes.Start);
+            _targetGraphView.CreateNode(NodeTypes.Start);
         }
         ConnectNodes();
     }
@@ -136,18 +141,19 @@ public class QuestSaveUtility
             }
         }
     }
+
     private QuestNodeModel CreateNodeModel(QuestNode node)
     {
         switch (node.QuestType)
         {
-            case QuestNode.NodeTypes.Start:
+            case NodeTypes.Start:
                 return new StartNodeModel
                 {
                     GUID = node.GUID,
                     QuestType = node.QuestType,
                     position = node.GetPosition().position,
                 };
-            case QuestNode.NodeTypes.MainQuestNode:
+            case NodeTypes.MainQuestNode:
                 return new MainQuestNodeModel
                 {
                     GUID = node.GUID,
@@ -157,7 +163,7 @@ public class QuestSaveUtility
                     QuestName = ((MainQuestNode)node).QuestName,
                     QuestDescription = ((MainQuestNode)node).QuestDescription
                 };
-            case QuestNode.NodeTypes.ObjectiveNode:
+            case NodeTypes.ObjectiveNode:
                 return new ObjectiveNodeModel
                 {
                     GUID = node.GUID,
@@ -169,7 +175,7 @@ public class QuestSaveUtility
                     CompletionCriteria = CompletionCriteriaSerializer.Serialize(((ObjectiveNode)node).CompletionCriteria)
 
                 };
-            case QuestNode.NodeTypes.RewardNode:
+            case NodeTypes.RewardNode:
                 return new RewardNodeModel
                 {
                     GUID = node.GUID,
@@ -178,7 +184,7 @@ public class QuestSaveUtility
                     RewardType = ((RewardNode)node).RewardType,
                     RewardValue = ((RewardNode)node).RewardValue
                 };
-            case QuestNode.NodeTypes.DialogueNode:
+            case NodeTypes.DialogueNode:
                 return new DialogueNodeModel()
                 {
                     GUID = node.GUID,
@@ -237,7 +243,7 @@ public class QuestSaveUtility
     }
 }
 
-
+#endif
 public static class CompletionCriteriaSerializer
 {
     public static List<SerializableCompletionCriteria> Serialize(List<ICompletionCriteria> criteria)

@@ -217,7 +217,7 @@ public class Firebase : MonoBehaviour
                 break;
         }
     }
-    
+
     public void AddQuest(string guid, string title, string description, List<ObjectiveNodeModel> objectives, List<RewardNodeModel> rewards, List<string?> nextQuests, bool isActive, bool isCompleted, bool isObtained)
     {
         var settings = new JsonSerializerSettings
@@ -242,7 +242,7 @@ public class Firebase : MonoBehaviour
         
         client.PutSync($"quests/{guid}", jsonQuest);
     }
-    
+
     public async Task UpdateObjectiveCompletionStatus(string questGUID, int objectiveIndex, bool isCompleted)
     {
         FirebaseResponse response = client.GetSync($"quests/{questGUID}/Objectives/{objectiveIndex}");

@@ -249,7 +249,7 @@ public class QuestManager : MonoBehaviour
     private ParsedQuestModel ParseQuestData(SerializableQuestNodeModel node)
     {
         var questNodeModel = SerializableQuestNodeModel.DeserializeNodeModel(node);
-        if (questNodeModel.QuestType == QuestNode.NodeTypes.MainQuestNode)
+        if (questNodeModel.QuestType ==NodeTypes.MainQuestNode)
         {
             var mainQuestNodeModel = questNodeModel as MainQuestNodeModel;
             var parsedQuestModel = new ParsedQuestModel
@@ -278,16 +278,16 @@ public class QuestManager : MonoBehaviour
                         {
                             switch (objectiveModel.QuestType)
                             {
-                                case QuestNode.NodeTypes.ObjectiveNode:
+                                case NodeTypes.ObjectiveNode:
                                     parsedQuestModel.Objectives.Add(objectiveModel as ObjectiveNodeModel);
                                     break;
-                                case QuestNode.NodeTypes.RewardNode:
+                                case NodeTypes.RewardNode:
                                     parsedQuestModel.Rewards.Add(objectiveModel as RewardNodeModel);
                                     break;
-                                case QuestNode.NodeTypes.MainQuestNode:
+                                case NodeTypes.MainQuestNode:
                                     parsedQuestModel.nextQuests.Add(objectiveModel.GUID);
                                     break;
-                                case QuestNode.NodeTypes.DialogueNode:
+                                case NodeTypes.DialogueNode:
                                     parsedQuestModel.dialogues.Add(objectiveModel as DialogueNodeModel);
                                     break;
                                 default:

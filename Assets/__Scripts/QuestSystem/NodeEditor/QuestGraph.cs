@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -62,35 +63,35 @@ public class QuestGraph : EditorWindow
 
         dropdownMenu.AddItem(new GUIContent("Start Node"), false, () =>
         {
-            if (!NodeExists(QuestNode.NodeTypes.Start))
-                questGraphView.CreateNode(QuestNode.NodeTypes.Start);
+            if (!NodeExists(NodeTypes.Start))
+                questGraphView.CreateNode(NodeTypes.Start);
             else
                 Debug.LogWarning("Start Node již existuje!");
         });
 
         dropdownMenu.AddItem(new GUIContent("Quest Node"), false, () =>
         {
-            questGraphView.CreateNode(QuestNode.NodeTypes.MainQuestNode);
+            questGraphView.CreateNode(NodeTypes.MainQuestNode);
         });
 
         dropdownMenu.AddItem(new GUIContent("Objective Node"), false, () =>
         {
-            questGraphView.CreateNode(QuestNode.NodeTypes.ObjectiveNode);
+            questGraphView.CreateNode(NodeTypes.ObjectiveNode);
         });
 
         dropdownMenu.AddItem(new GUIContent("Reward Node"), false, () =>
         {
-            questGraphView.CreateNode(QuestNode.NodeTypes.RewardNode);
+            questGraphView.CreateNode(NodeTypes.RewardNode);
         });
         
         dropdownMenu.AddItem(new GUIContent("Dialogue Node"), false, () =>
         {
-            questGraphView.CreateNode(QuestNode.NodeTypes.DialogueNode);
+            questGraphView.CreateNode(NodeTypes.DialogueNode);
         });
 
         dropdownMenu.ShowAsContext();
     }
-    private bool NodeExists(QuestNode.NodeTypes nodeType)
+    private bool NodeExists(NodeTypes nodeType)
     {
         foreach (var node in questGraphView.nodes.ToList())
         {
@@ -121,3 +122,4 @@ public class QuestGraph : EditorWindow
         saveUtility.LoadGraph();
     }
 }
+#endif

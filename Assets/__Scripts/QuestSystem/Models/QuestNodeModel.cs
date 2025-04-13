@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static QuestNode;
+
 
 [Serializable]
 public class QuestNodeModel
@@ -10,6 +10,7 @@ public class QuestNodeModel
     public string GUID;
     public Vector2 position;
 }
+
 
 [Serializable]
 public class SerializableQuestNodeModel
