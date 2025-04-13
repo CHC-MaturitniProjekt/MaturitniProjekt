@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +7,10 @@ public class VirtualMachineRunner : MonoBehaviour
     private static VirtualMachineRunner instance;
     private VirtualMachine vm;
     private float tickInterval = 0.1f;
+    private float tickTimer = 0f;
     private bool isRunning = false;
+
+    public event Action OnEnd;
 
     public static VirtualMachineRunner Instance
     {
@@ -15,9 +18,13 @@ public class VirtualMachineRunner : MonoBehaviour
         {
             if (instance == null)
             {
-                GameObject obj = new GameObject("VirtualMachineRunner");
-                instance = obj.AddComponent<VirtualMachineRunner>();
-                DontDestroyOnLoad(obj);
+                instance = FindObjectOfType<VirtualMachineRunner>();
+                if (instance == null)
+                {
+                    GameObject obj = new GameObject("VirtualMachineRunner");
+                    instance = obj.AddComponent<VirtualMachineRunner>();
+                    DontDestroyOnLoad(obj);
+                }
             }
             return instance;
         }
@@ -25,8 +32,15 @@ public class VirtualMachineRunner : MonoBehaviour
 
     public void Initialize(VirtualMachine virtualMachine, float interval = 0.1f)
     {
+        if (isRunning)
+        {
+            Debug.LogWarning("Trying to initialize while VM is running. Ignoring.");
+            return;
+        }
+
         vm = virtualMachine;
         tickInterval = interval;
+        tickTimer = 0f;
     }
 
     public void Run()
@@ -36,60 +50,77 @@ public class VirtualMachineRunner : MonoBehaviour
             Debug.LogError("VirtualMachine is not initialized!");
             return;
         }
-        if (!isRunning)
+
+        if (isRunning)
         {
-            isRunning = true;
-            StartCoroutine(RunVM());
+            Debug.LogWarning("VirtualMachine is already running.");
+            return;
         }
+
+        isRunning = true;
+        tickTimer = 0f;
     }
 
     public void Stop()
     {
         isRunning = false;
+        vm = null;
     }
 
-    private IEnumerator RunVM()
+    void Update()
     {
-        while (isRunning)
-        {
-            if (vm == null || !isRunning)
-                yield break;
+        if (!isRunning || vm == null || !vm.HasInstructions())
+            return;
 
-            if (vm.HasInstructions())
-            {
-                vm.Tick();
-                yield return new WaitForSeconds(tickInterval);
-            }
-            else
+        tickTimer += Time.deltaTime;
+
+        while (tickTimer >= tickInterval)
+        {
+            vm.Tick();
+            tickTimer -= tickInterval;
+
+            if (!vm.HasInstructions())
             {
                 isRunning = false;
+                OnEnd?.Invoke(); // ✅ správné spuštění eventu
+                vm = null;
+                break;
             }
         }
     }
 
+    public void setIpnutRegister(Dictionary<string, int> register)
+    {
+        vm?.setInputRegisters(register);
+    }
+
     public Dictionary<string, int> getRegisters()
     {
-        return vm.getRegisters();
+        return vm?.getRegisters();
     }
 
     public int getCurrentInstruction()
     {
-        return vm.currentInstruction();
+        return vm?.currentInstruction() ?? -1;
     }
 
     public bool HasInstructions()
     {
-        return vm.HasInstructions();
+        return vm?.HasInstructions() ?? false;
     }
 
     public void Step()
     {
-        if (vm == null)
-            return;
-
-        if (vm.HasInstructions())
+        if (vm != null && vm.HasInstructions())
         {
             vm.Tick();
+
+            if (!vm.HasInstructions())
+            {
+                isRunning = false;
+                OnEnd?.Invoke();
+                vm = null;
+            }
         }
     }
 }

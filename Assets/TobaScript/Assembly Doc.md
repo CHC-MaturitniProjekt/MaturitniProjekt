@@ -1,3 +1,16 @@
+MOVE R0, 0
+MOVE R1, 1
+MOVE R2, 10  ; Počet iterací
+LABEL loop 
+PRINT R0
+ADD R3, R0, R1
+MOVE R0, R1
+MOVE R1, R3
+DEC R2
+JUMP_IF_NOT_EQUAL loop
+EXIT
+
+
 # Virtual Machine Assembly Language
 
 ## Overview

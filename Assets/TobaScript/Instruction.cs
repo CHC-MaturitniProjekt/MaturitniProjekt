@@ -25,7 +25,7 @@ public enum OpCode
     READ, WRITE,  //TODO
 
     //OTHERS
-    RANDOM,
+    RANDOM, DELAY, OUTPUT
 }
 
 public class Instruction

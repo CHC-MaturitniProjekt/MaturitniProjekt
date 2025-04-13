@@ -1,3 +1,4 @@
+using System.Net;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ public class StorageModalController : MonoBehaviour
         NONE,
         SAVE,
         LOAD,
+        TOBBER
     }
 
     public void modalInitialization(ModalType type)
@@ -32,10 +34,22 @@ public class StorageModalController : MonoBehaviour
 
     public void loadFiles()
     {
-        allScripts = codeStorage.GetAllScriptNames();
-        foreach (var script in allScripts)
+        if (type == ModalType.TOBBER)
         {
-            spawnFileSelectObject(script);
+            allScripts = codeStorage.GetAllTobbertScripts();
+            foreach (var script in allScripts)
+            {
+                spawnFileSelectObject(script);
+            }
+        }
+        else
+        {
+
+            allScripts = codeStorage.GetAllScriptNames();
+            foreach (var script in allScripts)
+            {
+                spawnFileSelectObject(script);
+            }
         }
     }
 
@@ -43,6 +57,8 @@ public class StorageModalController : MonoBehaviour
     {
         if (type == ModalType.SAVE)
             codeStorage.SaveCodeAs(newFileInput.text, codeTextInput.text);
+        else if (type == ModalType.TOBBER)
+            codeStorage.uploadToTobber(newFileInput.text, codeTextInput.text);
         else if (type == ModalType.LOAD)
         {
             codeStorage.SaveCodeAs(newFileInput.text, "");
@@ -71,12 +87,24 @@ public class StorageModalController : MonoBehaviour
 
     private void onDeleteFileClick(string fileName)
     {
-        codeStorage.DeleteScript(fileName);
-        foreach (Transform child in fileSelectParent)
+        if (type == ModalType.TOBBER)
         {
-            Destroy(child.gameObject);
+            codeStorage.DeleteTobberScript(fileName);
+            foreach (Transform child in fileSelectParent)
+            {
+                Destroy(child.gameObject);
+            }
+            loadFiles();
         }
-        loadFiles();
+        else
+        {
+            codeStorage.DeleteScript(fileName);
+            foreach (Transform child in fileSelectParent)
+            {
+                Destroy(child.gameObject);
+            }
+            loadFiles();
+        }
     }
 
     private void spawnFileSelectObject(string fileName)

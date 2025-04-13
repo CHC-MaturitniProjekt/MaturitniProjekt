@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 [CreateAssetMenu(menuName = "InputReader")]
-public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActions
+public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActions, Inputs.ITobberActions
 {
     Inputs _inputs;
 
@@ -41,9 +41,22 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
         _inputs.PC.Disable();
     }
 
+    public void TobberInputEnable()
+    {
+        _inputs.Tobber.SetCallbacks(this);
+        _inputs.Tobber.Enable();
+    }
+
+    public void TobberInputDisable()
+    {
+        _inputs.PC.Disable();
+    }
+
     private void OnDisable()
     {
         MainInputDisable();
+        PcInputDisable();
+        TobberInputDisable();
     }
 
     public event Action<Vector2> MoveEvent;
@@ -184,5 +197,33 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
     public void OnRedo(InputAction.CallbackContext context)
     {
         PcOnRedo?.Invoke();
+    }
+
+    public event Action TobberOnUp;
+    public void OnUp(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            TobberOnUp?.Invoke();
+    }
+
+    public event Action TobberOnDown;
+    public void OnDown(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            TobberOnDown?.Invoke();
+    }
+
+    public event Action TobberOnEnter;
+    public void OnEnter(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            TobberOnEnter?.Invoke();
+    }
+
+    public event Action TobberOnBack;
+    public void OnBack(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            TobberOnBack?.Invoke();
     }
 }
