@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -59,6 +60,12 @@ public class UltraWeb : IDisposable
     private static bool _disposed = false;
     public bool IsDisposed => _disposed;
 
+
+#if UNITY_EDITOR
+    static string pluginPath = Path.Combine(Application.dataPath, "UltraWeb/Plugins/x86_64");
+#else
+    static string pluginPath = Path.Combine(Application.dataPath, "Plugins/x86_64");
+#endif
     public static UltraWeb Instance => _instance ?? throw new InvalidOperationException("UltraWeb not initialized.");
 
     private static bool _isInitialized = false; // Add initialization flag
@@ -67,7 +74,11 @@ public class UltraWeb : IDisposable
     {
         if (_isInitialized) return;
 
-        if (InitializeUltralight("./Assets/UltraWeb/Plugins/win-x64/") != 1)
+        pluginPath = Path.GetFullPath(pluginPath).Replace('\\', '/');
+
+        Debug.Log("Using pluginPath: " + pluginPath);
+
+        if (InitializeUltralight(pluginPath) != 1)
             throw new Exception("Ultralight initialization failed.");
 
         _instance = new UltraWeb(width, height);
@@ -250,19 +261,4 @@ public class UltraWeb : IDisposable
             default: return -1; // Neznámá klávesa
         }
     }
-
-
-#if UNITY_EDITOR
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    static void ResetStatic()
-    {
-        _instance = null;
-        _isInitialized = false;
-
-        // Force native cleanup if needed
-
-        ShutdownUltralight();
-
-    }
-#endif
 }
