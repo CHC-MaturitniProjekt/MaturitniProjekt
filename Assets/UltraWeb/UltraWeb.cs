@@ -16,22 +16,28 @@ public class UltraWeb : IDisposable
     private static extern int CreateView(int width, int height);
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
-    private static extern int LoadURL(string url);
+    private static extern int LoadURL(int viewId,string url);
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
-    private static extern int GetBitmapData(out int width, out int height, out int stride, out IntPtr pixels);
+    private static extern int LoadHTMLFileOrFolder(int viewId, string path);
+
+    [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int GetBitmapData(int viewId, out int width, out int height, out int stride, out IntPtr pixels);
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
     private static extern void ShutdownUltralight();
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
-    private static extern int MouseInput(int x, int y, int type, int button);
+    private static extern int MouseInput(int viewId, int x, int y, int type, int button);
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
-    private static extern int KeyInput(int key, int type, string text);
+    private static extern int KeyInput(int viewId, int key, int type, string text);
 
     [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
-    private static extern int ScrollInput(int deltaX, int deltaY);
+    private static extern int ScrollInput(int viewId, int deltaX, int deltaY);
+
+    [DllImport("ULWrapper", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void DestroyView(int viewId);
 
     public enum KeyEventType
     {
@@ -55,7 +61,6 @@ public class UltraWeb : IDisposable
 
     public int width;
     public int height;
-    private Texture2D _texture;
     private static UltraWeb _instance;
     private static bool _disposed = false;
     public bool IsDisposed => _disposed;
@@ -70,7 +75,7 @@ public class UltraWeb : IDisposable
 
     private static bool _isInitialized = false; // Add initialization flag
 
-    public static void Initialize(int width, int height)
+    public static void Initialize()
     {
         if (_isInitialized) return;
 
@@ -81,39 +86,41 @@ public class UltraWeb : IDisposable
         if (InitializeUltralight(pluginPath) != 1)
             throw new Exception("Ultralight initialization failed.");
 
-        _instance = new UltraWeb(width, height);
+        _instance = new UltraWeb();
 
 
     }
 
-    private UltraWeb(int width, int height)
+    private UltraWeb()
     {
-        if (CreateRenderer() != 1 || CreateView(width, height) != 1)
+        if (CreateRenderer() != 1)
             throw new Exception("Failed to create renderer/view");
     }
 
-    public void LoadUrl(string url)
+    public int CreatenewView(int width, int height)
     {
-        LoadURL(url);
+        return CreateView(width, height);
+    }
+
+    public void LoadUrl(int viewId, string url)
+    {
+        LoadURL(viewId, url);
+    }
+
+    public void LoadFile(int viewId, string path)
+    {
+        LoadHTMLFileOrFolder(viewId, path);
     }
 
 
-    public Texture2D getTexture()
+    public void getTexture(int viewId, Texture2D texture)
     {
         int width, height, stride;
         IntPtr pixels;
-        if (GetBitmapData(out width, out height, out stride, out pixels) != 1)
-            return null;
+        if (GetBitmapData(viewId, out width, out height, out stride, out pixels) != 1)
+            return;
 
-        if (_texture == null || _texture.width != width || _texture.height != height)
-        {
-            _texture = new Texture2D(width, height, TextureFormat.BGRA32, false);
-            _texture.filterMode = FilterMode.Point;
-        }
-
-        UpdateTextureData(pixels, width, height, stride, _texture);
-
-        return _texture;
+        UpdateTextureData(pixels, width, height, stride, texture);
     }
 
     private static void UpdateTextureData(IntPtr pixels, int width, int height, int stride, Texture2D texture)
@@ -141,21 +148,21 @@ public class UltraWeb : IDisposable
         texture.Apply(false);
     }
 
-    public void SendKeyPress(KeyCode keyCode)
+    public void SendKeyPress(int viewId, KeyCode keyCode)
     {
         int virtualKeyCode = ConvertKeyCodeToVirtualKeyCode(keyCode);
         if (virtualKeyCode == -1) return;
         string text = "";
         if (IsPrintableCharacter(virtualKeyCode)) text = keyCode.ToString().ToLower();
-        KeyInput(virtualKeyCode, (int)KeyEventType.RawKeyDown, null);
-        KeyInput(virtualKeyCode, (int)KeyEventType.Char, text);
+        KeyInput(viewId, virtualKeyCode, (int)KeyEventType.RawKeyDown, null);
+        KeyInput(viewId, virtualKeyCode, (int)KeyEventType.Char, text);
     }
 
-    public void SendKeyUp(KeyCode keyCode)
+    public void SendKeyUp(int viewId, KeyCode keyCode)
     {
         int virtualKeyCode = ConvertKeyCodeToVirtualKeyCode(keyCode);
         if (virtualKeyCode == -1 || !IsPrintableCharacter(virtualKeyCode)) return;
-        KeyInput(virtualKeyCode, (int)KeyEventType.KeyUp, null);
+        KeyInput(viewId, virtualKeyCode, (int)KeyEventType.KeyUp, null);
     }
 
     private bool IsPrintableCharacter(int vkCode)
@@ -163,19 +170,24 @@ public class UltraWeb : IDisposable
         return (vkCode >= 0x20 && vkCode <= 0x7E);
     }
 
-    public void SendMouseEvent(int x, int y, MouseEventType type, MouseButton button)
+    public void SendMouseEvent(int viewId, int x, int y, MouseEventType type, MouseButton button)
     {
-        MouseInput(x, y, (int)type, (int)button);
+        MouseInput(viewId, x, y, (int)type, (int)button);
     }
 
-    public void SendMouseScroll(int deltaY)
+    public void SendMouseScroll(int viewId, int deltaY)
     {
-        ScrollInput(0, deltaY);
+        ScrollInput(viewId, 0, deltaY);
     }
 
     public static void ResetStaticState()
     {
         _instance = null;
+    }
+
+    public void destroyView(int viewId)
+    {
+        DestroyView(viewId);
     }
 
     public void Dispose()

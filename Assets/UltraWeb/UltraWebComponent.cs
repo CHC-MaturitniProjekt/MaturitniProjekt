@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 public class UltraWebComponent : MonoBehaviour
@@ -17,6 +18,8 @@ public class UltraWebComponent : MonoBehaviour
 
     private Coroutine _updateCoroutine;
     public bool canInteract = false;
+    private int viewId = -1;
+    private Texture2D texture;
 
     private void Start()
     {
@@ -25,26 +28,39 @@ public class UltraWebComponent : MonoBehaviour
         _rawImage.rectTransform.sizeDelta = new Vector2(width, height);
 
 #if UNITY_EDITOR
-        cantUseInEditor.SetActive(true);
-        return; 
+        if (cantUseInEditor != null)
+            cantUseInEditor.SetActive(true);
+        return;
 #endif
 
         try
         {
-            UltraWeb.Initialize(width, height);
-            UltraWeb.Instance.LoadUrl(url);
-            _updateCoroutine = StartCoroutine(UpdateTextureRoutine());
+            texture = new Texture2D(width, height, TextureFormat.BGRA32, false);
 
+            UltraWeb.Initialize();
+            viewId = UltraWeb.Instance.CreatenewView(width, height);
+            if (viewId < 0)
+            {
+                Debug.LogError("Failed to create UltraWeb view");
+                enabled = false;
+                return;
+            }
+
+            UltraWeb.Instance.LoadUrl(viewId, url);
+            //UltraWeb.Instance.LoadFile(viewId, @"C:\Projects\Tic-Tac-Two\dist\tic-tac-two\browser");
+
+            _updateCoroutine = StartCoroutine(UpdateTextureRoutine());
         }
-        catch (System.Exception e)
+        catch (Exception e)
         {
             Debug.LogError($"Initialization failed: {e.Message}");
             enabled = false;
         }
     }
+
     private void Update()
     {
-        if (!canInteract || !enabled)
+        if (!canInteract || !enabled || viewId < 0)
             return;
 
         Vector2 localPoint;
@@ -60,10 +76,13 @@ public class UltraWebComponent : MonoBehaviour
         }
         HandleKeyboardInput();
 
-        float scrollDelta = Input.mouseScrollDelta.y;
-        if (Mathf.Abs(scrollDelta) > 0.01f)
+        if (IsPointerOverRawImage())
         {
-            UltraWeb.Instance.SendMouseScroll((int)(scrollDelta * 120));
+            float scrollDelta = Input.mouseScrollDelta.y;
+            if (Mathf.Abs(scrollDelta) > 0.01f)
+            {
+                UltraWeb.Instance.SendMouseScroll(viewId, (int)(scrollDelta * 120));
+            }
         }
     }
 
@@ -76,19 +95,15 @@ public class UltraWebComponent : MonoBehaviour
 
         Vector2 screenPoint = Input.mousePosition;
 
-        // Převod obrazovkové pozice na lokální pozici uvnitř RawImage
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _rawImage.rectTransform, screenPoint, null, out localPoint))
             return false;
 
-        // Získání přesné velikosti RawImage v pixelech
         Rect pixelRect = RectTransformUtility.PixelAdjustRect(_rawImage.rectTransform, _rawImage.canvas);
 
-        // Převedení localPoint (který je relativní ke středu) na [0, width/height]
         float adjustedX = localPoint.x + pixelRect.width / 2f;
         float adjustedY = pixelRect.height / 2f - localPoint.y;
 
-        // Mapa na UltraWeb texture resolution
         float scaleX = (float)width / pixelRect.width;
         float scaleY = (float)height / pixelRect.height;
 
@@ -108,22 +123,21 @@ public class UltraWebComponent : MonoBehaviour
     private void HandleMouseInput(int x, int y)
     {
         if (Input.GetMouseButtonDown(0))
-            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Left);
+            UltraWeb.Instance.SendMouseEvent(viewId, x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Left);
         if (Input.GetMouseButtonUp(0))
-            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Left);
+            UltraWeb.Instance.SendMouseEvent(viewId, x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Left);
 
         if (Input.GetMouseButtonDown(1))
-            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Right);
+            UltraWeb.Instance.SendMouseEvent(viewId, x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Right);
         if (Input.GetMouseButtonUp(1))
-            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Right);
+            UltraWeb.Instance.SendMouseEvent(viewId, x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Right);
 
         if (Input.GetMouseButtonDown(2))
-            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Middle);
+            UltraWeb.Instance.SendMouseEvent(viewId, x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Middle);
         if (Input.GetMouseButtonUp(2))
-            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Middle);
+            UltraWeb.Instance.SendMouseEvent(viewId, x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Middle);
 
-        // Pohyb myši pouze jednou
-        UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Move, UltraWeb.MouseButton.None);
+        UltraWeb.Instance.SendMouseEvent(viewId, x, y, UltraWeb.MouseEventType.Move, UltraWeb.MouseButton.None);
     }
 
     private void HandleKeyboardInput()
@@ -131,28 +145,24 @@ public class UltraWebComponent : MonoBehaviour
         foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
         {
             if (Input.GetKeyDown(key))
-                UltraWeb.Instance.SendKeyPress(key);
+                UltraWeb.Instance.SendKeyPress(viewId, key);
 
             if (Input.GetKeyUp(key))
-                UltraWeb.Instance.SendKeyUp(key);
+                UltraWeb.Instance.SendKeyUp(viewId, key);
         }
     }
 
     private IEnumerator UpdateTextureRoutine()
     {
-        while (!UltraWeb.Instance.IsDisposed)
+        while (true)
         {
             yield return new WaitForEndOfFrame();
 
-            // Získání textury z UltraWeb
-            var texture = UltraWeb.Instance.getTexture();
+            UltraWeb.Instance.getTexture(viewId, texture);
 
             if (texture != null && _rawImage != null)
             {
-                // Aktualizace RawImage
                 _rawImage.texture = texture;
-
-                // Optimalizace: Přeskočit 1 snímek pro snížení vytížení CPU
                 yield return null;
             }
             else
@@ -167,10 +177,9 @@ public class UltraWebComponent : MonoBehaviour
         if (_updateCoroutine != null)
             StopCoroutine(_updateCoroutine);
 
-        if (UltraWeb.Instance != null && !UltraWeb.Instance.IsDisposed)
+        if (viewId >= 0)
         {
-            UltraWeb.Instance.Dispose();
+            UltraWeb.Instance.destroyView(viewId);
         }
     }
-
 }
