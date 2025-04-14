@@ -42,80 +42,99 @@ public class UltraWebComponent : MonoBehaviour
             enabled = false;
         }
     }
-
-
-
     private void Update()
     {
-        if (canInteract && enabled)
+        if (!canInteract || !enabled)
+            return;
+
+        Vector2 localPoint;
+        if (!GetLocalPointerPosition(out localPoint))
+            return;
+
+        int x = Mathf.Clamp((int)localPoint.x, 0, width - 1);
+        int y = Mathf.Clamp((int)localPoint.y, 0, height - 1);
+
+        if (IsPointerOverRawImage())
         {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.y = Mathf.Abs(height - (int)mousePos.y);
-            if (Input.GetMouseButtonDown(0))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Left);
-            }
+            HandleMouseInput(x, y);
+        }
+        HandleKeyboardInput();
 
-            if (Input.GetMouseButtonUp(0))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Left);
-            }
+        float scrollDelta = Input.mouseScrollDelta.y;
+        if (Mathf.Abs(scrollDelta) > 0.01f)
+        {
+            UltraWeb.Instance.SendMouseScroll((int)(scrollDelta * 120));
+        }
+    }
 
-            if (Input.GetMouseButton(0)) 
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Move, UltraWeb.MouseButton.Left);
-            }
+    private bool GetLocalPointerPosition(out Vector2 localPoint)
+    {
+        localPoint = Vector2.zero;
 
-            if (Input.GetMouseButtonDown(1))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Right);
-            }
+        if (_rawImage == null || _rawImage.rectTransform == null)
+            return false;
 
-            if (Input.GetMouseButtonUp(1))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Right);
-            }
+        Vector2 screenPoint = Input.mousePosition;
 
-            if (Input.GetMouseButton(1))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Move, UltraWeb.MouseButton.Right);
-            }
+        // Převod obrazovkové pozice na lokální pozici uvnitř RawImage
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _rawImage.rectTransform, screenPoint, null, out localPoint))
+            return false;
 
-            if (Input.GetMouseButtonDown(2))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Middle);
-            }
+        // Získání přesné velikosti RawImage v pixelech
+        Rect pixelRect = RectTransformUtility.PixelAdjustRect(_rawImage.rectTransform, _rawImage.canvas);
 
-            if (Input.GetMouseButtonUp(2))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Middle);
-            }
+        // Převedení localPoint (který je relativní ke středu) na [0, width/height]
+        float adjustedX = localPoint.x + pixelRect.width / 2f;
+        float adjustedY = pixelRect.height / 2f - localPoint.y;
 
-            if (Input.GetMouseButton(2))
-            {
-                UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Move, UltraWeb.MouseButton.Middle);
-            }
+        // Mapa na UltraWeb texture resolution
+        float scaleX = (float)width / pixelRect.width;
+        float scaleY = (float)height / pixelRect.height;
 
-            foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
-            {
-                if (Input.GetKeyDown(key))
-                {
-                    UltraWeb.Instance.SendKeyPress(key);
-                }
+        localPoint = new Vector2(adjustedX * scaleX, adjustedY * scaleY);
 
-                if (Input.GetKeyUp(key))
-                {
-                    UltraWeb.Instance.SendKeyUp(key);
-                }
-            }
+        return true;
+    }
 
-            float scrollDelta = Input.mouseScrollDelta.y;
-            if (scrollDelta != 0)
-            {
-                UltraWeb.Instance.SendMouseScroll((int)scrollDelta * 120);
-            }
+    private bool IsPointerOverRawImage()
+    {
+        if (_rawImage == null || _rawImage.rectTransform == null)
+            return false;
 
-           // UltraWeb.Instance.SendMouseEvent((int)mousePos.x, (int)mousePos.y, UltraWeb.MouseEventType.Move, UltraWeb.MouseButton.None);
+        return RectTransformUtility.RectangleContainsScreenPoint(_rawImage.rectTransform, Input.mousePosition, null);
+    }
+
+    private void HandleMouseInput(int x, int y)
+    {
+        if (Input.GetMouseButtonDown(0))
+            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Left);
+        if (Input.GetMouseButtonUp(0))
+            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Left);
+
+        if (Input.GetMouseButtonDown(1))
+            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Right);
+        if (Input.GetMouseButtonUp(1))
+            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Right);
+
+        if (Input.GetMouseButtonDown(2))
+            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Down, UltraWeb.MouseButton.Middle);
+        if (Input.GetMouseButtonUp(2))
+            UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Up, UltraWeb.MouseButton.Middle);
+
+        // Pohyb myši pouze jednou
+        UltraWeb.Instance.SendMouseEvent(x, y, UltraWeb.MouseEventType.Move, UltraWeb.MouseButton.None);
+    }
+
+    private void HandleKeyboardInput()
+    {
+        foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
+        {
+            if (Input.GetKeyDown(key))
+                UltraWeb.Instance.SendKeyPress(key);
+
+            if (Input.GetKeyUp(key))
+                UltraWeb.Instance.SendKeyUp(key);
         }
     }
 
