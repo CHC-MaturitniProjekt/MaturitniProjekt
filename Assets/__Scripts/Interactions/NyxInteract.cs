@@ -7,12 +7,13 @@ using UnityEngine;
 
 public class NyxInteract : InteractAction
 {
-    [SerializeField] private StoryNPCScriptableObject NPCSO;
+    private NPCBrain npcBrain;
     private QuestManager questManager;
     
     private void Start()
     {
         questManager = FindAnyObjectByType<QuestManager>();
+        npcBrain = GetComponent<NPCBrain>();
     }
 
     public override void OnInteract()
@@ -48,7 +49,7 @@ public class NyxInteract : InteractAction
         }
         else
         {
-            questName = SelectGenericDialogue(NPCSO.GenericDialogues);
+            questName = SelectGenericDialogue(this.npcBrain.GetNPCSO().GenericDialogues);
         }
         
         DialogueManager.StartConversation(questName, gameObject.transform);
@@ -70,7 +71,7 @@ public class NyxInteract : InteractAction
             {
                 var completionData = CompletionCriteriaSerializer.Deserialize(objective.CompletionCriteria);
                 var itemCompletionData = completionData.OfType<NpcInteractionCriteria>().FirstOrDefault();
-                if (itemCompletionData != null && itemCompletionData.NpcName == NPCSO.NPCName)
+                if (itemCompletionData != null && itemCompletionData.NpcName == npcBrain.GetNPCSO().NPCName)
                 {
                     questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
                 }
