@@ -14,7 +14,7 @@ public class NPCBrain : MonoBehaviour
     [SerializeField] private int npcId;
     public bool isShopkeeper;
     public Transform npcHouse;
-    [FormerlySerializedAs("selectedStore")] public NPCMovement.SpotType selectedSpot = NPCMovement.SpotType.None;
+    public NPCMovement.SpotType selectedSpot = NPCMovement.SpotType.None;
 
     
     private CameraController playerCam;
@@ -23,6 +23,8 @@ public class NPCBrain : MonoBehaviour
     public NPCBehavior AfterDialogueBehavior {get; set;}
     
     private TextureAnimation textureAnimation;
+    private float eliotBehaviorTimer = 0f;
+
     
     private void Awake()
     {
@@ -125,21 +127,52 @@ public class NPCBrain : MonoBehaviour
 
             if (npcInfo.NPCBehaviourType == NPCScriptableObject.NPCBehaviourTypes.Elliot && npcInfo.hasDailySchedule)
             {
+                if (npcInfo.NPCWayPointNames.Count > 0)
+                {
+                    currentWaypoint = WaypointManager.Instance.GetWaypoint(npcInfo.NPCWayPointNames[0]);
+                }
+
                 if (currentHour >= npcInfo.activeHourStart && currentHour <= npcInfo.activeHourEnd)
                 {
                     if (!gameObject.activeSelf)
                     {
-                        gameObject.SetActive(true);
+                        NPCManager.Instance.EnableNPC(gameObject);
                         SetBehavior(NPCBehavior.Wander);
+                        eliotBehaviorTimer = 0f; // Reset timer on activation
+                    }
+
+                    eliotBehaviorTimer += Time.deltaTime;
+
+                    if (eliotBehaviorTimer >= 15f)
+                    {
+                        eliotBehaviorTimer = 0f;
+
+                        List<(NPCBehavior behavior, float weight)> behaviors = new List<(NPCBehavior, float)>
+                        {
+                            (NPCBehavior.Idle, 0.3f),
+                            (NPCBehavior.Wander, 0.1f),
+                            (NPCBehavior.Sit, 0.6f)
+                        };
+
+                        float behaviorWeight = behaviors.Sum(b => b.weight);
+                        float behaviorRandValue = Random.Range(0, behaviorWeight);
+
+                        foreach (var behavior in behaviors)
+                        {
+                            if (behaviorRandValue < behavior.weight)
+                            {
+                                SetBehavior(behavior.behavior);
+                                break;
+                            }
+                            behaviorRandValue -= behavior.weight;
+                        }
                     }
                 }
                 else
                 {
-                    if (gameObject.activeSelf)
-                    {
-                        SetBehavior(NPCBehavior.GoHome);
-                    }
+                    SetBehavior(NPCBehavior.GoHome);
                 }
+
                 return;
             }
             return;

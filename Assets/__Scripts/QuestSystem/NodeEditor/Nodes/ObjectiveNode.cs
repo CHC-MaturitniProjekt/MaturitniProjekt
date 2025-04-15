@@ -37,7 +37,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             objectiveDescriptionField.RegisterValueChangedCallback(evt => ObjectiveDescription = evt.newValue);
             Add(objectiveDescriptionField);
 
-            var objectiveTypeField = new PopupField<string>("Objective Type", new List<string> { "Collect", "Interact", "PickUp" }, 0) { value = ObjectiveType };
+            var objectiveTypeField = new PopupField<string>("Objective Type", new List<string> { "Collect", "Interact", "PickUp", "GoTo" }, 0) { value = ObjectiveType };
             objectiveTypeField.RegisterValueChangedCallback(evt =>
             {
                 ObjectiveType = evt.newValue;

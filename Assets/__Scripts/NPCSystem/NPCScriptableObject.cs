@@ -36,6 +36,9 @@ public class NPCScriptableObject : ScriptableObject
     public AnimationCurve NPCActiveTimeCurve;
     [Range(0f, 1f)] public float NPCRandomness;
 
+    public List<string> GenericDialogues = new List<string>();
+
+
     [Header("Quan and Elliot settings")] 
     public bool isObtained;
     public bool hasDailySchedule;

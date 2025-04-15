@@ -25,5 +25,4 @@ public class StoryNPCScriptableObject : ScriptableObject
     public List<string> NPCWayPointNames = new List<string>();
     public int NPCId;
 
-    public List<string> GenericDialogues = new List<string>();
 }

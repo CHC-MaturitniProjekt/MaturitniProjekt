@@ -14,7 +14,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
     {
         public string RewardType;
         public int RewardValue;
-        public List<string> RewardTypes = new List<string>() { "PerkPoints", "Money" };
+        private List<string> RewardTypes = new List<string>() { "Money" };
 
         public RewardNode() 
         {
@@ -45,7 +45,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var rewardType = new PopupField<string>("Reward type", RewardTypes, RewardTypes.IndexOf(RewardType));
             rewardType.RegisterValueChangedCallback(evt => {
                 RewardType = evt.newValue;
-                rewardValueField.label = evt.newValue == "PerkPoints" ? "Perk point amount" : "Money amount";
+                rewardValueField.label = "Money amount";
             });
             rewardType.label = "Reward Type";
             Add(rewardType);

@@ -13,87 +13,42 @@ MonoBehaviour:
   m_Name: questGraph
   m_EditorClassIdentifier: 
   nodeLinks:
-  - baseNodeGUID: f131ed47-8343-4aaf-9f19-1757f58d346a
-    portName: Objectives
-    targetNodeGUID: 62586641-c258-42ab-bcfd-428b4bde6791
-  - baseNodeGUID: f131ed47-8343-4aaf-9f19-1757f58d346a
-    portName: Rewards
-    targetNodeGUID: 3adb5c94-15cd-4a0e-ba4f-d09d70e39fee
-  - baseNodeGUID: f131ed47-8343-4aaf-9f19-1757f58d346a
-    portName: Dialogues
-    targetNodeGUID: 2ef37fa4-2553-40c0-8ea4-099f6bd54b10
-  - baseNodeGUID: ed6be9a5-7c9c-4821-bbe5-138396886892
-    portName: Objectives
-    targetNodeGUID: 9a7b7df4-485d-455b-ac3b-a35b95a83772
   - baseNodeGUID: 08d89a76-86c3-4cf5-8cb9-c3138a5bab79
     portName: Start
-    targetNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
-  - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
-    portName: Next quest(s)
-    targetNodeGUID: ed6be9a5-7c9c-4821-bbe5-138396886892
-  - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
-    portName: Next quest(s)
-    targetNodeGUID: f131ed47-8343-4aaf-9f19-1757f58d346a
-  - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
+    targetNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
+  - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
     portName: Objectives
-    targetNodeGUID: 617a00b9-35c2-4dae-9f3e-55ca8f00c443
-  - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
+    targetNodeGUID: 1fbd628c-e9ca-4638-abf4-5223d7d152e0
+  - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
     portName: Objectives
-    targetNodeGUID: d13bca12-9d6c-4a37-ac45-6b97a50f911b
-  - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
+    targetNodeGUID: 003613f2-7f51-4d5e-afdb-f27134fd4bc6
+  - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
     portName: Rewards
-    targetNodeGUID: 030120ee-17e9-4f82-a583-f4c2151f35ae
-  - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
-    portName: Dialogues
-    targetNodeGUID: 9e8d7b4f-4f37-4d53-80c5-5e9e837f6b4e
-  - baseNodeGUID: e089628e-cabe-4e98-b724-4527eb29a4f7
-    portName: Dialogues
-    targetNodeGUID: 7c378cfd-2af4-48d2-8fab-337e2fe63d67
+    targetNodeGUID: 61e10388-24a5-4069-bb6f-c33edf076698
+  - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
+    portName: Next quest(s)
+    targetNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
   questNodeData:
-  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"f131ed47-8343-4aaf-9f19-1757f58d346a","position":{"x":703.3333740234375,"y":-29.33333396911621},"QuestName":"Test
-      2","QuestDescription":"Describe the quest here","QuestID":69,"isCompleted":false,"isActive":false,"isObtained":false}'
-  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"ed6be9a5-7c9c-4821-bbe5-138396886892","position":{"x":686.0,"y":-303.3333435058594},"QuestName":"test
-      1","QuestDescription":"Describe the quest here","QuestID":1,"isCompleted":false,"isActive":false,"isObtained":false}'
   - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":0,"GUID":"08d89a76-86c3-4cf5-8cb9-c3138a5bab79","position":{"x":54.0,"y":-39.333335876464847}}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"617a00b9-35c2-4dae-9f3e-55ca8f00c443","position":{"x":607.3333740234375,"y":298.0},"ObjectiveDescription":"eeeeee","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":69}"}]}'
-  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":4,"GUID":"2ef37fa4-2553-40c0-8ea4-099f6bd54b10","position":{"x":999.3333740234375,"y":450.6666564941406},"DialogueName":"test","NPCID":1,"order":0,"isCompleted":false,"isSMS":false}'
-  - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":3,"GUID":"3adb5c94-15cd-4a0e-ba4f-d09d70e39fee","position":{"x":1012.0,"y":298.0},"RewardType":"PerkPoints","RewardValue":100}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"62586641-c258-42ab-bcfd-428b4bde6791","position":{"x":1020.0,"y":130.0},"ObjectiveDescription":"fdsafdas","ObjectiveType":"Interact","isOptional":true,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"NpcInteractionCriteria,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"NpcName\":\"hhh\"}"}]}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"9a7b7df4-485d-455b-ac3b-a35b95a83772","position":{"x":1045.333251953125,"y":-277.3333435058594},"ObjectiveDescription":"fffffffffffffffffffffff","ObjectiveType":"PickUp","isOptional":true,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":12}"}]}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"d13bca12-9d6c-4a37-ac45-6b97a50f911b","position":{"x":590.0,"y":466.0},"ObjectiveDescription":"fds","ObjectiveType":"Interact","isOptional":true,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"NpcInteractionCriteria,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"NpcName\":\"Nyx\"}"}]}'
+    JsonData: '{"QuestType":0,"GUID":"08d89a76-86c3-4cf5-8cb9-c3138a5bab79","position":{"x":54.0,"y":-39.33333206176758}}'
   - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"e089628e-cabe-4e98-b724-4527eb29a4f7","position":{"x":277.33331298828127,"y":-29.33333396911621},"QuestName":"Test
-      1","QuestDescription":"Describe the quest here","QuestID":5,"isCompleted":false,"isActive":false,"isObtained":false}'
+    JsonData: '{"QuestType":1,"GUID":"5fb2d7bd-8d7e-469b-bbd3-a671307fce86","position":{"x":258.6666564941406,"y":-39.33333206176758},"QuestName":"Get
+      Started","QuestDescription":"Learn the movement","QuestID":1,"isCompleted":false,"isActive":false,"isObtained":false}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"003613f2-7f51-4d5e-afdb-f27134fd4bc6","position":{"x":669.3333740234375,"y":379.3333435058594},"ObjectiveDescription":"Pick
+      up paper","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":123}"}]}'
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":3,"GUID":"030120ee-17e9-4f82-a583-f4c2151f35ae","position":{"x":573.3333740234375,"y":636.0},"RewardType":"Money","RewardValue":500}'
-  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    JsonData: '{"QuestType":3,"GUID":"61e10388-24a5-4069-bb6f-c33edf076698","position":{"x":669.3333740234375,"y":580.6666870117188},"RewardType":"Money","RewardValue":150}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":4,"GUID":"9e8d7b4f-4f37-4d53-80c5-5e9e837f6b4e","position":{"x":550.6666870117188,"y":788.6666870117188},"DialogueName":"New
-      Conversation 1","NPCID":1,"order":2,"isCompleted":false,"isSMS":true}'
-  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+    JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":669.3333740234375,"y":-39.33333206176758},"QuestName":"New
+      Quest","QuestDescription":"Describe the quest here","QuestID":2,"isCompleted":false,"isActive":false,"isObtained":false}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":4,"GUID":"7c378cfd-2af4-48d2-8fab-337e2fe63d67","position":{"x":518.0,"y":980.0},"DialogueName":"DHGeneric1","NPCID":1,"order":1,"isCompleted":false,"isSMS":true}'
+    JsonData: '{"QuestType":2,"GUID":"1fbd628c-e9ca-4638-abf4-5223d7d152e0","position":{"x":669.3333740234375,"y":208.6666717529297},"ObjectiveDescription":"Go
+      to the other room","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'

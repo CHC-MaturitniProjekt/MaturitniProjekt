@@ -161,6 +161,10 @@ public class QuestManager : MonoBehaviour
             {
                 quest.isCompleted = true;
                 await AddQuestRewards(questID);
+                if (quest.QuestID + 1 != null)
+                {
+                    await ObtainQuest((int)quest.QuestID + 1);
+                }
             }
         }
     }
@@ -177,9 +181,6 @@ public class QuestManager : MonoBehaviour
         {
             case "Money":
                 await firebase.AddPlayerMoney(rewardValue);
-                break;
-            case "PerkPoints":
-                Debug.Log("perk points added");
                 break;
             default:
                 Debug.LogError("Incorrect reward type on quest" + questID);
@@ -219,7 +220,7 @@ public class QuestManager : MonoBehaviour
         }
     }
     
-    public async void PushQuests()
+    private async void PushQuests()
     {
         if (questList.Count == 0)
         {
@@ -244,6 +245,11 @@ public class QuestManager : MonoBehaviour
         }
         
         LoadQuests();
+        if (questList.Count > 0)
+        {
+            ObtainQuest((int)questList[0].QuestID).ConfigureAwait(false);
+            SetQuestAsActive(questList[0].GUID);
+        }
     }
 
     private ParsedQuestModel ParseQuestData(SerializableQuestNodeModel node)

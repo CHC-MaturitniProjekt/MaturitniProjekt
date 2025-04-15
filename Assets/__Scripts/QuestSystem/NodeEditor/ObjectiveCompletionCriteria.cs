@@ -74,3 +74,28 @@ public class NpcInteractionCriteria : ICompletionCriteria
         _isInteracted = true;
     }
 }
+
+[Serializable]
+public class GoToTriggerCriteria : ICompletionCriteria
+{
+    public int questID;
+    private bool _isTriggered;
+
+    public void Initialize(params object[] parameters)
+    {
+        if (parameters.Length > 0 && parameters[0] is int questId)
+        {
+            questID = questId;
+        }
+    }
+
+    public bool IsCompleted()
+    {
+        return _isTriggered;
+    }
+
+    public void TriggeredCollider()
+    {
+        _isTriggered = true;
+    }
+}
