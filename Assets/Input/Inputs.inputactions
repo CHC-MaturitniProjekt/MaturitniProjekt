@@ -6,72 +6,18 @@
             "id": "010fca02-179e-4283-994c-3e7ea6621b29",
             "actions": [
                 {
-                    "name": "move",
-                    "type": "PassThrough",
-                    "id": "053b179f-8fb8-435f-9865-63c1af5bbe67",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "pause",
                     "type": "Button",
                     "id": "f592326c-7e02-4202-b1b1-44373c73c859",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "interact",
-                    "type": "Button",
-                    "id": "7bba5138-bd8c-455c-aed6-d9739f08eb01",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "jump",
-                    "type": "Button",
-                    "id": "bee01d83-2f1b-4083-a8eb-9e4035ddfbc0",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "look",
-                    "type": "PassThrough",
-                    "id": "b62289e1-6df6-40c7-ac1b-19d92b5761ca",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "sprint",
-                    "type": "Value",
-                    "id": "3518eb20-8e71-4f7c-bfd7-6d4f12eaaf59",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "crouch",
-                    "type": "Value",
-                    "id": "509aea94-d54c-4c76-8c28-4da0d35216d7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
-                    "name": "drop",
+                    "name": "tobberDisplay",
                     "type": "Button",
-                    "id": "f6f600be-dfd7-4378-973d-9c388712a90c",
+                    "id": "8408baf7-f38f-4998-acb1-4713449dde12",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -79,72 +25,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "2D Vector",
-                    "id": "f546b5f0-d5f4-4548-bc81-a4bd176c23af",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "move",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "3462ce1e-3bb9-465f-8354-cbd1807f5e71",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "4b5fdec3-73d1-49ab-83e7-40215275ac19",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "e6dfcbcd-79be-4212-9f4e-33e6fd8aec7a",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "97dce69c-0952-49f3-9f7a-771d070213ce",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "1ad9c333-0872-48ce-ac21-f2110b2c57c3",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "f537758d-d5ed-4c9c-81fc-10f0611832f1",
@@ -169,29 +49,89 @@
                 },
                 {
                     "name": "",
-                    "id": "500db058-b1fe-449c-8f65-4d4451b34d7f",
-                    "path": "<Keyboard>/e",
+                    "id": "f7fcefcc-7a8f-46b6-906f-39ca873b59a9",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "interact",
+                    "action": "tobberDisplay",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
+                }
+            ]
+        },
+        {
+            "name": "Player",
+            "id": "273d6101-06d9-40a4-a52c-cdee28068a08",
+            "actions": [
                 {
-                    "name": "",
-                    "id": "9bac5aca-2ee9-4d36-ad78-3f0eec6beb90",
-                    "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
+                    "name": "jump",
+                    "type": "Button",
+                    "id": "2265f263-997e-49ea-a5b8-44b4e1852fb8",
+                    "expectedControlType": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
+                    "name": "look",
+                    "type": "PassThrough",
+                    "id": "63faf037-e27a-4de0-b3cd-f192baa9afda",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "sprint",
+                    "type": "Value",
+                    "id": "fef1318f-15f3-456e-b32e-49351c8e3f08",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "crouch",
+                    "type": "Value",
+                    "id": "d7eaf63f-2f99-44da-aa5c-98261bcfeac3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "interact",
+                    "type": "Button",
+                    "id": "3ba46242-2b60-4c2e-a29d-0edd9b431986",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "drop",
+                    "type": "Button",
+                    "id": "6019f4e4-fdad-48a8-af4a-185a3314445e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "161425a1-1440-4c15-a80a-f9c52c28bc00",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
                     "name": "",
-                    "id": "d34455ad-a546-4c91-a286-65e5489f0711",
+                    "id": "b55456b7-c076-4fa0-8496-3323573411c1",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
@@ -202,7 +142,7 @@
                 },
                 {
                     "name": "",
-                    "id": "4584aac3-053f-4ef1-b122-45558568cf78",
+                    "id": "75629efa-6525-45e0-8237-38b83a75c502",
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
@@ -213,7 +153,7 @@
                 },
                 {
                     "name": "",
-                    "id": "1fdddc89-a270-4038-b3da-a514a5fb1ec4",
+                    "id": "e394b790-20d0-4944-b985-4e84b5fa0092",
                     "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
@@ -224,29 +164,7 @@
                 },
                 {
                     "name": "",
-                    "id": "3b1f327b-636d-476f-ba89-84467d6120db",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "crouch",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b6daa22b-93f8-4955-ba7f-523771d81329",
-                    "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "crouch",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d440c001-10f8-4bb4-8eb9-ef0faf2bed0d",
+                    "id": "2b3a1958-1ec3-4c30-935a-643a2558ce55",
                     "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
@@ -257,7 +175,7 @@
                 },
                 {
                     "name": "",
-                    "id": "21babdc9-e1df-4a1c-82f2-0c64b86b99fa",
+                    "id": "43c8763a-e079-4734-bb00-291e57e346fd",
                     "path": "<Gamepad>/leftStickPress",
                     "interactions": "",
                     "processors": "",
@@ -268,7 +186,51 @@
                 },
                 {
                     "name": "",
-                    "id": "1e23a825-372e-40b1-bb37-7b54711064c7",
+                    "id": "6b1b292d-bcdb-45d8-a8e3-f3e4873f381d",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1f38c36a-2c9d-40c5-99b1-4de399a492f5",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "32949b15-d88d-4742-827b-96409029ad1b",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9375c1f4-5f55-4b0a-92a9-20b309678c1f",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8b21bdf4-9da7-476e-b3bc-73e1a9485cb2",
                     "path": "<Keyboard>/g",
                     "interactions": "",
                     "processors": "",
@@ -276,6 +238,61 @@
                     "action": "drop",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "99a3a1ef-73df-47c6-af6a-b16b789c758a",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "917143b0-3a87-42e9-b1e2-bbde0d88741e",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "53694654-f480-414d-a3a4-8e6fb818bfa8",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "c30a461a-f279-4ef7-8b66-2ed5b5705b09",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "6040ba9d-4a69-475e-9582-785aa5bef566",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

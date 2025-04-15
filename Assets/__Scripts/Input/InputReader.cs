@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 [CreateAssetMenu(menuName = "InputReader")]
-public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActions, Inputs.ITobberActions
+public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActions, Inputs.ITobberActions, Inputs.IPlayerActions
 {
     Inputs _inputs;
 
@@ -15,6 +15,7 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
         if (_inputs == null)
         {
             _inputs = new Inputs();
+            PlayerInputEnable();
             MainInputEnable();
         }
     }
@@ -52,11 +53,23 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
         _inputs.PC.Disable();
     }
 
+    public void PlayerInputEnable()
+    {
+        _inputs.Player.SetCallbacks(this);
+        _inputs.Player.Enable();
+    }
+
+    public void PlayerInputDisable()
+    {
+        _inputs.Player.Disable();
+    }
+
     private void OnDisable()
     {
         MainInputDisable();
         PcInputDisable();
         TobberInputDisable();
+        PlayerInputDisable();
     }
 
     public event Action<Vector2> MoveEvent;
@@ -225,5 +238,13 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
     {
         if (context.started)
             TobberOnBack?.Invoke();
+    }
+
+    public event Action onTobber;
+
+    public void OnTobberDisplay(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            onTobber?.Invoke();
     }
 }

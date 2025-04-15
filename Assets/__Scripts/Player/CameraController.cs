@@ -1,4 +1,4 @@
-using Unity.Cinemachine;
+﻿using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -27,6 +27,10 @@ public class CameraController : MonoBehaviour
     private Vector3 initialCameraPosition;
     private Vector3 originalHeadPosition;
     private bool isHeadOffsetApplied = false;
+    private bool shouldAlignForward = false;
+    private float alignSpeed = 5f;
+    private Quaternion targetCamRotation;
+    private float targetXRotation;
 
     public bool isInConvo = false;
 
@@ -53,6 +57,20 @@ public class CameraController : MonoBehaviour
         {
             FovChange();
             HeadBob();
+        }
+
+        if (shouldAlignForward)
+        {
+            xRotation = Mathf.Lerp(xRotation, targetXRotation, Time.deltaTime * alignSpeed);
+            cam.transform.localRotation = Quaternion.Lerp(cam.transform.localRotation, targetCamRotation, Time.deltaTime * alignSpeed);
+
+            // Když jsme blízko cíle, ukonči zarovnání
+            if (Quaternion.Angle(cam.transform.localRotation, targetCamRotation) < 0.1f)
+            {
+                shouldAlignForward = false;
+                cam.transform.localRotation = targetCamRotation;
+                xRotation = targetXRotation;
+            }
         }
     }
     
@@ -96,6 +114,15 @@ public class CameraController : MonoBehaviour
         {
             head.localPosition = originalHeadPosition + new Vector3(0, heightOffset, 0);
         }
+    }
+
+    public void AlignCameraForward()
+    {
+        shouldAlignForward = true;
+
+        // Cíl = rovný pohled dopředu podle hráče
+        targetXRotation = 0f;
+        targetCamRotation = Quaternion.Euler(targetXRotation, 90f, 0f); // 90 je tvoje základní otočení v Look()
     }
 
     private void Look()
