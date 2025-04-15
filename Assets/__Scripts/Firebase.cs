@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,14 +31,15 @@ public class Firebase : MonoBehaviour
         }
     }
     
-    void Start()
+    async void Start()
     {
-        config = new FirebaseConfig("https://augumentum-default-rtdb.europe-west1.firebasedatabase.app/");
+        config = new FirebaseConfig("https://augumentum-default-rtdb.europe-west1.firebasedatabase.app/", "AIzaSyBkWcIDRsasLWlVmu2ZLHIsbu5LVT2-y3U");
         client = new FirebaseClient(config);
-        
-        client.StartListening("/", OnDataChanged);
-        
-        OnDatabaseInitialized?.Invoke();
+        string cachedId = client.LoadCachedLocalId();
+        client.setUserId(cachedId);
+
+        // OnDatabaseInitialized?.Invoke();
+        // client.StartListening("/", OnDataChanged);
     }
 
     public Dictionary<string, ParsedQuestModel> GetQuests()

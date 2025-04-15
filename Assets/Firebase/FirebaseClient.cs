@@ -1,20 +1,187 @@
+using Newtonsoft.Json;
 using NUnit.Framework;
 using PimDeWitte.UnityMainThreadDispatcher;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class FirebaseClient
 {
     private readonly FirebaseConfig _config;
+    private string userId = "";
     private readonly HttpClient _httpClient;
+    private readonly string authDataPath = Path.Combine(Application.persistentDataPath, "firebase_auth.json");
+
+    public void setUserId(string id)
+    {
+        userId = id;
+    }
+
     public FirebaseClient(FirebaseConfig Config)
     {
         _config = Config;
         _httpClient = new HttpClient();
     }
+
+    [Serializable]
+    public class FirebaseAuthCache
+    {
+        public string localId;
+    }
+
+    public string LoadCachedLocalId()
+    {
+        if (File.Exists(authDataPath))
+        {
+            string json = File.ReadAllText(authDataPath);
+            var cache = JsonUtility.FromJson<FirebaseAuthCache>(json);
+            return cache.localId;
+        }
+
+        return null;
+    }
+
+    public void SaveCachedLocalId(string localId)
+    {
+        var cache = new FirebaseAuthCache
+        {
+            localId = localId,
+        };
+        string cacheJson = JsonUtility.ToJson(cache);
+        File.WriteAllText(authDataPath, cacheJson);
+    }
+
+    public class FirebaseAuthResponse
+    {
+        public string localId { get; set; }
+    }
+
+    [Serializable]
+    public class FirebaseLoginPayload
+    {
+        public string email;
+        public string password;
+        public bool returnSecureToken = true;
+    }
+
+    public async Task<FirebaseAuthResponse> SignInWithEmailAndPasswordAsync(string email, string password)
+    {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            throw new ArgumentException("Email and password cannot be null or empty.");
+
+        var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={_config.apiKey}";
+
+        var payload = new FirebaseLoginPayload
+        {
+            email = email,
+            password = password,
+            returnSecureToken = true
+        };
+
+        string jsonPayload = JsonUtility.ToJson(payload);
+        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await _httpClient.PostAsync(url, content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException("Firebase login failed.");
+            }
+            var authResponse = JsonConvert.DeserializeObject<FirebaseAuthResponse>(json);
+            var cache = new FirebaseAuthCache
+            {
+                localId = authResponse.localId,
+            };
+            string cacheJson = JsonUtility.ToJson(cache);
+            File.WriteAllText(authDataPath, cacheJson);
+
+            return authResponse;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    public async Task<FirebaseAuthResponse> SignUpWithEmailAndPasswordAsync(string email, string password)
+    {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            throw new ArgumentException("Email and password cannot be null or empty.");
+
+        var url = $"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={_config.apiKey}";
+
+        var payload = new FirebaseLoginPayload
+        {
+            email = email,
+            password = password,
+            returnSecureToken = true
+        };
+
+        string jsonPayload = JsonUtility.ToJson(payload);
+        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+        try
+        {
+            var response = await _httpClient.PostAsync(url, content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException("Firebase registration failed. Response: " + json);
+            }
+
+            var authResponse = JsonConvert.DeserializeObject<FirebaseAuthResponse>(json);
+            var cache = new FirebaseAuthCache
+            {
+                localId = authResponse.localId,
+            };
+            string cacheJson = JsonUtility.ToJson(cache);
+            File.WriteAllText(authDataPath, cacheJson);
+
+            return authResponse;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error during Firebase registration: " + ex.Message, ex);
+        }
+    }
+
+    public async Task<FirebaseResponse> AddUserAsync(string username, string userId)
+    {
+        var url = $"{_config.basePath}/users/{userId}.json";
+
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                var userData = new Dictionary<string, string>
+            {
+                { "username", username }
+            };
+
+                string jsonData = JsonConvert.SerializeObject(userData);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PutAsync(url, content);
+                string resRawJson = await response.Content.ReadAsStringAsync();
+
+                return new FirebaseResponse { RawJson = resRawJson };
+            }
+        }
+        catch (Exception ex)
+        {
+            UnityEngine.Debug.LogError($"Error in AddUserAsync: {ex.Message}");
+            throw;
+        }
+    }
+
 
     /// <summary>
     /// Asynchronously retrieves data from the specified path in Firebase Realtime Database.
@@ -27,7 +194,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -55,7 +222,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -84,7 +251,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -115,7 +282,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -146,7 +313,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -188,7 +355,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -219,7 +386,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -250,7 +417,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -280,7 +447,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -305,7 +472,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
@@ -330,7 +497,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{firebasePath}.json";
+        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
 
         try
         {
