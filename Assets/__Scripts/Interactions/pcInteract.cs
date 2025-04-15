@@ -8,14 +8,14 @@ public class PcInteract : InteractAction
 {
     [Header("Input")]
     [SerializeField] private InputReader input;
+    [SerializeField] private Pc pc;
     public override void OnInteract()
     {
-        Debug.Log("Start");
         CameraManager.Instance.EnterPcCamera();
         PlayerManager.Instance.isDisabled = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
-        GetComponent<Pc>().StartInteracting();
+        pc.StartInteracting();
         input.PcInputEnable();
     }
 
