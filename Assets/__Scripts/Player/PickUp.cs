@@ -13,6 +13,7 @@ public class PickUp : MonoBehaviour
     
     [SerializeField] private float itemScale = 0.5f;
     [SerializeField] private float throwForce = 8f;
+    private Vector3 initItemScale;
 
     public bool isHoldingItem = false;
     private Animator animator;
@@ -51,13 +52,14 @@ public class PickUp : MonoBehaviour
     private void PrepareItem(GameObject item)
     {
         currentItem = item;
-
+        initItemScale = item.transform.localScale;
         item.transform.SetParent(itemHolster, false);
         item.transform.localPosition = Vector3.zero;
-        item.transform.localRotation = Quaternion.identity;
-
+        item.transform.rotation = Quaternion.Euler(0, 0, -90);
+        item.transform.localRotation = Quaternion.Euler(0, 0, -90);
+        
         Vector3 rigScale = itemHolster.lossyScale;
-        Vector3 correctedScale = (Vector3.one * itemScale);
+        Vector3 correctedScale = (initItemScale * itemScale);
         correctedScale.x /= rigScale.x;
         correctedScale.y /= rigScale.y;
         correctedScale.z /= rigScale.z;
@@ -85,7 +87,7 @@ public class PickUp : MonoBehaviour
         item.transform.SetParent(null);
         item.transform.position = dropPoint.position;
         item.transform.rotation = dropPoint.rotation;
-        item.transform.localScale = Vector3.one;
+        item.transform.localScale = initItemScale;
 
         animator.SetLayerWeight(animator.GetLayerIndex("Holding"), 0);
 
