@@ -182,9 +182,6 @@ public class QuestManager : MonoBehaviour
             case "Money":
                 await firebase.AddPlayerMoney(rewardValue);
                 break;
-            case "PerkPoints":
-                Debug.Log("perk points added");
-                break;
             default:
                 Debug.LogError("Incorrect reward type on quest" + questID);
                 break;

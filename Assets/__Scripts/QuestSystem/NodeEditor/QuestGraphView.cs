@@ -159,7 +159,7 @@ public class QuestGraphView : GraphView
                 node = new RewardNode
                 {
                     title = "Reward Node",
-                    RewardType = "PerkPoints",
+                    RewardType = "Money",
                     RewardValue = 100
                 };
                 break;
