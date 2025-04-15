@@ -194,7 +194,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -222,7 +222,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -251,7 +251,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -282,7 +282,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -313,7 +313,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -355,7 +355,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -386,7 +386,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -417,7 +417,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -447,7 +447,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -472,7 +472,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {
@@ -497,7 +497,7 @@ public class FirebaseClient
         if (string.IsNullOrWhiteSpace(firebasePath))
             throw new ArgumentException("firebasePath cannot be null or empty.", nameof(firebasePath));
 
-        var url = $"{_config.basePath}/{userId}/{firebasePath}.json";
+        var url = $"{_config.basePath}/users/{userId}/{firebasePath}.json";
 
         try
         {

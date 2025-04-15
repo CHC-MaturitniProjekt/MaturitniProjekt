@@ -78,14 +78,14 @@ public class NpcInteractionCriteria : ICompletionCriteria
 [Serializable]
 public class GoToTriggerCriteria : ICompletionCriteria
 {
-    public string NpcName;
+    public int questID;
     private bool _isTriggered;
 
     public void Initialize(params object[] parameters)
     {
-        if (parameters.Length > 0 && parameters[0] is string npcName)
+        if (parameters.Length > 0 && parameters[0] is int questId)
         {
-            NpcName = npcName;
+            questID = questId;
         }
     }
 

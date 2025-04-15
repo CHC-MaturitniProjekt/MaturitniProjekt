@@ -38,8 +38,8 @@ public class Firebase : MonoBehaviour
         string cachedId = client.LoadCachedLocalId();
         client.setUserId(cachedId);
 
-        // OnDatabaseInitialized?.Invoke();
-        // client.StartListening("/", OnDataChanged);
+        OnDatabaseInitialized?.Invoke();
+        client.StartListening("/", OnDataChanged);
     }
 
     public Dictionary<string, ParsedQuestModel> GetQuests()

@@ -40,17 +40,19 @@ public class GoToQuestTrigger : InteractAction
     public override Task OnObjectiveInteract()
     {
         var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetActiveQuestID());
+        Debug.Log("Objective list retrieved: " + (objectiveList != null ? objectiveList.Count.ToString() : "null"));
 
         foreach (var objective in objectiveList)
         {
-            if (objective.ObjectiveType == "GoTo" && objective.CompletionCriteria != null && objective.CompletionCriteria.Count > 0)
+            Debug.Log("Processing objective: " + (objective != null ? objective.ObjectiveType : "null"));
+
+            if (objective.ObjectiveType == "GoTo")
             {
-                var completionData = CompletionCriteriaSerializer.Deserialize(objective.CompletionCriteria);
-                var itemCompletionData = completionData.OfType<GoToTriggerCriteria>().FirstOrDefault();
-                if (itemCompletionData != null)
-                {
-                    questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
-                }
+                questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
+            }
+            else
+            {
+                Debug.Log("Objective does not meet criteria.");
             }
         }
 
