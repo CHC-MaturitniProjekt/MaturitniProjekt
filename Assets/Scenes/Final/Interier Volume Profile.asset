@@ -16,6 +16,7 @@ MonoBehaviour:
   - {fileID: 6366479353661527834}
   - {fileID: 879831784672948547}
   - {fileID: 684955165019599986}
+  - {fileID: 3783869141698386334}
 --- !u!114 &684955165019599986
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -31,13 +32,13 @@ MonoBehaviour:
   active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.64971745}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.3107346}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.48022613}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.26836172}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.5932202}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.5649714}
   shadowsStart:
     m_OverrideState: 0
     m_Value: 0
@@ -65,13 +66,41 @@ MonoBehaviour:
   active: 1
   lift:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: -0.042372882}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.014124243}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 0.9795737, y: 0.9769629, z: 1, w: 0.8898309}
+    m_Value: {x: 0.9795737, y: 0.9769629, z: 1, w: -0.3813559}
   gain:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0.16949148}
+--- !u!114 &3783869141698386334
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f335fb1ffd8684294ad653bf1c7564, type: 3}
+  m_Name: ColorAdjustments
+  m_EditorClassIdentifier: 
+  active: 1
+  postExposure:
+    m_OverrideState: 1
+    m_Value: -0.21
+  contrast:
+    m_OverrideState: 1
+    m_Value: 12
+  colorFilter:
     m_OverrideState: 0
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  hueShift:
+    m_OverrideState: 0
+    m_Value: 0
+  saturation:
+    m_OverrideState: 1
+    m_Value: -43
 --- !u!114 &6366479353661527834
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -87,7 +116,7 @@ MonoBehaviour:
   active: 1
   mode:
     m_OverrideState: 1
-    m_Value: 2
+    m_Value: 1
   neutralHDRRangeReductionMode:
     m_OverrideState: 0
     m_Value: 2
