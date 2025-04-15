@@ -23,11 +23,11 @@ public class Firebase : MonoBehaviour
         
         if (uiManager == null)
         {
-            Debug.LogError("UIManager not found. Please ensure it is added to the scene.");
+            Debug.LogWarning("UIManager not found. Please ensure it is added to the scene.");
         }
         if (questManager == null)
         {
-            Debug.LogError("UIManager not found. Please ensure it is added to the scene.");
+            Debug.LogWarning("UIManager not found. Please ensure it is added to the scene.");
         }
     }
     
