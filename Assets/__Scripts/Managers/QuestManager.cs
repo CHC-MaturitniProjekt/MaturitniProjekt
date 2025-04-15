@@ -219,7 +219,7 @@ public class QuestManager : MonoBehaviour
         }
     }
     
-    public async void PushQuests()
+    private async void PushQuests()
     {
         if (questList.Count == 0)
         {
@@ -244,6 +244,11 @@ public class QuestManager : MonoBehaviour
         }
         
         LoadQuests();
+        if (questList.Count > 0)
+        {
+            ObtainQuest((int)questList[0].QuestID).ConfigureAwait(false);
+            SetQuestAsActive(questList[0].GUID);
+        }
     }
 
     private ParsedQuestModel ParseQuestData(SerializableQuestNodeModel node)

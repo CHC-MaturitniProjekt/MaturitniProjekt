@@ -47,13 +47,16 @@ public class ItemInteract : InteractAction
 
         foreach (var objective in objectiveList)
         {
-            if (objective.ObjectiveType == "PickUp" && objective.CompletionCriteria[0] != null)
+            if (objective.ObjectiveType == "PickUp" && objective.CompletionCriteria != null)
             {
                 var completionData = CompletionCriteriaSerializer.Deserialize(objective.CompletionCriteria);
-                var itemCompletionData = completionData.OfType<ItemCollectionCriteria>().FirstOrDefault();
-                if (itemCompletionData != null && itemCompletionData.RequiredItemCount == itemID)
+                if (completionData != null)
                 {
-                    await questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
+                    var itemCompletionData = completionData.OfType<ItemCollectionCriteria>().FirstOrDefault();
+                    if (itemCompletionData != null && itemCompletionData.RequiredItemCount == itemID)
+                    {
+                        await questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
+                    }
                 }
             }
         }

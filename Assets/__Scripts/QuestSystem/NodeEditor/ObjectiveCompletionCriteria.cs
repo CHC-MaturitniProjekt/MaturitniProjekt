@@ -74,3 +74,28 @@ public class NpcInteractionCriteria : ICompletionCriteria
         _isInteracted = true;
     }
 }
+
+[Serializable]
+public class GoToTriggerCriteria : ICompletionCriteria
+{
+    public string NpcName;
+    private bool _isTriggered;
+
+    public void Initialize(params object[] parameters)
+    {
+        if (parameters.Length > 0 && parameters[0] is string npcName)
+        {
+            NpcName = npcName;
+        }
+    }
+
+    public bool IsCompleted()
+    {
+        return _isTriggered;
+    }
+
+    public void TriggeredCollider()
+    {
+        _isTriggered = true;
+    }
+}
