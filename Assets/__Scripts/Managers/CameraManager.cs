@@ -29,9 +29,9 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-        input.CamModeEvent += Input_SecurityCamModeEvent;
-        input.CamIndexIncrement += () => SwitchSecurityCamera(1);
-        input.CamIndexDecrement += () => SwitchSecurityCamera(-1);
+        //input.CamModeEvent += Input_SecurityCamModeEvent;
+        //input.CamIndexIncrement += () => SwitchSecurityCamera(1);
+        //input.CamIndexDecrement += () => SwitchSecurityCamera(-1);
 
         playerCam.Priority = new PrioritySettings { Value = 10 };
         currentCamera = playerCam;

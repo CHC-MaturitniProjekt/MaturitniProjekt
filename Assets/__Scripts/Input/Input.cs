@@ -155,37 +155,10 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""camMode"",
-                    ""type"": ""Button"",
-                    ""id"": ""c529f790-75a9-40d8-81ee-4ce6df0338e8"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""camIndexIncrement"",
-                    ""type"": ""Button"",
-                    ""id"": ""88b9fd20-5eaf-4711-b148-3bd980c7e822"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""camIndexDecrement"",
-                    ""type"": ""Button"",
-                    ""id"": ""3874387c-e07d-4b43-b3b3-e58e7311cabc"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""drop"",
                     ""type"": ""Button"",
                     ""id"": ""f6f600be-dfd7-4378-973d-9c388712a90c"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -376,39 +349,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""sprint"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d37e9eb3-4552-41cf-ab88-448d807e6fa9"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""camMode"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0a6b39ae-889f-4f90-adde-8fdabe8e984a"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""camIndexIncrement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""35c41920-042a-4ced-a242-ec29570656c0"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""camIndexDecrement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -741,9 +681,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         m_Main_look = m_Main.FindAction("look", throwIfNotFound: true);
         m_Main_sprint = m_Main.FindAction("sprint", throwIfNotFound: true);
         m_Main_crouch = m_Main.FindAction("crouch", throwIfNotFound: true);
-        m_Main_camMode = m_Main.FindAction("camMode", throwIfNotFound: true);
-        m_Main_camIndexIncrement = m_Main.FindAction("camIndexIncrement", throwIfNotFound: true);
-        m_Main_camIndexDecrement = m_Main.FindAction("camIndexDecrement", throwIfNotFound: true);
         m_Main_drop = m_Main.FindAction("drop", throwIfNotFound: true);
         // PC
         m_PC = asset.FindActionMap("PC", throwIfNotFound: true);
@@ -848,9 +785,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_look;
     private readonly InputAction m_Main_sprint;
     private readonly InputAction m_Main_crouch;
-    private readonly InputAction m_Main_camMode;
-    private readonly InputAction m_Main_camIndexIncrement;
-    private readonly InputAction m_Main_camIndexDecrement;
     private readonly InputAction m_Main_drop;
     /// <summary>
     /// Provides access to input actions defined in input action map "Main".
@@ -891,18 +825,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Main/crouch".
         /// </summary>
         public InputAction @crouch => m_Wrapper.m_Main_crouch;
-        /// <summary>
-        /// Provides access to the underlying input action "Main/camMode".
-        /// </summary>
-        public InputAction @camMode => m_Wrapper.m_Main_camMode;
-        /// <summary>
-        /// Provides access to the underlying input action "Main/camIndexIncrement".
-        /// </summary>
-        public InputAction @camIndexIncrement => m_Wrapper.m_Main_camIndexIncrement;
-        /// <summary>
-        /// Provides access to the underlying input action "Main/camIndexDecrement".
-        /// </summary>
-        public InputAction @camIndexDecrement => m_Wrapper.m_Main_camIndexDecrement;
         /// <summary>
         /// Provides access to the underlying input action "Main/drop".
         /// </summary>
@@ -954,15 +876,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @crouch.started += instance.OnCrouch;
             @crouch.performed += instance.OnCrouch;
             @crouch.canceled += instance.OnCrouch;
-            @camMode.started += instance.OnCamMode;
-            @camMode.performed += instance.OnCamMode;
-            @camMode.canceled += instance.OnCamMode;
-            @camIndexIncrement.started += instance.OnCamIndexIncrement;
-            @camIndexIncrement.performed += instance.OnCamIndexIncrement;
-            @camIndexIncrement.canceled += instance.OnCamIndexIncrement;
-            @camIndexDecrement.started += instance.OnCamIndexDecrement;
-            @camIndexDecrement.performed += instance.OnCamIndexDecrement;
-            @camIndexDecrement.canceled += instance.OnCamIndexDecrement;
             @drop.started += instance.OnDrop;
             @drop.performed += instance.OnDrop;
             @drop.canceled += instance.OnDrop;
@@ -998,15 +911,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @crouch.started -= instance.OnCrouch;
             @crouch.performed -= instance.OnCrouch;
             @crouch.canceled -= instance.OnCrouch;
-            @camMode.started -= instance.OnCamMode;
-            @camMode.performed -= instance.OnCamMode;
-            @camMode.canceled -= instance.OnCamMode;
-            @camIndexIncrement.started -= instance.OnCamIndexIncrement;
-            @camIndexIncrement.performed -= instance.OnCamIndexIncrement;
-            @camIndexIncrement.canceled -= instance.OnCamIndexIncrement;
-            @camIndexDecrement.started -= instance.OnCamIndexDecrement;
-            @camIndexDecrement.performed -= instance.OnCamIndexDecrement;
-            @camIndexDecrement.canceled -= instance.OnCamIndexDecrement;
             @drop.started -= instance.OnDrop;
             @drop.performed -= instance.OnDrop;
             @drop.canceled -= instance.OnDrop;
@@ -1379,27 +1283,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCrouch(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "camMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCamMode(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "camIndexIncrement" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCamIndexIncrement(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "camIndexDecrement" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCamIndexDecrement(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "drop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
