@@ -26,7 +26,6 @@ public class GoToQuestTrigger : InteractAction
         {
             if (questID == questManager.GetActiveQuestID())
             {
-                Debug.Log("aa");
                 OnObjectiveInteract();
             }
         }
@@ -40,11 +39,11 @@ public class GoToQuestTrigger : InteractAction
     public override Task OnObjectiveInteract()
     {
         var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetActiveQuestID());
-        Debug.Log("Objective list retrieved: " + (objectiveList != null ? objectiveList.Count.ToString() : "null"));
+        //Debug.Log("Objective list retrieved: " + (objectiveList != null ? objectiveList.Count.ToString() : "null"));
 
         foreach (var objective in objectiveList)
         {
-            Debug.Log("Processing objective: " + (objective != null ? objective.ObjectiveType : "null"));
+            //Debug.Log("Processing objective: " + (objective != null ? objective.ObjectiveType : "null"));
 
             if (objective.ObjectiveType == "GoTo")
             {
@@ -52,7 +51,7 @@ public class GoToQuestTrigger : InteractAction
             }
             else
             {
-                Debug.Log("Objective does not meet criteria.");
+                //Debug.Log("Objective does not meet criteria.");
             }
         }
 

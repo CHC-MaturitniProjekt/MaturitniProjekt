@@ -13,9 +13,15 @@ MonoBehaviour:
   m_Name: questGraph
   m_EditorClassIdentifier: 
   nodeLinks:
-  - baseNodeGUID: 08d89a76-86c3-4cf5-8cb9-c3138a5bab79
-    portName: Start
-    targetNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
+  - baseNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+    portName: Next quest(s)
+    targetNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
+  - baseNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+    portName: Objectives
+    targetNodeGUID: 24993701-2dd2-4ec6-ae3b-571280d47fb6
+  - baseNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+    portName: Next quest(s)
+    targetNodeGUID: d30e9fbc-02a5-4b18-86f5-fcb04e5ff583
   - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
     portName: Objectives
     targetNodeGUID: 1fbd628c-e9ca-4638-abf4-5223d7d152e0
@@ -28,15 +34,90 @@ MonoBehaviour:
   - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
     portName: Next quest(s)
     targetNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
-  - baseNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+  - baseNodeGUID: 08d89a76-86c3-4cf5-8cb9-c3138a5bab79
+    portName: Start
+    targetNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
+  - baseNodeGUID: d30e9fbc-02a5-4b18-86f5-fcb04e5ff583
     portName: Next quest(s)
-    targetNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
-  - baseNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+    targetNodeGUID: 216bc867-99f4-45e9-a869-472d0a7ed3e4
+  - baseNodeGUID: d30e9fbc-02a5-4b18-86f5-fcb04e5ff583
     portName: Objectives
-    targetNodeGUID: 24993701-2dd2-4ec6-ae3b-571280d47fb6
+    targetNodeGUID: b3c3ec69-473c-490a-8ee1-a53d7271a8d9
+  - baseNodeGUID: d30e9fbc-02a5-4b18-86f5-fcb04e5ff583
+    portName: Dialogues
+    targetNodeGUID: b1811bfe-580f-4898-b312-6b283bca73c0
+  - baseNodeGUID: ef90ae0f-6a7b-42c7-a472-c68822430f28
+    portName: Objectives
+    targetNodeGUID: f12c2fb2-fa95-4c26-8220-df2d41c0b9b8
+  - baseNodeGUID: ef90ae0f-6a7b-42c7-a472-c68822430f28
+    portName: Next quest(s)
+    targetNodeGUID: ac3fb921-beaf-4dff-8945-10f4ba2245de
+  - baseNodeGUID: ac3fb921-beaf-4dff-8945-10f4ba2245de
+    portName: Dialogues
+    targetNodeGUID: c40db1f7-35f0-4aa4-a13e-5c6ffc4f63b2
   - baseNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
+    portName: Next quest(s)
+    targetNodeGUID: 4f318532-2f17-4167-841e-c43cc9e27a5a
+  - baseNodeGUID: f73526f1-a890-4f48-922a-07ea13ab5da7
+    portName: Next quest(s)
+    targetNodeGUID: 4645ac76-3ea2-4435-a090-c2442c3b67ad
+  - baseNodeGUID: 9c834569-55d2-4f9c-ae1e-0d3cdfb25050
+    portName: Next quest(s)
+    targetNodeGUID: f73526f1-a890-4f48-922a-07ea13ab5da7
+  - baseNodeGUID: 9c834569-55d2-4f9c-ae1e-0d3cdfb25050
     portName: Objectives
-    targetNodeGUID: c2e5aef6-3dae-4de1-816a-e21fb61aa43d
+    targetNodeGUID: 304066e2-d9cf-4043-9fd6-2410d753a348
+  - baseNodeGUID: 9c834569-55d2-4f9c-ae1e-0d3cdfb25050
+    portName: Rewards
+    targetNodeGUID: 845a1f1e-7414-42a3-91cb-bc2aeb1b3765
+  - baseNodeGUID: 4f318532-2f17-4167-841e-c43cc9e27a5a
+    portName: Next quest(s)
+    targetNodeGUID: 9c834569-55d2-4f9c-ae1e-0d3cdfb25050
+  - baseNodeGUID: 4f318532-2f17-4167-841e-c43cc9e27a5a
+    portName: Objectives
+    targetNodeGUID: 7844d329-09f7-484a-ba44-d7d569cb4ccb
+  - baseNodeGUID: 4f318532-2f17-4167-841e-c43cc9e27a5a
+    portName: Rewards
+    targetNodeGUID: 41899f5d-c4ae-4183-aa07-f70449d3e90f
+  - baseNodeGUID: 4645ac76-3ea2-4435-a090-c2442c3b67ad
+    portName: Next quest(s)
+    targetNodeGUID: 08516f49-bce3-4b70-965d-91d62c5359d5
+  - baseNodeGUID: 08516f49-bce3-4b70-965d-91d62c5359d5
+    portName: Next quest(s)
+    targetNodeGUID: f4eee6f8-33d9-4814-a51d-6e8572168b6a
+  - baseNodeGUID: 08516f49-bce3-4b70-965d-91d62c5359d5
+    portName: Objectives
+    targetNodeGUID: b7114379-3509-47ea-b48a-4dabe76e2178
+  - baseNodeGUID: 08516f49-bce3-4b70-965d-91d62c5359d5
+    portName: Objectives
+    targetNodeGUID: 389af255-602b-4a63-afc2-379ee277beb3
+  - baseNodeGUID: f4eee6f8-33d9-4814-a51d-6e8572168b6a
+    portName: Next quest(s)
+    targetNodeGUID: 6cc88892-8cf3-4d59-8b47-4ba22b24e446
+  - baseNodeGUID: f4eee6f8-33d9-4814-a51d-6e8572168b6a
+    portName: Next quest(s)
+    targetNodeGUID: a43d884e-4874-4db4-819a-97025f2dec90
+  - baseNodeGUID: 6cc88892-8cf3-4d59-8b47-4ba22b24e446
+    portName: Next quest(s)
+    targetNodeGUID: 2812df2c-9abe-4264-8db7-abaf43d62b59
+  - baseNodeGUID: 2812df2c-9abe-4264-8db7-abaf43d62b59
+    portName: Next quest(s)
+    targetNodeGUID: c17650f0-e390-4f16-bed2-1ec38dd45485
+  - baseNodeGUID: 2812df2c-9abe-4264-8db7-abaf43d62b59
+    portName: Objectives
+    targetNodeGUID: 1fcb3554-5eca-481b-b941-431027a17bd3
+  - baseNodeGUID: 2812df2c-9abe-4264-8db7-abaf43d62b59
+    portName: Objectives
+    targetNodeGUID: d2fc6388-0acb-448a-9f16-5315e741dcad
+  - baseNodeGUID: 216bc867-99f4-45e9-a869-472d0a7ed3e4
+    portName: Objectives
+    targetNodeGUID: b483c3dd-ee5f-4f99-86ed-f5808834eec7
+  - baseNodeGUID: 216bc867-99f4-45e9-a869-472d0a7ed3e4
+    portName: Objectives
+    targetNodeGUID: d8c32a22-39b7-45de-8e32-e44f99780ed4
+  - baseNodeGUID: 216bc867-99f4-45e9-a869-472d0a7ed3e4
+    portName: Next quest(s)
+    targetNodeGUID: ef90ae0f-6a7b-42c7-a472-c68822430f28
   questNodeData:
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
@@ -56,17 +137,9 @@ MonoBehaviour:
       message","QuestDescription":"Check out the PC in your room","QuestID":2,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":true}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"c2e5aef6-3dae-4de1-816a-e21fb61aa43d","position":{"x":1412.6666259765625,"y":208.6666717529297},"ObjectiveDescription":"test","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":69}"}]}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
     JsonData: '{"QuestType":2,"GUID":"24993701-2dd2-4ec6-ae3b-571280d47fb6","position":{"x":1015.3333740234375,"y":208.6666717529297},"ObjectiveDescription":"Use
       the PC","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
       Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":789}"}]}'
-  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":1015.3333740234375,"y":-39.33333206176758},"QuestName":"Get
-      Money","QuestDescription":"Find money fast or they''ll get you.","QuestID":3,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
   - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":1,"GUID":"5fb2d7bd-8d7e-469b-bbd3-a671307fce86","position":{"x":343.33331298828127,"y":-39.33333206176758},"QuestName":"Get
@@ -74,3 +147,118 @@ MonoBehaviour:
   - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":0,"GUID":"08d89a76-86c3-4cf5-8cb9-c3138a5bab79","position":{"x":191.33334350585938,"y":-39.33333206176758}}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"d30e9fbc-02a5-4b18-86f5-fcb04e5ff583","position":{"x":1015.3333740234375,"y":-652.6666870117188},"QuestName":"Come
+      if you want.","QuestDescription":"What can they do.","QuestID":4,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":4,"GUID":"b1811bfe-580f-4898-b312-6b283bca73c0","position":{"x":1362.6666259765625,"y":-308.6666564941406},"DialogueName":"ElliotHealth","NPCID":21,"order":1,"isCompleted":false,"isSMS":false}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"b483c3dd-ee5f-4f99-86ed-f5808834eec7","position":{"x":2064.666748046875,"y":-423.3333435058594},"ObjectiveDescription":"Go
+      to Medical","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"d8c32a22-39b7-45de-8e32-e44f99780ed4","position":{"x":2064.666748046875,"y":-241.3333282470703},"ObjectiveDescription":"Take
+      meds","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":7458}"}]}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"ef90ae0f-6a7b-42c7-a472-c68822430f28","position":{"x":2230.0,"y":-652.6666870117188},"QuestName":"Go
+      home","QuestDescription":"Give Elliot his meds","QuestID":6,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":true}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"ac3fb921-beaf-4dff-8945-10f4ba2245de","position":{"x":2642.666748046875,"y":-702.0},"QuestName":"Bad
+      ending","QuestDescription":"WAKE UP!","QuestID":7,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":1015.3333740234375,"y":-39.33333206176758},"QuestName":"I''ll
+      get it to you","QuestDescription":"I gotta find a way to make money fast.","QuestID":3,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"f73526f1-a890-4f48-922a-07ea13ab5da7","position":{"x":2230.0,"y":136.6666717529297},"QuestName":"Here!
+      Happy?","QuestDescription":"Pay off your debt,","QuestID":8,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"9c834569-55d2-4f9c-ae1e-0d3cdfb25050","position":{"x":1832.0,"y":-20.66666603088379},"QuestName":"Rob
+      the pharmacy","QuestDescription":"Describe the quest here","QuestID":12,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":true}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"4f318532-2f17-4167-841e-c43cc9e27a5a","position":{"x":1456.6666259765625,"y":-20.66666603088379},"QuestName":"Rob
+      the market","QuestDescription":"Describe the quest here","QuestID":11,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":true}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"7844d329-09f7-484a-ba44-d7d569cb4ccb","position":{"x":1608.6666259765625,"y":436.0},"ObjectiveDescription":"Rob
+      the Market","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":3,"GUID":"41899f5d-c4ae-4183-aa07-f70449d3e90f","position":{"x":1514.0,"y":638.0},"RewardType":"Money","RewardValue":2000}'
+  - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":3,"GUID":"845a1f1e-7414-42a3-91cb-bc2aeb1b3765","position":{"x":1895.333251953125,"y":697.3333129882813},"RewardType":"Money","RewardValue":3500}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"304066e2-d9cf-4043-9fd6-2410d753a348","position":{"x":2022.0,"y":458.0},"ObjectiveDescription":"Rob
+      Medical","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"4645ac76-3ea2-4435-a090-c2442c3b67ad","position":{"x":2587.33349609375,"y":155.3333282470703},"QuestName":"Nyx","QuestDescription":"What?
+      Why?","QuestID":9,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":true}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"c17650f0-e390-4f16-bed2-1ec38dd45485","position":{"x":4849.3330078125,"y":106.0},"QuestName":"True
+      Ending","QuestDescription":"I got in.","QuestID":16,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"08516f49-bce3-4b70-965d-91d62c5359d5","position":{"x":2905.33349609375,"y":155.3333282470703},"QuestName":"Get
+      the package","QuestDescription":"Hack SynTech and retrieve the package","QuestID":10,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"389af255-602b-4a63-afc2-379ee277beb3","position":{"x":3309.33349609375,"y":638.6666870117188},"ObjectiveDescription":"Get
+      the package","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"b7114379-3509-47ea-b48a-4dabe76e2178","position":{"x":3343.33349609375,"y":467.3333435058594},"ObjectiveDescription":"Get
+      to the basement","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"f4eee6f8-33d9-4814-a51d-6e8572168b6a","position":{"x":3533.33349609375,"y":155.3333282470703},"QuestName":"I
+      looked inside...","QuestDescription":"Is she serious?","QuestID":13,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"a43d884e-4874-4db4-819a-97025f2dec90","position":{"x":3949.33349609375,"y":444.6666564941406},"QuestName":"Refuse
+      Nyx Ending","QuestDescription":"Are you serious?","QuestID":17,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"6cc88892-8cf3-4d59-8b47-4ba22b24e446","position":{"x":3898.0,"y":124.66667175292969},"QuestName":"I
+      understand","QuestDescription":"Maybe together we can take them down...","QuestID":14,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"2812df2c-9abe-4264-8db7-abaf43d62b59","position":{"x":4402.0,"y":124.66667175292969},"QuestName":"Rob
+      the bank","QuestDescription":"Describe the quest here","QuestID":15,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"1fcb3554-5eca-481b-b941-431027a17bd3","position":{"x":4739.3330078125,"y":493.33331298828127},"ObjectiveDescription":"Enter
+      the vault","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"d2fc6388-0acb-448a-9f16-5315e741dcad","position":{"x":4672.0,"y":677.3333129882813},"ObjectiveDescription":"Steal
+      data","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"f12c2fb2-fa95-4c26-8220-df2d41c0b9b8","position":{"x":2562.666748046875,"y":-405.3333435058594},"ObjectiveDescription":"Arrive
+      Home","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"216bc867-99f4-45e9-a869-472d0a7ed3e4","position":{"x":1606.6666259765625,"y":-652.6666870117188},"QuestName":"Go
+      get Elliot''s meds","QuestDescription":"Elliot''s condition is worse, I should
+      get him his meds.","QuestID":5,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":true}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"b3c3ec69-473c-490a-8ee1-a53d7271a8d9","position":{"x":1362.6666259765625,"y":-502.0},"ObjectiveDescription":"Talk
+      to Elliot","ObjectiveType":"Interact","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"NpcInteractionCriteria,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"NpcName\":\"21\"}"}]}'
+  - NodeType: DialogueNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":4,"GUID":"c40db1f7-35f0-4aa4-a13e-5c6ffc4f63b2","position":{"x":2924.666748046875,"y":-523.3333740234375},"DialogueName":"ElliotEnd","NPCID":21,"order":1,"isCompleted":false,"isSMS":false}'

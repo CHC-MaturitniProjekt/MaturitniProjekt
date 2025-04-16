@@ -9,13 +9,48 @@ class IdkDialog : SmsSystem
     {
         _questManager = FindFirstObjectByType<QuestManager>();
 
+        DialogNode complyNode = new DialogNode
+        {
+            NpcText = new List<string>()
+            {
+                "Good. You know where to leave it.",
+                "Don’t make us knock twice next time."
+            },
+            OnNodeEnter = () =>
+            {
+                _questManager.ObtainQuest(3);
+            }
+        };
+
+        DialogNode refuseNode = new DialogNode
+        {
+            NpcText = new List<string>()
+            {
+                "Wrong answer.",
+                "We’ll be seeing you. Soon."
+            },
+            OnNodeEnter = () =>
+            {
+                _questManager.ObtainQuest(4);
+            }
+        };
+        
         
         DialogNode fifthNode = new DialogNode
         {
             NpcText = new List<string>() {"Don’t finish that sentence unless it ends in numbers.", "Clock’s ticking, Solace. Don't make us come off silent."},
-            OnNodeEnter = () =>
+            Responses = new List<Response>()
             {
-                _questManager.ObtainQuest(3);
+                new Response
+                {
+                    Text = "Fine. I’ll get it to you.",
+                    NextNode = complyNode
+                },
+                new Response
+                {
+                    Text = "I’m done owing you. Come if you want.",
+                    NextNode = refuseNode
+                }
             }
         };
         DialogNode forthNode = new DialogNode

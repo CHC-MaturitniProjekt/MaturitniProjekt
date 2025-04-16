@@ -22,9 +22,10 @@ public class NyxInteract : InteractAction
         ParsedQuestModel quest = null;
         foreach (var tempQuest in questManager.GetQuestList())
         {
-            if (tempQuest.isActive && tempQuest.dialogues != null && tempQuest.dialogues.Any())
+            if (tempQuest.isActive && tempQuest.dialogues != null)
             {
                 quest = tempQuest;
+                Debug.Log(quest);
                 break;
             }
         }
@@ -32,12 +33,14 @@ public class NyxInteract : InteractAction
         if (quest != null)
         {
             var availableDialogues = quest.dialogues;
+            Debug.Log(availableDialogues);
             foreach (var dialogue in availableDialogues.OrderBy(d => d.order))
             {
-                if (!dialogue.isCompleted && !dialogue.isSMS)
+                if (!dialogue.isCompleted)
                 {
                     questName = dialogue.DialogueName;
                     dialogue.isCompleted = true;
+                    Debug.Log(questName);
                     break;
                 }
             }
@@ -64,17 +67,21 @@ public class NyxInteract : InteractAction
     public override Task OnObjectiveInteract()
     {
         var objectiveList = questManager.GetQuestObjectivesByQuestID(questManager.GetActiveQuestID());
-
+        Debug.Log(questManager.GetActiveQuestID());
         foreach (var objective in objectiveList)
         {
-            if (objective.ObjectiveType == "Interact" && objective.CompletionCriteria[0] != null)
+            Debug.Log("afds: " + objective.ObjectiveType);
+            if (objective.ObjectiveType == "Interact")
             {
+                Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 var completionData = CompletionCriteriaSerializer.Deserialize(objective.CompletionCriteria);
-                var itemCompletionData = completionData.OfType<NpcInteractionCriteria>().FirstOrDefault();
+                questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
+                /*var itemCompletionData = completionData.OfType<NpcInteractionCriteria>().FirstOrDefault();
                 if (itemCompletionData != null && itemCompletionData.NpcName == npcBrain.GetNPCSO().NPCName)
                 {
-                    questManager.SetObjectiveAsComplete((int)questManager.GetActiveQuestID(), objective.ObjectiveType);
-                }
+                    Debug.Log("fkasdjflasdjlfasdk");
+                    
+                }*/
             }
         }
 
