@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class KeypadController : MonoBehaviour
 {
+    [Header("Inspector Events")]
+    public VoidEvent OnUnlock;
+
     public string pass = "123";
     public string text = "";
     public int maxCharCount;
@@ -23,6 +26,7 @@ public class KeypadController : MonoBehaviour
             if (text == pass)
             {
                 text = "Succes";
+                OnUnlock?.Invoke();
             }
             else
             {

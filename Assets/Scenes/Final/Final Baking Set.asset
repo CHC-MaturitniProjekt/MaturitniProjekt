@@ -115,8 +115,58 @@ MonoBehaviour:
         elementCount: 1
     m_Asset: {fileID: 4900000, guid: 75c4d0d0236825047b4b15712dfd1b43, type: 3}
   scenarios:
-    m_Keys: []
-    m_Values: []
+    m_Keys:
+    - New Lighting Scenario
+    m_Values:
+    - sceneHash: 610191542
+      cellDataAsset:
+        m_AssetGUID: 616ac6d9f4f740e4eaaf063574412b42
+        m_StreamableAssetPath: APVStreamingAssets\cefa03121d71b8c489e1de522a72ee46\616ac6d9f4f740e4eaaf063574412b42.bytes
+        m_ElementSize: 131072
+        m_StreamableCellDescs:
+          m_Keys: 1a000000320000001b00000033000000
+          m_Values:
+          - offset: 0
+            elementCount: 2
+          - offset: 262144
+            elementCount: 2
+          - offset: 524288
+            elementCount: 2
+          - offset: 786432
+            elementCount: 1
+        m_Asset: {fileID: 4900000, guid: 616ac6d9f4f740e4eaaf063574412b42, type: 3}
+      cellOptionalDataAsset:
+        m_AssetGUID: 75176ab0c36bd104e99e8aacdb77b665
+        m_StreamableAssetPath: APVStreamingAssets\cefa03121d71b8c489e1de522a72ee46\75176ab0c36bd104e99e8aacdb77b665.bytes
+        m_ElementSize: 131072
+        m_StreamableCellDescs:
+          m_Keys: 1a000000320000001b00000033000000
+          m_Values:
+          - offset: 0
+            elementCount: 2
+          - offset: 262144
+            elementCount: 2
+          - offset: 524288
+            elementCount: 2
+          - offset: 786432
+            elementCount: 1
+        m_Asset: {fileID: 4900000, guid: 75176ab0c36bd104e99e8aacdb77b665, type: 3}
+      cellProbeOcclusionDataAsset:
+        m_AssetGUID: 
+        m_StreamableAssetPath: APVStreamingAssets\cefa03121d71b8c489e1de522a72ee46\.bytes
+        m_ElementSize: 0
+        m_StreamableCellDescs:
+          m_Keys: 1a000000320000001b00000033000000
+          m_Values:
+          - offset: 0
+            elementCount: 2
+          - offset: 0
+            elementCount: 2
+          - offset: 0
+            elementCount: 2
+          - offset: 0
+            elementCount: 1
+        m_Asset: {fileID: 0}
   cellBricksDataAsset:
     m_AssetGUID: 489ea440b839b5d4b9178750d0cf4181
     m_StreamableAssetPath: APVStreamingAssets\cefa03121d71b8c489e1de522a72ee46\489ea440b839b5d4b9178750d0cf4181.bytes
