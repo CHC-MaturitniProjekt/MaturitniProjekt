@@ -29,14 +29,18 @@ public class TobberManager : MonoBehaviour
 
     private void Show()
     {
+        input.TobberInputEnable();
         tobber.SetActive(true);
-        cameraController.AlignCameraForward();
         PlayerManager.Instance.isDisabled = true;
+        cameraController.ResetCameraPosition();
+        cameraController.AlignCameraForward();
     }
 
     private void Hide()
     {
+        input.TobberInputDisable();
         tobber.SetActive(false);
         PlayerManager.Instance.isDisabled = false;
+        cameraController.disableAligForward();
     }
 }

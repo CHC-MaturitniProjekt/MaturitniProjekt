@@ -9,7 +9,7 @@ public class TobberModule : MonoBehaviour
 
     private Dictionary<string, Type> moduleTypes = new Dictionary<string, Type>
 {
-    { "KeyPad", typeof(BasicKeypadModule) }
+    { "KeyPad", typeof(IndexKeypadModule) }
 };
 
     private PuzzleModule currentModule;
@@ -21,7 +21,10 @@ public class TobberModule : MonoBehaviour
 
     public int[] getOutput()
     {
-        return currentModule.outputPorts;
+        if (currentModule != null)
+            return currentModule.outputPorts;
+        else 
+            return new int[10];
     }
 
     public bool FindModule(string moduleName)

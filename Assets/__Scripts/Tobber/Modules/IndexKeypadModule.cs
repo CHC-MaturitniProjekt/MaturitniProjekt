@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-class BasicKeypadModule : PuzzleModule
+class IndexKeypadModule : PuzzleModule
 {
-    [Header("Settings")]
-    [SerializeField] private string passkey = "1234";
+    [Header("References")]
+    [SerializeField] private KeypadController keypadController;
     public override void setInput(int[] input)
     {
-        for (int i = 0; i < passkey.Length && i < input.Length; i++)
+        for (int i = 0; i < keypadController.pass.Length && i < input.Length; i++)
         {
-            int expectedDigit = passkey[i] - '0';
+            int expectedDigit = keypadController.pass[i] - '0';
             if (input[i] == expectedDigit)
             {
                 outputPorts[i] = 1;

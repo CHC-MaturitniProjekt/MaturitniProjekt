@@ -50,7 +50,7 @@ public class InputReader : ScriptableObject, Inputs.IMainActions, Inputs.IPCActi
 
     public void TobberInputDisable()
     {
-        _inputs.PC.Disable();
+        _inputs.Tobber.Disable();
     }
 
     public void PlayerInputEnable()

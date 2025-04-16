@@ -84,6 +84,11 @@ public class Movement : MonoBehaviour
             SetMovementStates();
 
         }
+        else
+        {
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            movementInput = Vector2.zero;
+        }
     }
 
     private void OnMoveInput(Vector2 input)

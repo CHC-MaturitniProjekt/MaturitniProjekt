@@ -87,6 +87,7 @@ public class CameraController : MonoBehaviour
         if (head != null)
         {
             head.localPosition = originalHeadPosition;
+            cam.transform.localPosition = initialCameraPosition;
         }
     }
 
@@ -123,6 +124,11 @@ public class CameraController : MonoBehaviour
         // Cíl = rovný pohled dopředu podle hráče
         targetXRotation = 0f;
         targetCamRotation = Quaternion.Euler(targetXRotation, 90f, 0f); // 90 je tvoje základní otočení v Look()
+    }
+
+    public void disableAligForward()
+    {
+        shouldAlignForward = false;
     }
 
     private void Look()

@@ -59,7 +59,6 @@ public class TobberController : MonoBehaviour
         input.TobberOnDown += MoveDown;
         input.TobberOnEnter += SelectItem;
         input.TobberOnBack += GoBack;
-        input.TobberInputEnable();
 
         LoadMenu(mainMenu, MenuState.Main);
     }
