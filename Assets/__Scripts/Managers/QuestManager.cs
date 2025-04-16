@@ -59,6 +59,9 @@ public class QuestManager : MonoBehaviour
                 existingQuest.dialogues = parsedQuest.dialogues;
             }
         }
+        questList = questList.OrderBy(q => q.QuestID).ToList();
+
+        ObtainQuest((int)questList[0].QuestID);
 
         questConnections.Clear();
         foreach (var link in questContainer.nodeLinks)
@@ -161,10 +164,10 @@ public class QuestManager : MonoBehaviour
             {
                 quest.isCompleted = true;
                 await AddQuestRewards(questID);
-                /*if (quest.QuestID + 1 != null)
+                if (quest.QuestID + 1 != null)
                 {
                     await ObtainQuest((int)quest.QuestID + 1);
-                }*/
+                }
             }
         }
     }
@@ -197,6 +200,11 @@ public class QuestManager : MonoBehaviour
             if (allObjectivesCompleted)
             {
                 await SetQuestAsComplete(questID);
+                var nextQuest = questList.FirstOrDefault(q => q.QuestID == questID + 1);
+                if (nextQuest != null && nextQuest.shouldAutoObtain)
+                {
+                    await ObtainQuest((int)nextQuest.QuestID);
+                }
             }
         }
     }
@@ -245,9 +253,12 @@ public class QuestManager : MonoBehaviour
         }
         
         LoadQuests();
+        
         if (questList.Count > 0)
         {
+            /*
             ObtainQuest((int)questList[0].QuestID).ConfigureAwait(false);
+            */
             SetQuestAsActive(questList[0].GUID);
         }
     }
@@ -270,7 +281,8 @@ public class QuestManager : MonoBehaviour
                 isCompleted = mainQuestNodeModel.isCompleted,
                 isActive = mainQuestNodeModel.isActive,
                 isObtained = mainQuestNodeModel.isObtained,
-                dialogues = new List<DialogueNodeModel>()
+                dialogues = new List<DialogueNodeModel>(),
+                shouldAutoObtain = mainQuestNodeModel.shouldAutoObtain
             };
 
             foreach (var link in questContainer.nodeLinks)

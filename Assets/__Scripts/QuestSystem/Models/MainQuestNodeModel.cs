@@ -9,4 +9,5 @@ public class MainQuestNodeModel : QuestNodeModel
     public bool isCompleted;
     public bool isActive;
     public bool isObtained;
+    public bool shouldAutoObtain;
 }

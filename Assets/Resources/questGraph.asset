@@ -27,7 +27,13 @@ MonoBehaviour:
     targetNodeGUID: 61e10388-24a5-4069-bb6f-c33edf076698
   - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
     portName: Next quest(s)
+    targetNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+  - baseNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+    portName: Next quest(s)
     targetNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
+  - baseNodeGUID: 2ed80f74-584a-4030-852a-3f9b8d4bedfc
+    portName: Objectives
+    targetNodeGUID: 24993701-2dd2-4ec6-ae3b-571280d47fb6
   - baseNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
     portName: Objectives
     targetNodeGUID: c2e5aef6-3dae-4de1-816a-e21fb61aa43d
@@ -35,10 +41,10 @@ MonoBehaviour:
   - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":0,"GUID":"08d89a76-86c3-4cf5-8cb9-c3138a5bab79","position":{"x":54.0,"y":-39.33333206176758}}'
-  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"5fb2d7bd-8d7e-469b-bbd3-a671307fce86","position":{"x":258.6666564941406,"y":-39.33333206176758},"QuestName":"Get
-      Started","QuestDescription":"Learn the movement","QuestID":1,"isCompleted":false,"isActive":false,"isObtained":false}'
+    JsonData: '{"QuestType":2,"GUID":"1fbd628c-e9ca-4638-abf4-5223d7d152e0","position":{"x":669.3333740234375,"y":208.6666717529297},"ObjectiveDescription":"Go
+      to the other room","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":2,"GUID":"003613f2-7f51-4d5e-afdb-f27134fd4bc6","position":{"x":669.3333740234375,"y":379.3333435058594},"ObjectiveDescription":"Pick
@@ -46,16 +52,25 @@ MonoBehaviour:
       Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":123}"}]}'
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":3,"GUID":"61e10388-24a5-4069-bb6f-c33edf076698","position":{"x":669.3333740234375,"y":580.6666870117188},"RewardType":"Money","RewardValue":150}'
+    JsonData: '{"QuestType":3,"GUID":"61e10388-24a5-4069-bb6f-c33edf076698","position":{"x":669.3333740234375,"y":602.6666870117188},"RewardType":"Money","RewardValue":150}'
   - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":669.3333740234375,"y":-39.33333206176758},"QuestName":"Get
-      Money","QuestDescription":"Find money fast or they''ll get you.","QuestID":2,"isCompleted":false,"isActive":false,"isObtained":false}'
+    JsonData: '{"QuestType":1,"GUID":"5fb2d7bd-8d7e-469b-bbd3-a671307fce86","position":{"x":258.6666564941406,"y":-39.33333206176758},"QuestName":"Get
+      Started","QuestDescription":"Learn the movement","QuestID":1,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"2ed80f74-584a-4030-852a-3f9b8d4bedfc","position":{"x":669.3333740234375,"y":-39.33333206176758},"QuestName":"New
+      message","QuestDescription":"Check out the PC in your room","QuestID":2,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":true}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"1fbd628c-e9ca-4638-abf4-5223d7d152e0","position":{"x":669.3333740234375,"y":208.6666717529297},"ObjectiveDescription":"Go
-      to the other room","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
-  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":2,"GUID":"c2e5aef6-3dae-4de1-816a-e21fb61aa43d","position":{"x":1131.333251953125,"y":208.6666717529297},"ObjectiveDescription":"test","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
+    JsonData: '{"QuestType":2,"GUID":"c2e5aef6-3dae-4de1-816a-e21fb61aa43d","position":{"x":1412.6666259765625,"y":208.6666717529297},"ObjectiveDescription":"test","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
       Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":69}"}]}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"24993701-2dd2-4ec6-ae3b-571280d47fb6","position":{"x":1015.3333740234375,"y":208.6666717529297},"ObjectiveDescription":"Use
+      the PC","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":789}"}]}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":1015.3333740234375,"y":-39.33333206176758},"QuestName":"Get
+      Money","QuestDescription":"Find money fast or they''ll get you.","QuestID":3,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
