@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
+
+[Serializable]
+public class VoidEvent : UnityEvent { }
 public abstract class PuzzleModule : MonoBehaviour
 {
     public int[] inputPorts = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
