@@ -161,10 +161,10 @@ public class QuestManager : MonoBehaviour
             {
                 quest.isCompleted = true;
                 await AddQuestRewards(questID);
-                if (quest.QuestID + 1 != null)
+                /*if (quest.QuestID + 1 != null)
                 {
                     await ObtainQuest((int)quest.QuestID + 1);
-                }
+                }*/
             }
         }
     }

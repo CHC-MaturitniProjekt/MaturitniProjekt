@@ -28,6 +28,9 @@ MonoBehaviour:
   - baseNodeGUID: 5fb2d7bd-8d7e-469b-bbd3-a671307fce86
     portName: Next quest(s)
     targetNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
+  - baseNodeGUID: bb0227e7-ade0-4e02-a74a-d9ab7b46895a
+    portName: Objectives
+    targetNodeGUID: c2e5aef6-3dae-4de1-816a-e21fb61aa43d
   questNodeData:
   - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
@@ -46,9 +49,13 @@ MonoBehaviour:
     JsonData: '{"QuestType":3,"GUID":"61e10388-24a5-4069-bb6f-c33edf076698","position":{"x":669.3333740234375,"y":580.6666870117188},"RewardType":"Money","RewardValue":150}'
   - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":669.3333740234375,"y":-39.33333206176758},"QuestName":"New
-      Quest","QuestDescription":"Describe the quest here","QuestID":2,"isCompleted":false,"isActive":false,"isObtained":false}'
+    JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":669.3333740234375,"y":-39.33333206176758},"QuestName":"Get
+      Money","QuestDescription":"Find money fast or they''ll get you.","QuestID":2,"isCompleted":false,"isActive":false,"isObtained":false}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":2,"GUID":"1fbd628c-e9ca-4638-abf4-5223d7d152e0","position":{"x":669.3333740234375,"y":208.6666717529297},"ObjectiveDescription":"Go
       to the other room","ObjectiveType":"GoTo","isOptional":false,"isCompleted":false,"CompletionCriteria":[]}'
+  - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":2,"GUID":"c2e5aef6-3dae-4de1-816a-e21fb61aa43d","position":{"x":1131.333251953125,"y":208.6666717529297},"ObjectiveDescription":"test","ObjectiveType":"PickUp","isOptional":false,"isCompleted":false,"CompletionCriteria":[{"CriteriaType":"ItemCollectionCriteria,
+      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null","JsonData":"{\"RequiredItemCount\":69}"}]}'

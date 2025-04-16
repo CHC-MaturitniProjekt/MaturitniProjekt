@@ -1,12 +1,22 @@
 ﻿using PixelCrushers.DialogueSystem;
 using System.Collections.Generic;
 
-class IdkDialog : SmsSystem {
+class IdkDialog : SmsSystem
+{
+    private QuestManager _questManager;
+    
     private void Start()
     {
+        _questManager = FindFirstObjectByType<QuestManager>();
+
+        
         DialogNode fifthNode = new DialogNode
         {
             NpcText = new List<string>() {"Don’t finish that sentence unless it ends in numbers.", "Clock’s ticking, Solace. Don't make us come off silent."},
+            OnNodeEnter = () =>
+            {
+                _questManager.ObtainQuest(2);
+            }
         };
         DialogNode forthNode = new DialogNode
         {
@@ -41,7 +51,7 @@ class IdkDialog : SmsSystem {
                 new Response { Text = "Still working on it.", NextNode = secondNode },
             }
         };
-
+        
         dialogManager.StartDialogue(firstNode);
     }
 }

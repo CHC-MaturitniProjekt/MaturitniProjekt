@@ -6,6 +6,8 @@ public class DialogNode
     public List<string> NpcText;
     public List<Response> Responses;
     public bool AutoAdvance = false;
+    
+    public System.Action OnNodeEnter;
 
     public List<string> GetResponseTexts()
     {

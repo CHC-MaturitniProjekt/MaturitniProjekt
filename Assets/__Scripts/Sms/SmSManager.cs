@@ -14,6 +14,7 @@ public class SmSManager : MonoBehaviour
 
     private void ShowCurrentNode()
     {
+        currentNode.OnNodeEnter?.Invoke();
         
         if (currentNode.NpcText != null && currentNode.NpcText.Count > 0)
         {
