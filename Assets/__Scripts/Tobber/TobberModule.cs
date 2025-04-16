@@ -9,7 +9,8 @@ public class TobberModule : MonoBehaviour
 
     private Dictionary<string, Type> moduleTypes = new Dictionary<string, Type>
 {
-    { "KeyPad", typeof(IndexKeypadModule) }
+    { "KeyPad", typeof(IndexKeypadModule) },
+     { "NFC", typeof(ReverseNfcModule) }
 };
 
     private PuzzleModule currentModule;

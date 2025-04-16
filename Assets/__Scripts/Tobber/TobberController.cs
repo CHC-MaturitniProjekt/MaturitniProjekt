@@ -42,7 +42,7 @@ public class TobberController : MonoBehaviour
 
     private List<string> mainMenu = new List<string> { "Scripts", "Modules" };
     private List<string> loadedScripts = new List<string>();
-    private List<string> modules = new List<string> { "KeyPad", "Camera" };
+    private List<string> modules = new List<string> { "KeyPad", "Camera" ,"NFC" };
 
     private MenuState currentState = MenuState.Main;
 

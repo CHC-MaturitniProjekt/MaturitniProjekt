@@ -30,11 +30,11 @@ public class UltraWebComponent : MonoBehaviour
             _rawImage.rectTransform.sizeDelta = new Vector2(width, height);
         }
 
-//#if UNITY_EDITOR
-//        if (cantUseInEditor != null)
-//            cantUseInEditor.SetActive(true);
-//        return;
-//#endif
+#if UNITY_EDITOR
+        if (cantUseInEditor != null)
+            cantUseInEditor.SetActive(true);
+        return;
+#endif
 
         try
         {
