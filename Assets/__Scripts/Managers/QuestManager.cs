@@ -137,6 +137,7 @@ public class QuestManager : MonoBehaviour
         foreach (var quest in questList)
         {
             quest.isCompleted = quest.GUID == questGUID;
+            quest.isActive = false;
         }
     }
     public void SetQuestAsObtained(string questGUID)
@@ -163,7 +164,8 @@ public class QuestManager : MonoBehaviour
             if (quest.QuestID == questID && !quest.isCompleted)
             {
                 quest.isCompleted = true;
-                await AddQuestRewards(questID);
+                quest.isActive = false;
+                await AddQuestRewards(questID); 
                 if (quest.QuestID + 1 != null)
                 {
                     await ObtainQuest((int)quest.QuestID + 1);
@@ -259,7 +261,7 @@ public class QuestManager : MonoBehaviour
             /*
             ObtainQuest((int)questList[0].QuestID).ConfigureAwait(false);
             */
-            SetQuestAsActive(questList[0].GUID);
+            //SetQuestAsActive(questList[0].GUID);
         }
     }
 

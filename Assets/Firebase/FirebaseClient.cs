@@ -554,7 +554,7 @@ public class FirebaseClient
             {
                 try
                 {
-                    await StreamAsync(firebasePath, (eventName, data) =>
+                    await StreamAsync($"{_config.basePath}/{firebasePath}", (eventName, data) =>
                     {
                         if (eventName == "put" || eventName == "patch")
                         {

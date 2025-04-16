@@ -18,7 +18,7 @@ class IdkDialog : SmsSystem
             },
             OnNodeEnter = () =>
             {
-                _questManager.ObtainQuest(4);
+                _questManager.ObtainQuest(3);
             }
         };
 
@@ -31,7 +31,7 @@ class IdkDialog : SmsSystem
             },
             OnNodeEnter = () =>
             {
-                _questManager.ObtainQuest(3);
+                _questManager.ObtainQuest(4);
             }
         };
         
