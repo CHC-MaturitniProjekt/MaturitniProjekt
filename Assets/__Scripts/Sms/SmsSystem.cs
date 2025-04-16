@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static System.Net.Mime.MediaTypeNames;
+using Random = Unity.Mathematics.Random;
 
 public class SmsSystem : MonoBehaviour
 {
@@ -47,10 +48,25 @@ public class SmsSystem : MonoBehaviour
         }
     }
 
-    public void npcType(string text)
+    public void npcType(List<string> texts, System.Action onFinished = null)
     {
-        GameObject temp = Instantiate(NPCMessage, ParentaMessages.transform);
-        temp.GetComponentInChildren<UnityEngine.UI.Text>().text = text;
+        StartCoroutine(NpcTypingCoroutine(texts, onFinished));
+    }
+
+    private IEnumerator<WaitForSeconds> NpcTypingCoroutine(List<string> texts, System.Action onFinished)
+    {
+        foreach (var realText in texts)
+        {
+            GameObject temp = Instantiate(NPCMessage, ParentaMessages.transform);
+            var textComponent = temp.GetComponentInChildren<UnityEngine.UI.Text>();
+            textComponent.text = "...";
+
+            yield return new WaitForSeconds(UnityEngine.Random.Range(1.5f, 4f));
+            textComponent.text = realText;
+            yield return new WaitForSeconds(0.3f);
+        }
+
+        onFinished?.Invoke();
     }
 
     public void pcType(string text)

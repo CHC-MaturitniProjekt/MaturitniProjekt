@@ -4,11 +4,11 @@ using System.Collections.Generic;
 class NyxDialog : SmsSystem {
     private void Start()
     {
-        DialogNode endNode = new DialogNode { NpcText = "Díky, měj se!", Responses = new List<Response>() };
+        DialogNode endNode = new DialogNode { NpcText = new List<string>() {"Díky, měj se!"}, Responses = new List<Response>() };
 
         DialogNode secondNode = new DialogNode
         {
-            NpcText = "To je zajímavé. Co bys udělal dál?",
+            NpcText = new List<string>() {"To je zajímavé. Co bys udělal dál?"},
             Responses = new List<Response>
         {
             new Response { Text = "Zamyslím se nad tím", NextNode = endNode },
@@ -18,7 +18,7 @@ class NyxDialog : SmsSystem {
 
         DialogNode firstNode = new DialogNode
         {
-            NpcText = "Ahoj, jak se máš?",
+            NpcText = new List<string>() {"Ahoj, jak se máš?"},
             Responses = new List<Response>
         {
             new Response { Text = "Dobře, co ty?", NextNode = secondNode },

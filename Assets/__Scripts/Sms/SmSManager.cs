@@ -14,14 +14,23 @@ public class SmSManager : MonoBehaviour
 
     private void ShowCurrentNode()
     {
-        if (!string.IsNullOrEmpty(currentNode.NpcText))
+        
+        if (currentNode.NpcText != null && currentNode.NpcText.Count > 0)
         {
-            smsUI.npcType(currentNode.NpcText);
+            smsUI.npcType(currentNode.NpcText, () =>
+            {
+                if (currentNode.Responses != null && currentNode.Responses.Count > 0)
+                {
+                    smsUI.showResponses(currentNode.GetResponseTexts());
+                }
+            });
         }
-
-        if (currentNode.Responses != null && currentNode.Responses.Count > 0)
+        else
         {
-            smsUI.showResponses(currentNode.GetResponseTexts());
+            if (currentNode.Responses != null && currentNode.Responses.Count > 0)
+            {
+                smsUI.showResponses(currentNode.GetResponseTexts());
+            }
         }
     }
 
@@ -43,8 +52,8 @@ public class SmSManager : MonoBehaviour
 
     public void ContinueDialogue()
     {
-        if (!string.IsNullOrEmpty(currentNode.NpcText))
-        {
+        if (currentNode.NpcText != null && currentNode.NpcText.Count > 0)
+        { 
             smsUI.npcType(currentNode.NpcText);
         }
 

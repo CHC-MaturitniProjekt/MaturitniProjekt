@@ -3,7 +3,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class DialogNode
 {
-    public string NpcText;
+    public List<string> NpcText;
     public List<Response> Responses;
     public bool AutoAdvance = false;
 
