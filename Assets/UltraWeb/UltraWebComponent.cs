@@ -15,6 +15,7 @@ public class UltraWebComponent : MonoBehaviour
     [Header("References")]
     [SerializeField] private RawImage _rawImage;
     [SerializeField] private GameObject cantUseInEditor;
+    [SerializeField] private Camera uiCamera;
 
     private Coroutine _updateCoroutine;
     public bool canInteract = false;
@@ -24,14 +25,16 @@ public class UltraWebComponent : MonoBehaviour
     private void Start()
     {
         if (_rawImage == null)
+        {
             _rawImage = gameObject.AddComponent<RawImage>();
-        _rawImage.rectTransform.sizeDelta = new Vector2(width, height);
+            _rawImage.rectTransform.sizeDelta = new Vector2(width, height);
+        }
 
-#if UNITY_EDITOR
-        if (cantUseInEditor != null)
-            cantUseInEditor.SetActive(true);
-        return;
-#endif
+//#if UNITY_EDITOR
+//        if (cantUseInEditor != null)
+//            cantUseInEditor.SetActive(true);
+//        return;
+//#endif
 
         try
         {
@@ -90,34 +93,39 @@ public class UltraWebComponent : MonoBehaviour
     {
         localPoint = Vector2.zero;
 
-        if (_rawImage == null || _rawImage.rectTransform == null)
+        if (_rawImage == null || _rawImage.rectTransform == null || uiCamera == null)
             return false;
 
-        Vector2 screenPoint = Input.mousePosition;
+        Ray ray = uiCamera.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(_rawImage.rectTransform.forward, _rawImage.rectTransform.position);
 
-        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _rawImage.rectTransform, screenPoint, null, out localPoint))
-            return false;
+        if (plane.Raycast(ray, out float enter))
+        {
+            Vector3 worldHit = ray.GetPoint(enter);
+            Vector2 localHit = _rawImage.rectTransform.InverseTransformPoint(worldHit);
 
-        Rect pixelRect = RectTransformUtility.PixelAdjustRect(_rawImage.rectTransform, _rawImage.canvas);
+            Rect rect = _rawImage.rectTransform.rect;
+            float normalizedX = (localHit.x - rect.x) / rect.width;
+            float normalizedY = (localHit.y - rect.y) / rect.height;
 
-        float adjustedX = localPoint.x + pixelRect.width / 2f;
-        float adjustedY = pixelRect.height / 2f - localPoint.y;
+            localPoint.x = normalizedX * width;
+            localPoint.y = (1f - normalizedY) * height; // Flip Y
 
-        float scaleX = (float)width / pixelRect.width;
-        float scaleY = (float)height / pixelRect.height;
+            return true;
+        }
 
-        localPoint = new Vector2(adjustedX * scaleX, adjustedY * scaleY);
-
-        return true;
+        return false;
     }
-
     private bool IsPointerOverRawImage()
     {
-        if (_rawImage == null || _rawImage.rectTransform == null)
+        if (_rawImage == null || _rawImage.rectTransform == null || uiCamera == null)
             return false;
 
-        return RectTransformUtility.RectangleContainsScreenPoint(_rawImage.rectTransform, Input.mousePosition, null);
+        Vector3 worldMousePos = uiCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, uiCamera.nearClipPlane));
+        Vector2 localPoint = _rawImage.rectTransform.InverseTransformPoint(worldMousePos);
+
+        Rect rect = _rawImage.rectTransform.rect;
+        return rect.Contains(localPoint);
     }
 
     private void HandleMouseInput(int x, int y)

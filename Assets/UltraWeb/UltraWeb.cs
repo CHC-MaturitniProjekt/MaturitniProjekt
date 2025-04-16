@@ -81,8 +81,6 @@ public class UltraWeb : IDisposable
 
         pluginPath = Path.GetFullPath(pluginPath).Replace('\\', '/');
 
-        Debug.Log("Using pluginPath: " + pluginPath);
-
         if (InitializeUltralight(pluginPath) != 1)
             throw new Exception("Ultralight initialization failed.");
 
