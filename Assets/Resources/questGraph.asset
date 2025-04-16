@@ -38,9 +38,6 @@ MonoBehaviour:
     portName: Objectives
     targetNodeGUID: c2e5aef6-3dae-4de1-816a-e21fb61aa43d
   questNodeData:
-  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":0,"GUID":"08d89a76-86c3-4cf5-8cb9-c3138a5bab79","position":{"x":54.0,"y":-39.33333206176758}}'
   - NodeType: ObjectiveNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":2,"GUID":"1fbd628c-e9ca-4638-abf4-5223d7d152e0","position":{"x":669.3333740234375,"y":208.6666717529297},"ObjectiveDescription":"Go
@@ -53,10 +50,6 @@ MonoBehaviour:
   - NodeType: RewardNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":3,"GUID":"61e10388-24a5-4069-bb6f-c33edf076698","position":{"x":669.3333740234375,"y":602.6666870117188},"RewardType":"Money","RewardValue":150}'
-  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-    JsonData: '{"QuestType":1,"GUID":"5fb2d7bd-8d7e-469b-bbd3-a671307fce86","position":{"x":258.6666564941406,"y":-39.33333206176758},"QuestName":"Get
-      Started","QuestDescription":"Learn the movement","QuestID":1,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
   - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     JsonData: '{"QuestType":1,"GUID":"2ed80f74-584a-4030-852a-3f9b8d4bedfc","position":{"x":669.3333740234375,"y":-39.33333206176758},"QuestName":"New
@@ -74,3 +67,10 @@ MonoBehaviour:
       PublicKeyToken=null
     JsonData: '{"QuestType":1,"GUID":"bb0227e7-ade0-4e02-a74a-d9ab7b46895a","position":{"x":1015.3333740234375,"y":-39.33333206176758},"QuestName":"Get
       Money","QuestDescription":"Find money fast or they''ll get you.","QuestID":3,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: MainQuestNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":1,"GUID":"5fb2d7bd-8d7e-469b-bbd3-a671307fce86","position":{"x":343.33331298828127,"y":-39.33333206176758},"QuestName":"Get
+      Started","QuestDescription":"Learn the movement","QuestID":1,"isCompleted":false,"isActive":false,"isObtained":false,"shouldAutoObtain":false}'
+  - NodeType: StartNodeModel, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    JsonData: '{"QuestType":0,"GUID":"08d89a76-86c3-4cf5-8cb9-c3138a5bab79","position":{"x":191.33334350585938,"y":-39.33333206176758}}'

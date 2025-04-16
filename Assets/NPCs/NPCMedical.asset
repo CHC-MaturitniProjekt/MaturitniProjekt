@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2407d9ca0df9f9a4b84c9d579b528c5b, type: 3}
-  m_Name: NPC1Test Homeless
+  m_Name: NPCMedical
   m_EditorClassIdentifier: 
   NPCName: Testik
-  NPCBehaviourType: 0
+  storyImportant: 0
+  NPCBehaviourType: 2
   NPCDialogueType: 7
   NPCWayPointNames:
   - DumWaypoint
   NPCCompletedDialogues: []
-  NPCId: 1
-  NPCHome: {fileID: 0}
   NPCActiveTimeCurve:
     serializedVersion: 2
     m_Curve:
@@ -54,3 +53,10 @@ MonoBehaviour:
     m_PostInfinity: 0
     m_RotationOrder: 4
   NPCRandomness: 0.5
+  GenericDialogues:
+  - MGeneric1
+  - MGeneric2
+  isObtained: 0
+  hasDailySchedule: 0
+  activeHourStart: 10
+  activeHourEnd: 18
