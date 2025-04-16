@@ -15,7 +15,7 @@ class IdkDialog : SmsSystem
             NpcText = new List<string>() {"Don’t finish that sentence unless it ends in numbers.", "Clock’s ticking, Solace. Don't make us come off silent."},
             OnNodeEnter = () =>
             {
-                _questManager.ObtainQuest(2);
+                _questManager.ObtainQuest(3);
             }
         };
         DialogNode forthNode = new DialogNode

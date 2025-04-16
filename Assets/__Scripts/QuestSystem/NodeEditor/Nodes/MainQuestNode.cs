@@ -20,6 +20,7 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
         public bool isObtained;
         public bool isActive;
         public bool isCompleted;
+        public bool ShouldAutoObtain;
         
         public MainQuestNode()
         {
@@ -63,6 +64,10 @@ namespace Assets.__Scripts.QuestSystem.NodeEditor
             var descriptionField = new TextField("Description") { value = QuestDescription };
             descriptionField.RegisterValueChangedCallback(evt => QuestDescription = evt.newValue);
             mainContainer.Add(descriptionField);
+
+            var autoObtainField = new Toggle("Auto obtain") { value = ShouldAutoObtain };
+            autoObtainField.RegisterValueChangedCallback(evt => ShouldAutoObtain = evt.newValue);
+            mainContainer.Add(autoObtainField);
 
             RefreshExpandedState();
             RefreshPorts();

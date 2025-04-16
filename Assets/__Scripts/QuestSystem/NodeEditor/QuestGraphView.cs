@@ -214,6 +214,7 @@ public class QuestGraphView : GraphView
                     isActive = (nodeData as MainQuestNodeModel).isActive,
                     isObtained = (nodeData as MainQuestNodeModel).isObtained,
                     isCompleted = (nodeData as MainQuestNodeModel).isCompleted,
+                    ShouldAutoObtain = (nodeData as MainQuestNodeModel).shouldAutoObtain
                     
                 };
                 break;

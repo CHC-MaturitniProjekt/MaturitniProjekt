@@ -161,7 +161,8 @@ public class QuestSaveUtility
                     QuestType = node.QuestType,
                     position = node.GetPosition().position,
                     QuestName = ((MainQuestNode)node).QuestName,
-                    QuestDescription = ((MainQuestNode)node).QuestDescription
+                    QuestDescription = ((MainQuestNode)node).QuestDescription,
+                    shouldAutoObtain = ((MainQuestNode)node).ShouldAutoObtain
                 };
             case NodeTypes.ObjectiveNode:
                 return new ObjectiveNodeModel
