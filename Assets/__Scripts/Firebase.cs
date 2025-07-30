@@ -148,6 +148,7 @@ public class Firebase : MonoBehaviour
     
     void ProcessDataChange(string data)
     {
+        Debug.Log("dfjklasfjklsjflkdsafdklsafjldska: " + data);
         try
         {
             var jsonData = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);

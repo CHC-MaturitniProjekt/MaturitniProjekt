@@ -49,16 +49,9 @@ public class LoginRegistrModal : MonoBehaviour
     {
         try
         {
-            string cachedId = client.LoadCachedLocalId();
-            if (!string.IsNullOrEmpty(cachedId))
-            {
-                loginFinished();
-            }
-            else
-            {
-                var authResponse = await client.SignInWithEmailAndPasswordAsync(loginEmail.text, loginPassword.text);
-                loginFinished();
-            }
+            var authResponse = await client.SignInWithEmailAndPasswordAsync(loginEmail.text, loginPassword.text);
+            client.SaveCachedLocalId(authResponse.localId);
+            loginFinished();
         }
         catch (Exception ex)
         {
