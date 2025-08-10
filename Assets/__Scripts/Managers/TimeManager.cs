@@ -8,6 +8,14 @@ public class TimeManager : MonoBehaviour
     [SerializeField] private float worldTime;
     [SerializeField] private float timeMultiplier = 0.5f;
     
+    public enum TimeStates
+    {
+        Day,
+        Night
+    }
+
+    public TimeStates currentTimeState;
+    
     private GameObject timeManager;
     
     private void Awake()
@@ -19,7 +27,7 @@ public class TimeManager : MonoBehaviour
     {
         DontDestroyOnLoad(timeManager);
         
-        SetWorldTime(480f);
+        SetWorldTime(850f);
     }
 
     public void SetWorldTime(float time)
@@ -49,7 +57,24 @@ public class TimeManager : MonoBehaviour
     void Update()
     {
         worldTime += Time.deltaTime * timeMultiplier;
-
+        
         if (worldTime >= 1440f) worldTime = 0;
+        
+        CheckDayEvents();
+    }
+    
+    private void CheckDayEvents()
+    {
+        int currentTime = GetWorldTime();
+
+        if (currentTime == 480)
+        {
+            currentTimeState = TimeStates.Day;
+        }
+        else if (currentTime == 1020)
+        {
+            currentTimeState = TimeStates.Night;
+
+        }
     }
 }

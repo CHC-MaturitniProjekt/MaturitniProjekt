@@ -671,10 +671,11 @@ public class NPCMovement : MonoBehaviour
         Vector3 dirToPlayer = playerTransform.position - transform.position;
         float distance = dirToPlayer.magnitude;
         float angle = Vector3.Angle(transform.forward, dirToPlayer);
-
-        if (distance < detectionRadius && angle < detectionAngle)
+    
+        if (distance < (detectionRadius / 2) && angle < detectionAngle)
         {
-            HandleLookAt();
+            agent.isStopped = true;
+            HandleLookAt(); 
         }
         else
         {
